@@ -39,6 +39,7 @@ echo '{"event":"skill","decision":"start","skill":"review","persona":"reviewer",
 | Parameterized tests array + `d` | | |
 | Style (ruff/black/isort expectations) | | |
 | DCO on commits | | |
+| No deprecated APIs (`check-deprecations.sh` clean) | | |
 | No SoftClipIntensity / redundant soft-clip | | |
 | Fork-only remotes (no upstream demo PR) | | |
 | CODEOWNERS routing noted | | |

@@ -30,4 +30,17 @@ Prefer the smallest local subset that covers touched files before a full matrix.
 
 **Demo:** open draft PRs against the **fork** default branch only — not upstream.
 
-**Source of truth:** `CONTRIBUTING.md` (Signing your work, Submitting pull requests), `.github/CODEOWNERS`, `.github/workflows/`, `.pre-commit-config.yaml`
+## Deploy / release (the step after merge)
+
+"Fit the path to production" does not end at a green PR. For a user-facing transform:
+
+- **Document for release:** add a bullet under `## [Unreleased]` -> `### Added` in
+  `CHANGELOG.md`. Gate: `bash docs/cursor-kit/scripts/check-changelog.sh <Name> <Named>`.
+- **Release train:** merge to default -> nightly (`cron.yml`) / `weekly-preview.yml`
+  preview wheels -> tagged release (`release.yml` on `main` + tags) -> NGC bundle
+  refresh (`cron-ngc-bundle.yml`).
+- **Versioning:** git-tag driven via versioneer (`monai/_version.py`); contributors
+  do not hand-edit versions.
+- **Docs build:** public API changes are picked up by `build_docs.yml`.
+
+**Source of truth:** `CONTRIBUTING.md` (Signing your work, Submitting pull requests), `.github/CODEOWNERS`, `.github/workflows/release.yml`, `.github/workflows/weekly-preview.yml`, `.github/workflows/cron-ngc-bundle.yml`, `CHANGELOG.md`, `.pre-commit-config.yaml`

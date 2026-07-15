@@ -1,18 +1,23 @@
 name: cursor-kit-sync
 
-# Keep the Cursor onboarding kit honest: fail if Source-of-truth paths drift.
+# Keep the Cursor onboarding kit honest: fail if Source-of-truth paths drift
+# or if intensity transforms reintroduce deprecated APIs.
 on:
   push:
     paths:
       - ".cursor/**"
       - "docs/cursor-kit/**"
       - "AGENTS.md"
+      - "monai/transforms/intensity/**"
+      - "tests/transforms/**"
       - ".github/workflows/cursor-kit-sync.yml"
   pull_request:
     paths:
       - ".cursor/**"
       - "docs/cursor-kit/**"
       - "AGENTS.md"
+      - "monai/transforms/intensity/**"
+      - "tests/transforms/**"
       - ".github/workflows/cursor-kit-sync.yml"
 
 jobs:
@@ -23,3 +28,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Run cursor-kit sync-check
         run: bash docs/cursor-kit/scripts/sync-check.sh
+      - name: Deprecated-API gate (intensity transforms + transform tests)
+        run: |
+          bash docs/cursor-kit/scripts/check-deprecations.sh \
+            $(git ls-files 'monai/transforms/intensity/*.py' 'tests/transforms/test_*.py')
