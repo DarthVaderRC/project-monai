@@ -1,0 +1,33 @@
+---
+description: CI mapping, DCO sign-off, CODEOWNERS routing for contributions
+alwaysApply: false
+---
+
+# CI, DCO, and ownership
+
+Use this rule when preparing PRs, CI, or release-adjacent checks.
+
+## Local → CI mapping
+
+| Local | Typical CI / workflow |
+|---|---|
+| `./runtests.sh --ruff` / `--codeformat` | Style/type checks in GitHub Actions (e.g. `pythonapp-*`, setup/CI test workflows) |
+| `./runtests.sh --quick --unittests` | Unit test jobs (`cicd_tests.yml`, integration/app workflows) |
+| `pre-commit` / `.pre-commit-config.yaml` | Same lint tools as CI |
+| Docs build notes in CONTRIBUTING | `build_docs.yml` |
+
+Prefer the smallest local subset that covers touched files before a full matrix.
+
+## DCO
+
+- Every commit must include `Signed-off-by: Name <email>` (Developer Certificate of Origin).
+- The GitHub DCO app fails PRs without valid sign-off (`CONTRIBUTING.md` — Signing your work).
+
+## CODEOWNERS
+
+- Review routing is defined in `.github/CODEOWNERS`.
+- Kit paths (`.cursor/`, `AGENTS.md`, `docs/cursor-kit/`) are owned by the platform team entry there.
+
+**Demo:** open draft PRs against the **fork** default branch only — not upstream.
+
+**Source of truth:** `CONTRIBUTING.md` (Signing your work, Submitting pull requests), `.github/CODEOWNERS`, `.github/workflows/`, `.pre-commit-config.yaml`

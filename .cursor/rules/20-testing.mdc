@@ -1,0 +1,19 @@
+---
+description: MONAI unit test conventions — parameterized, naming, runtests
+globs: tests/**
+alwaysApply: false
+---
+
+# Testing
+
+- Place transform tests under `tests/transforms/` (e.g. `test_scale_intensity.py` + paired `*d` file).
+- Naming: `test_[module_or_feature].py`.
+- Prefer **`parameterized`** test cases; keep deps to torch/numpy when possible; otherwise list optional deps and update `tests/min_tests.py` `exclude_cases` as needed.
+- Cover **array and dict (`d`)** variants for new transforms; include edge cases (empty/constant volumes, dtype, device) when peers do.
+- Do not commit large binary test data.
+- Local runs (examples):
+  - `./runtests.sh --quick --unittests`
+  - `python -m tests.transforms.test_<name>` (after editable install)
+- Prefer scoped tests for the touched module before full suites.
+
+**Source of truth:** `CONTRIBUTING.md` (Unit testing), `tests/transforms/test_scale_intensity.py`, `tests/transforms/test_normalize_intensity.py`, `docs/cursor-kit/monai-refs/testing.md`

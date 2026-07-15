@@ -1,0 +1,18 @@
+---
+description: Intensity transform conventions — array + MapTransform d pattern
+globs: monai/transforms/**
+alwaysApply: false
+---
+
+# Transforms
+
+When adding intensity transforms:
+
+- **Array:** subclass `Transform` (or `RandomizableTransform`); set `backend` when neighbors do (often `TORCH` / `NUMPY`).
+- **Dict:** subclass `MapTransform`; wrap the array transform; class name ends with `d`; export `D` / `Dict` aliases per existing intensity modules.
+- Prefer **appending** to `monai/transforms/intensity/array.py` and `dictionary.py` to match neighbors (unless a new module is clearly warranted).
+- Register in file-level `__all__` and package `__init__` / public API exports.
+- Use `from __future__ import annotations`, Google-style docstrings, MetaTensor-aware behavior consistent with peers (e.g. `NormalizeIntensity`, `ScaleIntensity`).
+- Soft-clip behavior already exists (`ClipIntensityPercentiles`, `soft_clip`) — do not add a redundant `SoftClipIntensity`.
+
+**Source of truth:** `monai/transforms/intensity/array.py`, `monai/transforms/intensity/dictionary.py`, `monai/transforms/transform.py`, `docs/cursor-kit/monai-refs/transforms-array-dict.md`

@@ -1,0 +1,48 @@
+# MONAI Cursor onboarding kit
+
+Project-level guidance for Cursor agents working in this fork. Owned by the platform team via `.github/CODEOWNERS` (`.cursor/`, this file, `docs/cursor-kit/`).
+
+This is **not** a Custom Mode. Skills are invoked explicitly with `/`.
+
+## Skills (slash commands)
+
+| Skill | Persona | Purpose |
+|---|---|---|
+| `/triage-issues` | PM | Rank open fork issues; recommend a catalog transform issue |
+| `/plan-feature` | PM | Create or update a **live GitHub issue** on the fork with acceptance criteria |
+| `/scaffold-transform` | Engineer | Implement array + `d` intensity transform from the issue |
+| `/strengthen-tests` | QA | Harden parameterized tests; fix planted scaffold gaps |
+| `/prep-for-ci` | DevOps | Map local `runtests.sh` / style checks to CI; DCO; optional draft PR **to fork** |
+| `/review` | Reviewer | Checklist review vs rules + `CONTRIBUTING.md` |
+
+## Boundary profiles
+
+Set `MONAI_CURSOR_BOUNDARY` before agent work:
+
+| Value | Behavior |
+|---|---|
+| `everyday` (default) | Warn on out-of-allowlist reads/shell; do not block. `gh` allowed. |
+| `strict` | Deny out-of-allowlist file reads and risky shell. Use for `/scaffold-transform` demo. |
+
+Allowlist details live in `.cursor/hooks.json` and hook scripts under `.cursor/hooks/`.
+
+## Docs (preferred sources)
+
+1. In-repo refs: `docs/cursor-kit/monai-refs/` (transforms, testing, contributing checklist).
+2. Cursor `@Docs`: index **https://docs.monai.io/en/stable/** (Settings → Indexing & Docs).
+3. Canonical repo files: `CONTRIBUTING.md`, `pyproject.toml`, `setup.cfg`, `.pre-commit-config.yaml`.
+
+Do **not** scrape random web pages for MONAI conventions. Prefer refs + `@Docs` + in-repo sources.
+
+## Remote policy (demo / this fork)
+
+- **Issues and PRs target the fork only** (`origin` → `DarthVaderRC/project-monai`).
+- Never open demo issues or PRs against upstream `Project-MONAI/MONAI`.
+- Use `gh` with `-R DarthVaderRC/project-monai` (or detect `origin`) for PM/DevOps skills.
+
+## Contribution pointers
+
+- Full process: [`CONTRIBUTING.md`](CONTRIBUTING.md) (American English, Apache header, style, tests, DCO).
+- Kit maintainability: `docs/cursor-kit/README.md`.
+- Sync check: `docs/cursor-kit/scripts/sync-check.sh` (verifies rule “Source of truth” paths still exist).
+- Demo runbook: `docs/cursor-kit/DEMO.md`.

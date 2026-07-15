@@ -1,0 +1,19 @@
+---
+description: Python style — black, isort, ruff, annotations, docstrings
+globs: "**/*.py"
+alwaysApply: false
+---
+
+# Style
+
+- Format/lint with project tools: **black**, **isort**, **ruff**; types via **mypy** / **pytype** as in CI.
+- Prefer `from __future__ import annotations` at the top of modules (after the license header).
+- Google-style docstrings for public classes and methods.
+- Local commands (from repo root, with `requirements-dev.txt` installed):
+  - `./runtests.sh --ruff` — quick
+  - `./runtests.sh --autofix` — auto-fix style
+  - `./runtests.sh --codeformat` — full lint + types
+- Match import and naming patterns of neighboring files; do not reformat unrelated code.
+- On PRs, `/black` may trigger the formatter bot (upstream workflow); still run local autofix before pushing.
+
+**Source of truth:** `CONTRIBUTING.md` (Checking the coding style), `pyproject.toml`, `setup.cfg`, `.pre-commit-config.yaml`
