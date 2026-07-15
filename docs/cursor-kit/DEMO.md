@@ -9,14 +9,16 @@ Panel-safe session script for the `project-monai` workspace (`cursor-onboarding-
 - [ ] `@Docs` indexed: https://docs.monai.io/en/stable/
 - [ ] Customize → Rules shows `00`–`40`; Skills show six `/` workflows
 - [ ] `echo everyday > .cursor/boundary-profile`
-- [ ] Seeded issues present (fill after Task 6):
+- [x] Seeded issues present:
 
 | Issue | # | URL |
 |---|---|---|
-| RobustScaleIntensity (primary) | _TBD_ | _TBD_ |
-| AsinhIntensity (backup) | _TBD_ | _TBD_ |
-| TanhSqueezeIntensity (backup) | _TBD_ | _TBD_ |
-| Decoy (networks) | _TBD_ | _TBD_ |
+| RobustScaleIntensity (primary) | **1** | https://github.com/DarthVaderRC/project-monai/issues/1 |
+| AsinhIntensity (backup) | **2** | https://github.com/DarthVaderRC/project-monai/issues/2 |
+| TanhSqueezeIntensity (backup) | **3** | https://github.com/DarthVaderRC/project-monai/issues/3 |
+| Decoy (networks) | **4** | https://github.com/DarthVaderRC/project-monai/issues/4 |
+
+**Triage narrative (A+D):** `/triage-issues` may **read-only** scan upstream `Project-MONAI/MONAI` `good first issue`s for context, then **recommend only** a fork catalog issue (#1–#3). Never create/edit upstream.
 
 ## Demo spine
 
@@ -71,14 +73,14 @@ Using @Docs and @docs/cursor-kit/monai-refs/transforms-array-dict.md — how do 
 ```
 
 ```text
-Rank open issues on this fork for a good-first intensity transform contribution. Prefer RobustScaleIntensity unless blocked.
+First briefly scan upstream Project-MONAI/MONAI good first issues (read-only) for context. Then rank open issues on this fork and recommend RobustScaleIntensity (#1) unless blocked. Do not recommend implementing an upstream issue in this demo.
 ```
 
 ### C. PM — plan
 
 ```text
 /plan-feature
-Use the recommended issue from triage. Add acceptance criteria, non-goals, touch paths under monai/transforms/intensity/, and test expectations. Update the live GitHub issue on the fork only.
+Use fork issue #1 (RobustScaleIntensity) from triage. Confirm/update acceptance criteria, non-goals, touch paths under monai/transforms/intensity/, and test expectations on the live GitHub issue. Fork only — no upstream edits.
 ```
 
 ### D. Boundary deny moment
@@ -99,7 +101,7 @@ Expected: deny / blocked message pointing back to transforms + kit paths.
 
 ```text
 /scaffold-transform
-Implement the transform from issue #<PRIMARY> under monai/transforms/intensity/ (array + d). Follow monai-refs. Leave the planted dictionary __all__ gap for QA. Stay in strict allowlist.
+Implement the transform from issue #1 under monai/transforms/intensity/ (array + d). Follow monai-refs. Leave the planted dictionary __all__ gap for QA. Stay in strict allowlist.
 ```
 
 ### F. QA — strengthen
