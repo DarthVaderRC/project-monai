@@ -156,6 +156,25 @@ Scaffold intentionally omits the `*d` class from `dictionary.py` `__all__`. QA s
 
 If primary is blocked, triage → AsinhIntensity (#2), then TanhSqueezeIntensity (#3). Same spine.
 
+### Golden fallback (if live scaffold drifts)
+
+A vetted `RobustScaleIntensity` (array + `d` + 20 passing tests) lives on branch
+`golden/robust-scale-intensity` (never merged into the kit branch, so the live
+scaffold is genuine). Recover instantly without leaving the demo branch:
+
+```bash
+git checkout golden/robust-scale-intensity -- \
+  monai/transforms/intensity/array.py \
+  monai/transforms/intensity/dictionary.py \
+  monai/transforms/__init__.py \
+  tests/transforms/test_robust_scale_intensity.py \
+  tests/transforms/test_robust_scale_intensityd.py
+python -m unittest tests.transforms.test_robust_scale_intensity tests.transforms.test_robust_scale_intensityd
+```
+
+Frame it honestly to the panel: "the scaffold is generated live; this is a
+tested safety net so a model hiccup doesn't derail the walkthrough."
+
 ### Profile switch
 
 ```bash
