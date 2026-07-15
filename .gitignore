@@ -165,3 +165,6 @@ runs
 *.pth
 
 *zarr/*
+
+# Cursor kit usage metering (local)
+.cursor/usage/ledger.jsonl

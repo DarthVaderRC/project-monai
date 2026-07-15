@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeReadFile": [
+      {
+        "command": "python3 .cursor/hooks/boundary_read.py",
+        "failClosed": true
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": "python3 .cursor/hooks/boundary_shell.py",
+        "failClosed": true
+      }
+    ],
+    "afterFileEdit": [
+      {
+        "command": "python3 .cursor/hooks/nudge_style_test.py"
+      }
+    ]
+  }
+}
