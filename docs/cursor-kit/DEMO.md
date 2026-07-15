@@ -265,9 +265,13 @@ Review the transform diff against CONTRIBUTING and Cursor rules. Include CODEOWN
 
 ### I. Optional economics beat
 
-```text
-Show the last few lines of .cursor/usage/ledger.jsonl and explain them as Cursor-estimated stage/persona metering, not a billing invoice. Value is measured by ramp time and first-PR defect rate, not this file.
+```bash
+python3 docs/cursor-kit/scripts/ledger-report.py
 ```
+
+Shows a per-persona / per-stage / decision dashboard (boundary denies, warns,
+out-of-bounds attachments). Frame it as Cursor-estimated stage/persona metering,
+not a billing invoice — value is measured by ramp time and first-PR defect rate.
 
 ---
 

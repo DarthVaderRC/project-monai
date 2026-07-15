@@ -69,3 +69,9 @@ Platform ownership for kit paths is recorded in `.github/CODEOWNERS` (`.cursor/`
 ## Usage ledger
 
 `.cursor/usage/ledger.jsonl` is local metering (gitignored). Treat token economics as **Cursor-estimated**, not a billing product.
+
+Aggregate it into a dashboard (per-persona / per-stage / decision, boundary denies, out-of-bounds attachments):
+
+```bash
+python3 docs/cursor-kit/scripts/ledger-report.py
+```
