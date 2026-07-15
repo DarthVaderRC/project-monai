@@ -27,6 +27,21 @@
       {
         "command": "python3 .cursor/hooks/post_edit_nudge.py"
       }
+    ],
+    "beforeSubmitPrompt": [
+      {
+        "command": "python3 .cursor/hooks/prompt_coach.py"
+      }
+    ],
+    "subagentStart": [
+      {
+        "command": "python3 .cursor/hooks/subagent_audit.py"
+      }
+    ],
+    "subagentStop": [
+      {
+        "command": "python3 .cursor/hooks/subagent_audit.py"
+      }
     ]
   }
 }

@@ -111,6 +111,25 @@ Today’s **content pack** is MONAI/transforms-specific (correct for the stand-i
 - Ledger is Cursor-estimated stage metering, not billing.
 - CPU transform scope only in the live path.
 
+### Hook-coverage honesty (verified against Cursor's hooks contract)
+
+Grounded in the actual event schemas, not assumptions:
+
+- `beforeReadFile` gates the Read tool and returns one `permission` for the
+  primary `file_path`. It also *sees* prompt `attachments` (`@`-mentioned files /
+  rules) — we log out-of-bounds ones to the ledger, but a hook **cannot strip
+  already-attached context**. So strict-mode denial governs agent reads, not
+  context you hand it directly.
+- `beforeReadFile` output honors `permission` + `user_message` only (no
+  `agent_message`), so a denied read shows the user a message but doesn't coach
+  the agent inline.
+- `afterFileEdit` returns **no** actionable output; the "run style/tests/deprecation
+  checks" nudge is surfaced via `postToolUse` (`additional_context`) instead.
+- `beforeSubmitPrompt` can only **block** with a message (no context injection),
+  so the convention coach blocks only high-confidence anti-patterns (e.g. soft-clip).
+- `subagentStart/Stop` are audited to the ledger; the kit allows delegation and
+  observes it rather than gating it in v1.
+
 ---
 
 ## Pre-flight
@@ -261,6 +280,12 @@ Run local ruff + scoped tests, confirm DCO, map to CI workflows including docs/c
 ```text
 /review
 Review the transform diff against CONTRIBUTING and Cursor rules. Include CODEOWNERS note and planted-gap status.
+```
+
+Optional delegation beat (shows multi-role automation, not just a menu):
+
+```text
+Delegate the review to a background subagent: launch a Task that runs the /review checklist on the current diff and reports Approve / Request changes. The subagentStart/Stop audit hook logs it to the ledger.
 ```
 
 ### I. Optional economics beat
