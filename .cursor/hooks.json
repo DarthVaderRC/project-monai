@@ -22,6 +22,11 @@
       {
         "command": "python3 .cursor/hooks/nudge_style_test.py"
       }
+    ],
+    "postToolUse": [
+      {
+        "command": "python3 .cursor/hooks/post_edit_nudge.py"
+      }
     ]
   }
 }

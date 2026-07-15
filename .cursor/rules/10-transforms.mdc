@@ -6,13 +6,39 @@ alwaysApply: false
 
 # Transforms
 
-When adding intensity transforms:
+When adding intensity transforms, mirror `ScaleIntensity` / `NormalizeIntensity` exactly.
 
-- **Array:** subclass `Transform` (or `RandomizableTransform`); set `backend` when neighbors do (often `TORCH` / `NUMPY`).
-- **Dict:** subclass `MapTransform`; wrap the array transform; class name ends with `d`; export `D` / `Dict` aliases per existing intensity modules.
-- Prefer **appending** to `monai/transforms/intensity/array.py` and `dictionary.py` to match neighbors (unless a new module is clearly warranted).
-- Register in file-level `__all__` and package `__init__` / public API exports.
-- Use `from __future__ import annotations`, Google-style docstrings, MetaTensor-aware behavior consistent with peers (e.g. `NormalizeIntensity`, `ScaleIntensity`).
-- Soft-clip behavior already exists (`ClipIntensityPercentiles`, `soft_clip`) — do not add a redundant `SoftClipIntensity`.
+## Array class (in `intensity/array.py`)
 
-**Source of truth:** `monai/transforms/intensity/array.py`, `monai/transforms/intensity/dictionary.py`, `monai/transforms/transform.py`, `docs/cursor-kit/monai-refs/transforms-array-dict.md`
+- Subclass `Transform` (deterministic) or `RandomizableTransform` (random).
+- Set `backend = [TransformBackends.TORCH, TransformBackends.NUMPY]`.
+- `__init__` stores params; default `dtype: DtypeLike = np.float32`.
+- `__call__(self, img: NdarrayOrTensor) -> NdarrayOrTensor` must:
+  - `img = convert_to_tensor(img, track_meta=get_track_meta())`
+  - compute on `img_t = convert_to_tensor(img, track_meta=False)`
+  - return `convert_to_dst_type(ret, dst=img, dtype=self.dtype or img_t.dtype)[0]`
+- Support `channel_wise` when peers do.
+- Random transforms implement `randomize(...)` and gate on `self._do_transform` (see `RandScaleIntensity`).
+
+## Dict class (in `intensity/dictionary.py`)
+
+- Subclass `MapTransform`; `backend = <ArrayClass>.backend`.
+- `__init__(self, keys, ..., allow_missing_keys=False)` -> `super().__init__(keys, allow_missing_keys)` then hold the array transform.
+- `__call__`: copy `d = dict(data)`, loop `for key in self.key_iterator(d): d[key] = self.<arr>(d[key])`, return `d`.
+- Add bottom-of-file aliases: `FooD = FooDict = Food` (exact existing convention).
+
+## Register in THREE places (miss one and imports break)
+
+1. `array.py` top-level `__all__` -> array class name.
+2. `dictionary.py` top-level `__all__` -> `Food`, `FooD`, `FooDict` + the alias line.
+3. `monai/transforms/__init__.py` -> import the array name and the `d`/`D` names, following the `ScaleIntensity*` lines.
+
+## Always
+
+- `from __future__ import annotations`; Apache 2.0 header; Google-style docstrings; American English.
+- Do not invent APIs; do not add a redundant `SoftClipIntensity` (use `ClipIntensityPercentiles` / `soft_clip`).
+- Do not use APIs listed in `docs/cursor-kit/monai-refs/deprecations.md`.
+
+Full skeletons: `docs/cursor-kit/monai-refs/transforms-array-dict.md`.
+
+**Source of truth:** `monai/transforms/intensity/array.py`, `monai/transforms/intensity/dictionary.py`, `monai/transforms/transform.py`, `monai/transforms/__init__.py`, `docs/cursor-kit/monai-refs/transforms-array-dict.md`

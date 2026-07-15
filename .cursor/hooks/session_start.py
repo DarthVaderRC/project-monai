@@ -15,7 +15,14 @@ def main() -> int:
     try:
         mode = profile()
         append_ledger("sessionStart", "ok", profile_injected=mode)
-        emit({"env": {PROFILE_ENV: mode}})
+        context = (
+            f"MONAI Cursor kit active. Boundary profile: {mode} "
+            f"(strict = deny reads/shell outside transforms + kit paths; "
+            f"everyday = warn only). Flip via `.cursor/boundary-profile`. "
+            f"Skills: /triage-issues /plan-feature /scaffold-transform "
+            f"/strengthen-tests /prep-for-ci /review."
+        )
+        emit({"env": {PROFILE_ENV: mode}, "additional_context": context})
         return 0
     except Exception as exc:  # noqa: BLE001
         print(f"session_start hook error: {exc}", file=sys.stderr)

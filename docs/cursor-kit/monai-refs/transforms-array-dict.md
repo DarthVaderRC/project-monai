@@ -1,6 +1,8 @@
 # Transforms: array + dictionary (`d`) pattern
 
-Curated notes for Cursor agents. Canonical sources beat this file when they disagree.
+Curated, offline-sufficient notes for Cursor agents. Canonical source files beat this
+file when they disagree. You should be able to scaffold a correct intensity transform
+from this page alone, without `@Docs` or opening unrelated packages.
 
 ## Where to look
 
@@ -9,41 +11,111 @@ Curated notes for Cursor agents. Canonical sources beat this file when they disa
 | Array intensity transforms | [`monai/transforms/intensity/array.py`](../../../monai/transforms/intensity/array.py) |
 | Dict wrappers | [`monai/transforms/intensity/dictionary.py`](../../../monai/transforms/intensity/dictionary.py) |
 | Base classes | [`monai/transforms/transform.py`](../../../monai/transforms/transform.py) |
-| Official docs | [@Docs](https://docs.monai.io/en/stable/) → Transforms |
+| Public re-exports | [`monai/transforms/__init__.py`](../../../monai/transforms/__init__.py) |
+| Official docs (optional) | [@Docs](https://docs.monai.io/en/stable/) -> Transforms |
 
-## Array transform (pattern)
+## Required imports (array module already has these)
 
-Peers such as `ScaleIntensity` / `NormalizeIntensity`:
+```python
+from __future__ import annotations
 
-1. Subclass `Transform` (or `RandomizableTransform`).
-2. Set `backend = [TransformBackends.TORCH, TransformBackends.NUMPY]` when neighbors do.
-3. Implement `__call__(self, img: NdarrayOrTensor) -> NdarrayOrTensor`.
-4. Append the class name to the module `__all__`.
-5. Prefer **appending** into the existing intensity modules rather than a new file.
+import numpy as np
+import torch
 
-## Dictionary transform (pattern)
+from monai.config import DtypeLike
+from monai.config.type_definitions import NdarrayOrTensor
+from monai.data.meta_obj import get_track_meta
+from monai.transforms.transform import RandomizableTransform, Transform
+from monai.utils.enums import TransformBackends
+from monai.utils.type_conversion import convert_data_type, convert_to_dst_type, convert_to_tensor
+```
 
-Peers such as `ScaleIntensityd`:
+## Array transform pattern (copy `ScaleIntensity` / `NormalizeIntensity`)
 
-1. Subclass `MapTransform`.
-2. `backend = <ArrayClass>.backend`.
-3. `__init__` takes `keys` (+ `allow_missing_keys`); construct/hold the array transform.
-4. `__call__` copies the mapping, iterates `self.key_iterator(d)`, applies the array transform per key.
-5. Export aliases at module bottom: `FooD = FooDict = Food` (existing convention).
-6. Append to `__all__` (include aliases if peers do).
+Non-negotiable conventions observed across neighbors:
 
-## Registration checklist
+1. Subclass `Transform` (deterministic) or `RandomizableTransform` (random).
+2. Class attribute: `backend = [TransformBackends.TORCH, TransformBackends.NUMPY]`.
+3. `__init__` stores plain params; `dtype: DtypeLike = np.float32` is the common default.
+4. `__call__(self, img: NdarrayOrTensor) -> NdarrayOrTensor` must:
+   - normalize input: `img = convert_to_tensor(img, track_meta=get_track_meta())`
+   - compute on a meta-free view: `img_t = convert_to_tensor(img, track_meta=False)`
+   - restore dtype/type and MetaTensor via `convert_to_dst_type(ret, dst=img, dtype=...)[0]`
+5. Support `channel_wise` when peers do (iterate `for d in img_t: ...` then `torch.stack`).
 
-- [ ] Class in `array.py` + name in `__all__`
-- [ ] Class in `dictionary.py` + aliases + `__all__`
-- [ ] Re-exported via package public API (`monai.transforms` / intensity package inits) as peers require
-- [ ] Apache 2.0 header + `from __future__ import annotations`
-- [ ] Google-style docstrings pointing dict wrapper at the array class
+Skeleton (deterministic):
+
+```python
+class RobustScaleIntensity(Transform):
+    """Scale intensity robustly using the median and IQR (outlier-resistant)."""
+
+    backend = [TransformBackends.TORCH, TransformBackends.NUMPY]
+
+    def __init__(self, channel_wise: bool = False, dtype: DtypeLike = np.float32) -> None:
+        self.channel_wise = channel_wise
+        self.dtype = dtype
+
+    def __call__(self, img: NdarrayOrTensor) -> NdarrayOrTensor:
+        img = convert_to_tensor(img, track_meta=get_track_meta())
+        img_t = convert_to_tensor(img, track_meta=False)
+        # ... compute robust-scaled `ret` (torch ops so both backends work) ...
+        ret = convert_to_dst_type(ret, dst=img, dtype=self.dtype or img_t.dtype)[0]
+        return ret
+```
+
+Random transforms additionally subclass `RandomizableTransform`, implement
+`randomize(self, data)` to draw params, and gate work behind
+`self._do_transform` (set by `super().__call__` / `randomize`), exactly like
+`RandScaleIntensity`.
+
+## Dictionary transform pattern (copy `ScaleIntensityd`)
+
+1. Subclass `MapTransform` (or `RandomizableTransform, MapTransform` for random).
+2. `backend = <ArrayClass>.backend` (reuse, do not re-list).
+3. `__init__(self, keys: KeysCollection, ..., allow_missing_keys: bool = False)`:
+   - call `super().__init__(keys, allow_missing_keys)`
+   - construct and hold the array transform (e.g. `self.scaler = RobustScaleIntensity(...)`).
+4. `__call__(self, data)`:
+
+```python
+def __call__(self, data: Mapping[Hashable, NdarrayOrTensor]) -> dict[Hashable, NdarrayOrTensor]:
+    d = dict(data)
+    for key in self.key_iterator(d):
+        d[key] = self.scaler(d[key])
+    return d
+```
+
+5. Aliases at the bottom of `dictionary.py` (exact existing convention):
+
+```python
+RobustScaleIntensityD = RobustScaleIntensityDict = RobustScaleIntensityd
+```
+
+## Registration checklist (three places — miss one and imports break)
+
+- [ ] `array.py`: append `"RobustScaleIntensity"` to that module's top-level `__all__`.
+- [ ] `dictionary.py`: append `"RobustScaleIntensityd"`, `"RobustScaleIntensityD"`,
+      `"RobustScaleIntensityDict"` to that module's top-level `__all__`, and add the
+      alias assignment line at the bottom.
+- [ ] `monai/transforms/__init__.py`: add the array name to the `intensity.array`
+      import block and the `d` + `D` names to the `intensity.dictionary` import block
+      (follow the existing `ScaleIntensity` / `ScaleIntensityd` / `ScaleIntensityD` lines).
+- [ ] Apache 2.0 header + `from __future__ import annotations` (already present when appending).
+- [ ] Google-style docstring; the dict wrapper docstring points at the array class via
+      `:py:class:`monai.transforms.RobustScaleIntensity``.
 
 ## Do not scaffold
 
-Soft-clip intensity already exists (`ClipIntensityPercentiles`, `soft_clip` util). Do not add `SoftClipIntensity`.
+Soft-clip intensity already exists (`ClipIntensityPercentiles`, `soft_clip` util). Do not
+add `SoftClipIntensity`.
+
+## Deprecated-API guard
+
+Do not introduce APIs flagged in [`deprecations.md`](deprecations.md). MONAI marks
+removals with `@deprecated` / `@deprecated_arg` from `monai/utils/deprecate_utils.py`;
+run `bash docs/cursor-kit/scripts/check-deprecations.sh` on touched files.
 
 ## Demo catalog (this fork)
 
-Primary: `RobustScaleIntensity` / `RobustScaleIntensityd`. Backups: `AsinhIntensity`, `TanhSqueezeIntensity`.
+Primary: `RobustScaleIntensity` / `RobustScaleIntensityd`.
+Backups: `AsinhIntensity`, `TanhSqueezeIntensity` (same shape, different math).

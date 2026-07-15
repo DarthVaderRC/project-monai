@@ -21,12 +21,40 @@ from policy import (  # noqa: E402
 )
 
 
+def audit_attachments(payload: dict, mode: str) -> None:
+    """Log out-of-bounds context attachments (@-mentioned files / rules).
+
+    Honesty note: `beforeReadFile` returns a single permission for `file_path`.
+    Attachments are already-included prompt context; the hook can *observe* them
+    (and we log out-of-bounds ones) but cannot retroactively strip them. This is
+    a documented boundary limitation, not silent enforcement.
+    """
+    attachments = payload.get("attachments")
+    if not isinstance(attachments, list):
+        return
+    for att in attachments:
+        if not isinstance(att, dict):
+            continue
+        att_path = att.get("file_path") or ""
+        if not att_path:
+            continue
+        att_rel = rel_path(att_path)
+        if not path_allowed(att_rel, mode):
+            append_ledger(
+                "beforeReadFile",
+                "attachment_out_of_bounds",
+                path=att_rel,
+                attachment_type=att.get("type"),
+            )
+
+
 def main() -> int:
     try:
         payload = read_stdin_json()
         file_path = payload.get("file_path") or ""
         mode = profile()
         rel = rel_path(file_path) if file_path else ""
+        audit_attachments(payload, mode)
         allowed = path_allowed(rel, mode) if rel else False
 
         if allowed:
