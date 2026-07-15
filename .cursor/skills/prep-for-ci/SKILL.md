@@ -31,6 +31,7 @@ echo '{"event":"skill","decision":"start","skill":"prep-for-ci","persona":"DevOp
 | `./runtests.sh --autofix` / `--codeformat` | Full lint + types |
 | `./runtests.sh --quick --unittests` | Unit test workflows (`cicd_tests.yml`, etc.) |
 | `.pre-commit-config.yaml` | Same tool family as CI |
+| `bash docs/cursor-kit/scripts/sync-check.sh` | `.github/workflows/cursor-kit-sync.yml` (kit maintainability) |
 
 Prefer smallest subset covering touched files.
 

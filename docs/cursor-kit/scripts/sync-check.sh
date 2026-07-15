@@ -64,7 +64,8 @@ for req in \
   .cursor/skills/scaffold-transform/SKILL.md \
   .cursor/skills/strengthen-tests/SKILL.md \
   .cursor/skills/prep-for-ci/SKILL.md \
-  .cursor/skills/review/SKILL.md
+  .cursor/skills/review/SKILL.md \
+  .github/workflows/cursor-kit-sync.yml
 do
   checked=$((checked + 1))
   if [[ -e "$req" ]]; then

@@ -1,0 +1,25 @@
+name: cursor-kit-sync
+
+# Keep the Cursor onboarding kit honest: fail if Source-of-truth paths drift.
+on:
+  push:
+    paths:
+      - ".cursor/**"
+      - "docs/cursor-kit/**"
+      - "AGENTS.md"
+      - ".github/workflows/cursor-kit-sync.yml"
+  pull_request:
+    paths:
+      - ".cursor/**"
+      - "docs/cursor-kit/**"
+      - "AGENTS.md"
+      - ".github/workflows/cursor-kit-sync.yml"
+
+jobs:
+  sync-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run cursor-kit sync-check
+        run: bash docs/cursor-kit/scripts/sync-check.sh

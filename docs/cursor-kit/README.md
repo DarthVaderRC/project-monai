@@ -12,8 +12,9 @@ Onboarding kit that encodes MONAI contribution norms into Cursor **rules**, **sk
 | Hooks | [`.cursor/hooks.json`](../../.cursor/hooks.json) + [`.cursor/hooks/`](../../.cursor/hooks/) |
 | Boundary profile | [`.cursor/boundary-profile`](../../.cursor/boundary-profile) (`everyday` \| `strict`) |
 | Refs | [`monai-refs/`](monai-refs/) |
-| Demo runbook | [`DEMO.md`](DEMO.md) |
+| Demo runbook + **panel narrative** | [`DEMO.md`](DEMO.md) |
 | Sync check | [`scripts/sync-check.sh`](scripts/sync-check.sh) |
+| Kit CI | [`.github/workflows/cursor-kit-sync.yml`](../../.github/workflows/cursor-kit-sync.yml) |
 
 ## `@Docs` setup (one-time)
 
@@ -36,7 +37,7 @@ echo strict > .cursor/boundary-profile     # deny out-of-allowlist reads/shell
 
 1. Create `.cursor/rules/<nn>-<name>.mdc` with frontmatter (`alwaysApply` or `globs`).
 2. Keep it short; end with `**Source of truth:** \`path\`, ...`
-3. Run `docs/cursor-kit/scripts/sync-check.sh`
+3. Run `docs/cursor-kit/scripts/sync-check.sh` (also enforced by `.github/workflows/cursor-kit-sync.yml` on kit path changes)
 
 ## How to add a skill
 
@@ -62,6 +63,8 @@ echo strict > .cursor/boundary-profile     # deny out-of-allowlist reads/shell
 ## Ownership
 
 Platform ownership for kit paths is recorded in `.github/CODEOWNERS` (`.cursor/`, `AGENTS.md`, `docs/cursor-kit/`).
+
+**Panel narrative** (business judgment, value metrics, beyond-demo plugin/agents path) lives in [`DEMO.md`](DEMO.md) — start there for the interview, not only the live spine.
 
 ## Usage ledger
 
