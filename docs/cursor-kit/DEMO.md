@@ -70,6 +70,8 @@ Do **not** claim production ROI. Propose the frame platform would run:
 
 **Spoken value line:** *“New engineers waste days on framework syntax and silent convention misses. We automate boilerplate safely so they focus on medical/business logic; hooks and QA cut missed tests and out-of-bounds context. Platform measures ramp time and first-PR defect rate — not LOC.”*
 
+**Evidence, not a slide:** [`EVALUATION.md`](EVALUATION.md) is a repeatable kit-off vs kit-on protocol with a tool-checkable rubric. Representative result: a task-sentence-only run scores ~2/12 conventions (no header, numpy-only math, `np.float`, no `d`-wrapper, no tests); the kit-on run reaches 12/12 after QA fixes the planted defect. Offer to run it live if the panel wants proof.
+
 ### Exercise “looking for” → where you show it
 
 | Criterion | Where in the session |
@@ -96,6 +98,8 @@ Today’s **content pack** is MONAI/transforms-specific (correct for the stand-i
 | Library pack | No | MONAI rules text, `monai-refs/`, catalog transforms, planted-defect recipe |
 
 **Next:** extract core to a private/org plugin; keep packs per library. **Agents/subagents:** same persona prompts as standing agents so the default agent can delegate QA/review — skills stay for explicit `/` demos. Not built in v1 on purpose.
+
+The split is physicalized as a **skeleton** in [`productization/`](productization/) (`manifest.json` tags every file `core` vs `pack`; `PRODUCTIZATION.md` is the extraction plan). It is not loaded and changes no runtime behavior — deleting it changes nothing about the demo. Point at it to show the productization path is designed, not just talked.
 
 **Strong panel answers (copy):**
 
@@ -164,7 +168,7 @@ Grounded in the actual event schemas, not assumptions:
 | 4 | Deny probe | Hook deny | Show teeth: agent cannot quietly leave transforms |
 | 5 | `/scaffold-transform` | Code + planted `__all__` gap | Req #1 — correct first contribution without reading the whole repo |
 | 6 | `/strengthen-tests` | Gap fixed; stronger tests | Req #2 — catch mistakes before human review |
-| 7 | everyday → `/prep-for-ci` | CI map; kit sync workflow | Path to production; sync-check CI = ownable kit |
+| 7 | everyday → `/prep-for-ci` | CI map; kit sync workflow; deprecation gate; `[Unreleased]` changelog + deploy readiness | Path to production; sync-check CI = ownable kit; release-train aware |
 | 8 | `/review` | Checklist verdict | Reviewer persona on the same rails |
 
 ### Planted defect
@@ -272,7 +276,7 @@ echo everyday > .cursor/boundary-profile
 
 ```text
 /prep-for-ci
-Run local ruff + scoped tests, confirm DCO, map to CI workflows including docs/cursor-kit sync-check. Do not open a PR against upstream; draft to the fork only if I ask.
+Run local ruff + scoped tests, run docs/cursor-kit/scripts/check-deprecations.sh and check-changelog.sh, confirm DCO and a [Unreleased] changelog entry, map to CI workflows including docs/cursor-kit sync-check. Do not open a PR against upstream; draft to the fork only if I ask.
 ```
 
 ### H. Reviewer

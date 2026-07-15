@@ -1,0 +1,146 @@
+{
+  "name": "cursor-onboarding-platform",
+  "version": "0.1.0-skeleton",
+  "status": "SKELETON — not published, not loaded, no runtime behavior. Documents the intended platform-core vs library-pack split so extraction is a lift-and-shift, not a rewrite.",
+  "description": "Portable Cursor onboarding platform (persona SDLC rails) plus a swappable per-library content pack. This fork ships the MONAI pack in-repo for a reliable live demo; the manifest below is the extraction contract.",
+  "why_skeleton": "Publishing this folder as-is would be wrong for other libraries (the pack is MONAI/transforms-specific). We keep the pack in-repo for v1 and record the split here so the demo stays reliable while showing the productization path.",
+  "layers": {
+    "core": {
+      "portable": true,
+      "summary": "Library-agnostic engine + persona shells. Ships to an org/private Cursor plugin unchanged.",
+      "components": [
+        {
+          "id": "hook-engine",
+          "kind": "hooks",
+          "portable": true,
+          "files": [
+            ".cursor/hooks.json",
+            ".cursor/hooks/policy.py",
+            ".cursor/hooks/session_start.py",
+            ".cursor/hooks/boundary_read.py",
+            ".cursor/hooks/boundary_shell.py",
+            ".cursor/hooks/post_edit_nudge.py",
+            ".cursor/hooks/nudge_style_test.py",
+            ".cursor/hooks/prompt_coach.py",
+            ".cursor/hooks/subagent_audit.py",
+            ".cursor/hooks/ledger_append.py"
+          ],
+          "pack_config": "Path allowlists (STRICT_PREFIXES / EVERYDAY_PREFIXES), deprecated-API patterns, and anti-pattern strings in policy.py / prompt_coach.py are pack-provided config, not core code.",
+          "extraction_note": "Move scripts verbatim; hoist library-specific constants into pack config injected at load."
+        },
+        {
+          "id": "persona-skill-shells",
+          "kind": "skills",
+          "portable": true,
+          "files": [
+            ".cursor/skills/triage-issues/SKILL.md",
+            ".cursor/skills/plan-feature/SKILL.md",
+            ".cursor/skills/scaffold-transform/SKILL.md",
+            ".cursor/skills/strengthen-tests/SKILL.md",
+            ".cursor/skills/prep-for-ci/SKILL.md",
+            ".cursor/skills/review/SKILL.md"
+          ],
+          "split": "The orchestration shell (persona, steps, ledger append, output checklist) is core; the body prose (MONAI transform paths, runtests.sh, changelog format) is pack.",
+          "extraction_note": "Core keeps the skill skeleton + placeholders; pack supplies the library-specific step bodies."
+        },
+        {
+          "id": "sync-check-pattern",
+          "kind": "script",
+          "portable": true,
+          "files": ["docs/cursor-kit/scripts/sync-check.sh"],
+          "split": "The detect-drift-then-fail pattern is core; the checked file list + CONTRIBUTING excerpts are pack.",
+          "extraction_note": "Core ships the runner; pack ships the manifest of files to guard."
+        },
+        {
+          "id": "ledger-schema",
+          "kind": "schema",
+          "portable": true,
+          "files": [
+            ".cursor/hooks/ledger_append.py",
+            "docs/cursor-kit/scripts/ledger-report.py"
+          ],
+          "schema": {
+            "record": ["ts", "event", "profile", "decision", "..extra"],
+            "note": "extra keys (persona, stage, skill, path, reason) are open; report aggregates per-persona / per-stage / decision."
+          },
+          "extraction_note": "Schema + report are library-agnostic; ship as-is."
+        },
+        {
+          "id": "agents-pattern",
+          "kind": "guide",
+          "portable": true,
+          "files": ["AGENTS.md"],
+          "split": "The structure (boundary explanation, persona map, when-to-use rules/refs/@Docs) is core; the MONAI specifics are pack.",
+          "extraction_note": "Core ships an AGENTS.md template; pack fills library sections."
+        },
+        {
+          "id": "boundary-profile-mechanism",
+          "kind": "config",
+          "portable": true,
+          "files": [".cursor/boundary-profile"],
+          "extraction_note": "strict|everyday toggle is core; the allowlist it selects is pack config."
+        }
+      ]
+    },
+    "pack": {
+      "portable": false,
+      "summary": "MONAI/transforms content. One pack per target library; swap this folder to retarget the platform.",
+      "id": "monai-intensity-transforms",
+      "components": [
+        {
+          "id": "rules-text",
+          "kind": "rules",
+          "files": [
+            ".cursor/rules/00-repo-guardrails.mdc",
+            ".cursor/rules/10-transforms.mdc",
+            ".cursor/rules/20-testing.mdc",
+            ".cursor/rules/30-style.mdc",
+            ".cursor/rules/40-ci-release.mdc"
+          ]
+        },
+        {
+          "id": "curated-refs",
+          "kind": "docs",
+          "files": [
+            "docs/cursor-kit/monai-refs/transforms-array-dict.md",
+            "docs/cursor-kit/monai-refs/testing.md",
+            "docs/cursor-kit/monai-refs/contributing-checklist.md",
+            "docs/cursor-kit/monai-refs/deprecations.md"
+          ]
+        },
+        {
+          "id": "pack-scripts",
+          "kind": "scripts",
+          "files": [
+            "docs/cursor-kit/scripts/check-deprecations.sh",
+            "docs/cursor-kit/scripts/check-changelog.sh"
+          ],
+          "note": "The scanning pattern could be hoisted to core; the MONAI API/changelog specifics stay pack."
+        },
+        {
+          "id": "catalog-transforms",
+          "kind": "reference-implementation",
+          "files": [
+            "monai/transforms/intensity/array.py (RobustScaleIntensity)",
+            "monai/transforms/intensity/dictionary.py (RobustScaleIntensityd)",
+            "tests/transforms/test_robust_scale_intensity.py",
+            "tests/transforms/test_robust_scale_intensityd.py"
+          ],
+          "note": "Demo catalog (RobustScaleIntensity primary; AsinhIntensity / TanhSqueezeIntensity backups)."
+        },
+        {
+          "id": "planted-defect-recipe",
+          "kind": "demo-asset",
+          "location": ".cursor/skills/scaffold-transform/SKILL.md",
+          "note": "Deprecated np.float arg + missing __all__ registration, caught by check-deprecations.sh and /strengthen-tests."
+        }
+      ]
+    }
+  },
+  "extraction_plan_ref": "docs/cursor-kit/productization/PRODUCTIZATION.md",
+  "not_in_v1": [
+    "Marketplace/plugin publish",
+    "Standing persona agents/subagents (skills stay for explicit / demos)",
+    "Hoisting pack config out of core scripts"
+  ]
+}

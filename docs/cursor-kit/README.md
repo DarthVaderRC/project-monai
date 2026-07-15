@@ -13,8 +13,10 @@ Onboarding kit that encodes MONAI contribution norms into Cursor **rules**, **sk
 | Boundary profile | [`.cursor/boundary-profile`](../../.cursor/boundary-profile) (`everyday` \| `strict`) |
 | Refs | [`monai-refs/`](monai-refs/) |
 | Demo runbook + **panel narrative** | [`DEMO.md`](DEMO.md) |
+| Kit-off vs kit-on evaluation | [`EVALUATION.md`](EVALUATION.md) |
 | Sync check | [`scripts/sync-check.sh`](scripts/sync-check.sh) |
 | Kit CI | [`.github/workflows/cursor-kit-sync.yml`](../../.github/workflows/cursor-kit-sync.yml) |
+| Productization skeleton | [`productization/`](productization/) — core-vs-pack manifest + extraction plan (no runtime effect) |
 
 ## `@Docs` setup (one-time)
 

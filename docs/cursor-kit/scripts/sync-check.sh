@@ -54,11 +54,28 @@ for req in \
   AGENTS.md \
   .cursor/hooks.json \
   .cursor/boundary-profile \
+  .cursor/hooks/policy.py \
+  .cursor/hooks/ledger_append.py \
+  .cursor/hooks/session_start.py \
+  .cursor/hooks/boundary_read.py \
+  .cursor/hooks/boundary_shell.py \
+  .cursor/hooks/nudge_style_test.py \
+  .cursor/hooks/post_edit_nudge.py \
+  .cursor/hooks/prompt_coach.py \
+  .cursor/hooks/subagent_audit.py \
   docs/cursor-kit/README.md \
   docs/cursor-kit/DEMO.md \
+  docs/cursor-kit/EVALUATION.md \
   docs/cursor-kit/monai-refs/transforms-array-dict.md \
   docs/cursor-kit/monai-refs/testing.md \
   docs/cursor-kit/monai-refs/contributing-checklist.md \
+  docs/cursor-kit/monai-refs/deprecations.md \
+  docs/cursor-kit/scripts/sync-check.sh \
+  docs/cursor-kit/scripts/check-deprecations.sh \
+  docs/cursor-kit/scripts/check-changelog.sh \
+  docs/cursor-kit/scripts/ledger-report.py \
+  docs/cursor-kit/productization/manifest.json \
+  docs/cursor-kit/productization/PRODUCTIZATION.md \
   .cursor/skills/triage-issues/SKILL.md \
   .cursor/skills/plan-feature/SKILL.md \
   .cursor/skills/scaffold-transform/SKILL.md \
