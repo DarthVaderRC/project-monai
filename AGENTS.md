@@ -28,8 +28,11 @@ Allowlist details live in `.cursor/hooks.json` and hook scripts under `.cursor/h
 
 ## Docs (preferred sources)
 
-1. In-repo refs: `docs/cursor-kit/monai-refs/` (transforms, testing, contributing checklist).
-2. Cursor `@Docs`: index **https://docs.monai.io/en/stable/** (Settings → Indexing & Docs).
+1. In-repo refs under `docs/cursor-kit/monai-refs/`:
+   - `transforms-array-dict.md` — array + `d` intensity pattern
+   - `testing.md` — parameterized tests / `runtests.sh`
+   - `contributing-checklist.md` — style, license, DCO, fork-only PRs
+2. Cursor `@Docs`: index **https://docs.monai.io/en/stable/** (setup steps in `docs/cursor-kit/README.md`).
 3. Canonical repo files: `CONTRIBUTING.md`, `pyproject.toml`, `setup.cfg`, `.pre-commit-config.yaml`.
 
 Do **not** scrape random web pages for MONAI conventions. Prefer refs + `@Docs` + in-repo sources.
