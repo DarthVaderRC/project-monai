@@ -2,6 +2,10 @@
 /docs/ @KumoLiu @ericspod @Nic-Ma
 /tests/ @KumoLiu @ericspod @Nic-Ma
 /.github/ @KumoLiu
+# Cursor onboarding kit (this fork) — platform ownership
+/.cursor/ @DarthVaderRC
+/AGENTS.md @DarthVaderRC
+/docs/cursor-kit/ @DarthVaderRC
 /monai/networks/schedulers/ @virginiafdez
 /monai/inferers/inferer.py @virginiafdez
 /monai/losses/adversarial_loss.py @virginiafdez

@@ -17,14 +17,19 @@ This is **not** a Custom Mode. Skills are invoked explicitly with `/`.
 
 ## Boundary profiles
 
-Set `MONAI_CURSOR_BOUNDARY` before agent work:
+Preferred (mid-session flip without relaunching Cursor): write `.cursor/boundary-profile`:
 
-| Value | Behavior |
+| File contents | Behavior |
 |---|---|
 | `everyday` (default) | Warn on out-of-allowlist reads/shell; do not block. `gh` allowed. |
 | `strict` | Deny out-of-allowlist file reads and risky shell. Use for `/scaffold-transform` demo. |
 
-Allowlist details live in `.cursor/hooks.json` and hook scripts under `.cursor/hooks/`.
+```bash
+echo everyday > .cursor/boundary-profile
+echo strict > .cursor/boundary-profile
+```
+
+Hooks also honor `MONAI_CURSOR_BOUNDARY` if the profile file is absent. `sessionStart` injects the resolved profile into the session env. Allowlist details: `.cursor/hooks.json` + `.cursor/hooks/`.
 
 ## Docs (preferred sources)
 

@@ -1,6 +1,11 @@
 {
   "version": 1,
   "hooks": {
+    "sessionStart": [
+      {
+        "command": "python3 .cursor/hooks/session_start.py"
+      }
+    ],
     "beforeReadFile": [
       {
         "command": "python3 .cursor/hooks/boundary_read.py",

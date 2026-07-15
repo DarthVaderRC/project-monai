@@ -69,6 +69,22 @@ WARN_MSG = (
 
 
 def profile() -> str:
+    """Resolve boundary profile.
+
+    Preference order (demo-friendly):
+    1. `.cursor/boundary-profile` file contents (`strict`|`everyday`) — flip mid-session
+    2. `MONAI_CURSOR_BOUNDARY` environment variable
+    3. `everyday`
+    """
+    root = project_root()
+    profile_file = root / ".cursor" / "boundary-profile"
+    try:
+        if profile_file.is_file():
+            file_value = profile_file.read_text(encoding="utf-8").strip().splitlines()[0].strip().lower()
+            if file_value in {"strict", "everyday"}:
+                return file_value
+    except OSError:
+        pass
     value = os.environ.get(PROFILE_ENV, DEFAULT_PROFILE).strip().lower()
     return value if value in {"strict", "everyday"} else DEFAULT_PROFILE
 
