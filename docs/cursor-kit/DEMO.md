@@ -72,7 +72,7 @@ Do **not** claim production ROI. Propose the frame platform would run:
 
 **Spoken value line:** *“New engineers waste days on framework syntax and silent convention misses. We automate boilerplate safely so they focus on medical/business logic; hooks and QA cut missed tests and out-of-bounds context. Platform measures ramp time and first-PR defect rate — not LOC.”*
 
-**Evidence, not a slide:** [`EVALUATION.md`](EVALUATION.md) has a measured 2026-07-17 scorecard (all 12 conventions). Naive first-draft reference = **2/12** (passes: American English + boundary only). Kit-on golden = **12/12**. A strong kit-off agent can also hit 12/12 — so say the kit’s edge is junior/naive risk + process/hooks/QA, not “strong models can’t write MONAI.” Offer to open the scorecard live.
+**Evidence, not a slide:** [`EVALUATION.md`](EVALUATION.md) has two layers. **Lead with Layer A (process):** AsinhIntensity run — kit-on scaffold fails ship-ready (planted `np.float` + `__all__` gap), gates catch both, `/strengthen-tests` → ship-ready; kit-off weak stays broken; kit-off strong skips QA entirely. **Layer B (conventions):** naive draft **2/12**; strong models saturate at 12/12 — so say the kit **guarantees gates + raises the floor**, not “beats GPT on a checklist.”
 
 ### Exercise “looking for” → where you show it
 

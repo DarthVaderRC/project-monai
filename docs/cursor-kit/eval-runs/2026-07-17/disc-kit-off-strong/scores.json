@@ -1,0 +1,31 @@
+{
+  "root": "/Users/DineshGawande/Code/project-monai/.worktrees/eval-disc-kit-off-strong",
+  "transform": "AsinhIntensity",
+  "stage": "post_scaffold",
+  "metrics": {
+    "transform_present_array": true,
+    "transform_present_dict": true,
+    "planted_deprecation_np_float": false,
+    "planted_registration_gap_dict_all": false,
+    "deprecations_gate_fails": false,
+    "deprecations_gate_exit": 0,
+    "dict_import_ok": true,
+    "tests_exist": true,
+    "tests_pass": true,
+    "ship_ready": true
+  },
+  "process": {
+    "scaffold_planted_both_defects": false,
+    "gate_catches_deprecation": false,
+    "import_fails_while_gap_open": false,
+    "qa_would_be_needed": false,
+    "ship_ready_after_stage": true
+  },
+  "evidence": {
+    "deprecation": "array=False dict=False",
+    "registration": "AsinhIntensityd in dictionary __all__=True",
+    "dep_gate": "check-deprecations: clean (4 file(s) scanned).\n",
+    "import": "ok\n",
+    "tests": "neshGawande/Code/project-monai/.worktrees/eval-disc-kit-off-strong/tests/transforms/test_asinh_intensity.py:47: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)\n  expected = p(np.arcsinh(c / scale) * scale)\n.......\n----------------------------------------------------------------------\nRan 10 tests in 0.008s\n\nOK\n"
+  }
+}

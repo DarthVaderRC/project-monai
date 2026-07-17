@@ -1,0 +1,31 @@
+{
+  "root": "/Users/DineshGawande/Code/project-monai/.worktrees/eval-disc-kit-on",
+  "transform": "AsinhIntensity",
+  "stage": "post_scaffold",
+  "metrics": {
+    "transform_present_array": true,
+    "transform_present_dict": true,
+    "planted_deprecation_np_float": true,
+    "planted_registration_gap_dict_all": true,
+    "deprecations_gate_fails": true,
+    "deprecations_gate_exit": 1,
+    "dict_import_ok": false,
+    "tests_exist": true,
+    "tests_pass": false,
+    "ship_ready": false
+  },
+  "process": {
+    "scaffold_planted_both_defects": true,
+    "gate_catches_deprecation": true,
+    "import_fails_while_gap_open": true,
+    "qa_would_be_needed": true,
+    "ship_ready_after_stage": false
+  },
+  "evidence": {
+    "deprecation": "array=True dict=True",
+    "registration": "AsinhIntensityd in dictionary __all__=False",
+    "dep_gate": "isc-kit-on/monai/transforms/intensity/array.py:1201:        dtype: DtypeLike = np.float,\n            -> numpy alias np.float was removed (numpy>=1.24); use np.float32/np.float64 or float\nDEPRECATED  /Users/DineshGawande/Code/project-monai/.worktrees/eval-disc-kit-on/monai/transforms/intensity/dictionary.py:565:        dtype: DtypeLike = np.float,\n            -> numpy alias np.float was removed (numpy>=1.24); use np.float32/np.float64 or float\ncheck-deprecations: 2 deprecated API usage(s) found.\n",
+    "import": "ill not modify any behavior and is safe. If you specifically wanted the numpy scalar type, use `np.float64` here.\nThe aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:\n    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations\n",
+    "tests": "s for the builtin `float`. To avoid this error in existing code, use `float` by itself. Doing this will not modify any behavior and is safe. If you specifically wanted the numpy scalar type, use `np.float64` here.\nThe aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:\n    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations\n"
+  }
+}
