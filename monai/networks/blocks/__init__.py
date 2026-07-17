@@ -33,6 +33,7 @@ from .hyena import (
     HyenaTransformerBlock,
     is_nvsubquadratic_available,
 )
+from .layerscale import LayerScale
 from .localnet_block import LocalNetDownSampleBlock, LocalNetFeatureExtractorBlock, LocalNetUpSampleBlock
 from .mednext_block import MedNeXtBlock, MedNeXtDownBlock, MedNeXtOutBlock, MedNeXtUpBlock
 from .mlp import MLPBlock
