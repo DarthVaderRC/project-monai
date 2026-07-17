@@ -85,3 +85,7 @@ tests, three-place registration).
 - **Does not:** measure real ramp-time or defect-rate in the customer's codebase.
   That needs the frame in [`DEMO.md`](DEMO.md) (time-to-first-safe-PR, % first PRs
   failing conventions) run over real onboarding cohorts.
+
+## Phase 1 archetype packs (loss / metric / network)
+
+Each pack ships a verified reference implementation (kit-on baseline = 12/12 conventions, mypy-clean, tests pass): `LogCoshDiceLoss`, `MedianAbsoluteErrorMetric`, `LayerScale`. Re-run the kit-off vs kit-on protocol per archetype using the pack's named neighbor as the "one file to read" — the same convention rubric applies (header, `from __future__`, registration in package `__init__.py`, parameterized tests, 2D/3D coverage for networks).
