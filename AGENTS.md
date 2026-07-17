@@ -16,6 +16,9 @@ This is **not** a Custom Mode. Skills are invoked explicitly with `/`.
 | `/triage-issues` | PM | Rank open fork issues; recommend a catalog transform issue |
 | `/plan-feature` | PM | Create or update a **live GitHub issue** on the fork with acceptance criteria |
 | `/scaffold-transform` | Engineer | Implement array + `d` intensity transform from the issue |
+| `/scaffold-loss` | Engineer | Implement a new loss under `monai/losses/` from an issue |
+| `/scaffold-metric` | Engineer | Implement a new metric under `monai/metrics/` from an issue |
+| `/scaffold-network` | Engineer | Implement a new network block under `monai/networks/blocks/` from an issue |
 | `/strengthen-tests` | QA | Harden parameterized tests; fix planted scaffold gaps |
 | `/prep-for-ci` | DevOps | Map local `runtests.sh` / style checks to CI; DCO; optional draft PR **to fork** |
 | `/review` | Reviewer | Checklist review vs rules + `CONTRIBUTING.md` |

@@ -43,7 +43,7 @@ echo '{"event":"skill","decision":"start","skill":"review","persona":"reviewer",
 | No SoftClipIntensity / redundant soft-clip | | |
 | Fork-only remotes (no upstream demo PR) | | |
 | CODEOWNERS routing noted | | |
-| Planted gap resolved (if scaffold ran) | | |
+| Planted gap resolved (registration in package `__init__.py` / transform `__all__`) | | |
 
 3. List residual risks (coverage gaps, API naming, MetaTensor edge cases).
 4. Final verdict: **Approve** / **Request changes** with top 3 actions if failing.

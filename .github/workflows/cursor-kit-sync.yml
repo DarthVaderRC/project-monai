@@ -10,6 +10,12 @@ on:
       - "AGENTS.md"
       - "monai/transforms/intensity/**"
       - "tests/transforms/**"
+      - "monai/losses/**"
+      - "monai/metrics/**"
+      - "monai/networks/blocks/**"
+      - "tests/losses/**"
+      - "tests/metrics/**"
+      - "tests/networks/blocks/**"
       - ".github/workflows/cursor-kit-sync.yml"
   pull_request:
     paths:
@@ -18,6 +24,12 @@ on:
       - "AGENTS.md"
       - "monai/transforms/intensity/**"
       - "tests/transforms/**"
+      - "monai/losses/**"
+      - "monai/metrics/**"
+      - "monai/networks/blocks/**"
+      - "tests/losses/**"
+      - "tests/metrics/**"
+      - "tests/networks/blocks/**"
       - ".github/workflows/cursor-kit-sync.yml"
 
 jobs:

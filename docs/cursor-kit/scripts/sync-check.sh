@@ -82,6 +82,15 @@ for req in \
   .cursor/skills/strengthen-tests/SKILL.md \
   .cursor/skills/prep-for-ci/SKILL.md \
   .cursor/skills/review/SKILL.md \
+  .cursor/rules/50-losses.mdc \
+  .cursor/rules/60-metrics.mdc \
+  .cursor/rules/70-networks.mdc \
+  docs/cursor-kit/monai-refs/losses.md \
+  docs/cursor-kit/monai-refs/metrics.md \
+  docs/cursor-kit/monai-refs/networks.md \
+  .cursor/skills/scaffold-loss/SKILL.md \
+  .cursor/skills/scaffold-metric/SKILL.md \
+  .cursor/skills/scaffold-network/SKILL.md \
   .github/workflows/cursor-kit-sync.yml
 do
   checked=$((checked + 1))

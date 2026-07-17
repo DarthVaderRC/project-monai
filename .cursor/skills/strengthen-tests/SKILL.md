@@ -38,6 +38,10 @@ bash docs/cursor-kit/scripts/check-deprecations.sh
 3. **Fix the registration gap:** ensure the `*d` class name is present in
    `monai/transforms/intensity/dictionary.py` `__all__` (and aliases exported if peers do).
    Confirm by importing: `python -c "from monai.transforms import <Name>d"`.
+   For loss/metric/network packs the same class of gap appears as a missing entry in the
+   package `__init__.py` (`monai/losses/__init__.py`, `monai/metrics/__init__.py`, or
+   `monai/networks/blocks/__init__.py`); confirm by importing the class, e.g.
+   `python3 -c "from monai.losses import LogCoshDiceLoss"`.
 4. Scan for weak tests / missing `d` coverage / obvious anti-patterns.
 5. Strengthen with `parameterized` cases (happy path + edge: constant volume, dtype, or channel-wise).
 6. Run scoped tests only, e.g.:
