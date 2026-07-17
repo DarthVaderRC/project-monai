@@ -1,0 +1,29 @@
+---
+description: Network block conventions — nn.Module, spatial_dims, factories, registration
+globs: monai/networks/**
+alwaysApply: false
+---
+
+# Network blocks
+
+Add blocks by mirroring a small neighbor (e.g. `MLPBlock` in `monai/networks/blocks/mlp.py`). Load only that neighbor plus, if you need dimension-aware layers, `monai/networks/blocks/aspp.py`.
+
+## Class
+
+- Subclass `torch.nn.Module`; call `super().__init__()` first; validate args early with `ValueError`.
+- Support 2D and 3D via `spatial_dims`. Build dimension-aware layers with the MONAI factory `Conv[Conv.CONV, spatial_dims]` (from `monai.networks.layers.factories`) or `get_conv_layer` / `get_norm_layer`.
+- Channel-first tensors: `(B, C, H, W[, D])`. Per-channel params broadcast with shape `(1, C, *[1]*spatial_dims)`.
+- Implement `forward(self, x: torch.Tensor) -> torch.Tensor`.
+
+## Register (new file needs its own import line)
+
+- Create `monai/networks/blocks/<name>.py`, then add `from .<name> import <Class>` to `monai/networks/blocks/__init__.py` (alphabetical by module name). Blocks are accessed via `from monai.networks.blocks import <Class>` — `monai/networks/__init__.py` does NOT re-export blocks.
+
+## Always
+
+- Apache header; `from __future__ import annotations`; Google docstrings; American English.
+- Tests must cover 2D and 3D shapes; run under `eval_mode`.
+
+Full skeleton + named neighbor: `docs/cursor-kit/monai-refs/networks.md`.
+
+**Source of truth:** `monai/networks/blocks/mlp.py`, `monai/networks/blocks/aspp.py`, `monai/networks/blocks/__init__.py`, `docs/cursor-kit/monai-refs/networks.md`
