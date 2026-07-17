@@ -143,6 +143,36 @@ class MAEMetric(RegressionMetric):
         return compute_mean_error_metrics(y_pred, y, func=self.abs_func)
 
 
+class MedianAbsoluteErrorMetric(RegressionMetric):
+    r"""Compute Median Absolute Error between two tensors using function:
+
+    .. math::
+        \operatorname {MedAE}\left(Y, \hat{Y}\right) = \operatorname{median}\left(\left|y_i-\hat{y_i}\right|\right).
+
+    More info: https://en.wikipedia.org/wiki/Median_absolute_deviation
+
+    The median is computed per batch item over all channel + spatial elements; the reduction
+    across the batch is then handled by :py:meth:`aggregate` (as for the other regression metrics).
+    Input `y_pred` is compared with ground truth `y`. Both are expected to be real-valued.
+
+    Args:
+        reduction: define the mode to reduce metrics, will only execute reduction on `not-nan`
+            values, available reduction modes: {``"none"``, ``"mean"``, ``"sum"``, ``"mean_batch"``,
+            ``"sum_batch"``, ``"mean_channel"``, ``"sum_channel"``}, default to ``"mean"``.
+        get_not_nans: whether to return the `not_nans` count, if True, aggregate() returns
+            (metric, not_nans).
+    """
+
+    def __init__(self, reduction: MetricReduction | str = MetricReduction.MEAN, get_not_nans: bool = False) -> None:
+        super().__init__(reduction=reduction, get_not_nans=get_not_nans)
+
+    def _compute_metric(self, y_pred: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
+        # torch.quantile(0.5) matches numpy's median (averages the two middle values for
+        # even counts), unlike torch.median which returns the lower-middle value.
+        flt = partial(torch.flatten, start_dim=1)
+        return torch.quantile(flt(torch.abs(y - y_pred)), 0.5, dim=-1, keepdim=True)
+
+
 class MAPEMetric(RegressionMetric):
     r"""Compute Mean Absolute Percentage Error between two tensors using function:
 

@@ -32,6 +32,7 @@ from .panoptic_quality import PanopticQualityMetric, compute_panoptic_quality
 from .regression import (
     MAEMetric,
     MAPEMetric,
+    MedianAbsoluteErrorMetric,
     MSEMetric,
     MultiScaleSSIMMetric,
     PSNRMetric,
