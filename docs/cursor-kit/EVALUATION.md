@@ -1,9 +1,7 @@
 # Evaluation: kit-off vs kit-on
 
-Honest framing: **this is not a production ROI measurement.** It is a repeatable,
-runnable comparison that shows *what the kit changes about a first contribution*.
-The panel asked "what impact would you expect?" — this is how we'd answer with
-evidence instead of a slide.
+Important: **this is not a production ROI measurement.** It is a repeatable, runnable comparison that shows *what the kit changes about a first contribution*.
+This answers "what impact would you expect?" with evidence.
 
 **Artifacts:** [`eval-runs/2026-07-17/`](eval-runs/2026-07-17/) (scorers, JSON scores, reports, excerpts).
 
@@ -110,8 +108,34 @@ Naive draft + excerpts: `eval-runs/2026-07-17/naive-draft/`.
 **Does not prove:**
 
 - Real ramp-time or cohort defect-rate (see [`DEMO.md`](DEMO.md) measurement frame).
-- Trajectory evals (tool-call paths, turn counts, hook deny rates over a full session) — ledger report is available but not yet scored as a rubric.
 - That kit-on beats kit-off strong on every convention row (it often won't).
+
+---
+
+## Layer C (Trajectory rubric)
+
+**Question:** *Did the session follow the demo spine path — personas, skills, boundaries — not just produce a good diff?*
+
+**Scorer:** `python3 docs/cursor-kit/eval-runs/2026-07-17/scripts/score_trajectory.py [ledger.jsonl]`
+
+Defaults to the latest `sessionStart` slice of `.cursor/usage/ledger.jsonl`. Archive a rehearsal copy:
+
+```bash
+cp .cursor/usage/ledger.jsonl docs/cursor-kit/eval-runs/2026-07-17/demo-spine-$(date +%Y%m%d).jsonl
+python3 docs/cursor-kit/eval-runs/2026-07-17/scripts/score_trajectory.py \
+  docs/cursor-kit/eval-runs/2026-07-17/demo-spine-$(date +%Y%m%d).jsonl \
+  --session all --json-out docs/cursor-kit/eval-runs/2026-07-17/demo-spine-scores.json
+```
+
+**Required checks (9):** all six demo-spine skills logged (`start`), correct order, strict read deny on out-of-bounds path, scaffold under strict.
+
+**Optional checks (5):** PM under everyday, transform-edit nudge, gh deny in strict, prompt coach, subagent audit (`--require-subagent` to promote subagent to required).
+
+**Reference fixture:** [`fixtures/demo-spine-kit-on.jsonl`](eval-runs/2026-07-17/fixtures/demo-spine-kit-on.jsonl) — should score `ship_ready_trajectory: true`.
+
+**Panel line:** *"Layer A proves gates catch defects; Layer C proves the multi-persona workflow actually ran."*
+
+Human dashboard (non-scoring): `python3 docs/cursor-kit/scripts/ledger-report.py`.
 
 ---
 
