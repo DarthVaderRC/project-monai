@@ -35,6 +35,39 @@ echo strict > .cursor/boundary-profile     # deny out-of-allowlist reads/shell
 
 `sessionStart` also injects the profile into the session env. Start a **new Agent chat** after flipping if shell tools still show the old value; read/deny hooks re-read the file each time.
 
+## Sync check
+
+[`scripts/sync-check.sh`](scripts/sync-check.sh) is a **smoke alarm for kit path drift** — a fast check that every file the kit depends on still exists on disk.
+
+### Why it matters
+
+Rules and skills tell agents to read specific paths (`CONTRIBUTING.md`, `monai-refs/*.md`, neighbor modules in `Source of truth:` footers). If someone renames, moves, or deletes those files, the kit would still *point* at them but agents would get broken or outdated guidance — with no obvious failure until a bad contribution lands.
+
+**Versioned kit + CODEOWNERS + sync-check CI** means the platform team owns maintainability: when paths drift, CI fails instead of silently teaching wrong norms. Panel narrative: [`DEMO.md`](DEMO.md) § “Sync-check = team owns this”.
+
+### What it checks
+
+1. **Rules cross-check** — reads `Source of truth:` lines in `.cursor/rules/*.mdc` and verifies each referenced path exists.
+2. **Kit inventory** — verifies a fixed list of hooks, skills, docs, scripts, and the kit CI workflow file exist.
+
+Each path prints `OK` or `MISS`. Summary line: `checked=N missing=M`. Exit **0** if all found, **1** if any missing.
+
+### What it does not do
+
+- Does **not** run tests, lint, or mypy
+- Does **not** validate file contents
+- Does **not** prove agents followed the rules — only that linked files are present
+
+### When to run
+
+```bash
+bash docs/cursor-kit/scripts/sync-check.sh
+```
+
+- After adding or changing a rule’s `Source of truth:` paths
+- After adding hooks, skills, refs, or kit docs (add new paths to the inventory in `sync-check.sh` if needed)
+- Automatically in CI via [`.github/workflows/cursor-kit-sync.yml`](../../.github/workflows/cursor-kit-sync.yml) when kit-related paths change
+
 ## How to add a rule
 
 1. Create `.cursor/rules/<nn>-<name>.mdc` with frontmatter (`alwaysApply` or `globs`).

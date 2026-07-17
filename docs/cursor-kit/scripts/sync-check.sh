@@ -1,5 +1,32 @@
 #!/usr/bin/env bash
-# Verify Cursor kit "Source of truth" paths still exist.
+# sync-check.sh — smoke alarm for Cursor kit path drift
+#
+# Purpose: confirm every file the kit points at still exists on disk. Rules and
+# skills tell agents to read paths like CONTRIBUTING.md or monai-refs/*.md; if
+# someone renames or deletes those files, agents get bad guidance silently.
+# sync-check catches that before merge.
+#
+# What it checks (two passes):
+#   1. Rules cross-check — parse "Source of truth:" lines in .cursor/rules/*.mdc
+#      and verify each backtick path exists.
+#   2. Kit inventory — verify a fixed list of hooks, skills, docs, scripts, and
+#      CI workflow files exist (see REQUIRED KIT ARTIFACTS below).
+#
+# What it does NOT do:
+#   - Run tests or lint
+#   - Validate file contents or that agents followed the rules
+#   - Prove conventions are correct — only that linked paths are present
+#
+# Exit codes: 0 = all paths found; 1 = one or more MISS
+#
+# When it runs:
+#   - Manually: bash docs/cursor-kit/scripts/sync-check.sh
+#   - CI: .github/workflows/cursor-kit-sync.yml on kit-related path changes
+#
+# Significance (panel / ownership): versioned kit + CODEOWNERS + this gate means
+# the platform team owns maintainability — drift fails CI instead of teaching
+# wrong norms. See docs/cursor-kit/README.md § Sync check and DEMO.md.
+#
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
@@ -49,7 +76,7 @@ while IFS= read -r line; do
   done
 done < <(grep -h "Source of truth:" "$RULES_DIR"/*.mdc || true)
 
-# Required kit artifacts
+# REQUIRED KIT ARTIFACTS — fixed inventory (pass 2)
 for req in \
   AGENTS.md \
   .cursor/hooks.json \
