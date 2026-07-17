@@ -227,6 +227,28 @@ class DiceLoss(_Loss):
         return f
 
 
+class LogCoshDiceLoss(DiceLoss):
+    """
+    Compute the Log-Cosh Dice Loss, a smoothed variant of :py:class:`monai.losses.DiceLoss`.
+
+    The log-cosh transform ``log(cosh(x))`` behaves like ``x**2 / 2`` for small ``x`` and like
+    ``|x| - log(2)`` for large ``x``, yielding a smooth, bounded gradient that can stabilize
+    training compared with the raw Dice loss. See Jadon, "A survey of loss functions for
+    semantic segmentation" (https://arxiv.org/abs/2006.14822).
+
+    All constructor arguments are inherited from :py:class:`monai.losses.DiceLoss`.
+    """
+
+    def forward(self, input: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+        """
+        Args:
+            input: the shape should be BNH[WD], where N is the number of classes.
+            target: the shape should be BNH[WD] or B1H[WD], where N is the number of classes.
+        """
+        dice: torch.Tensor = super().forward(input=input, target=target)
+        return torch.log(torch.cosh(dice))
+
+
 class MaskedDiceLoss(DiceLoss):
     """
     Add an additional `masking` process before `DiceLoss`, accept a binary mask ([0, 1]) indicating a region,

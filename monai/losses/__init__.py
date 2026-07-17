@@ -25,6 +25,7 @@ from .dice import (
     GeneralizedDiceFocalLoss,
     GeneralizedDiceLoss,
     GeneralizedWassersteinDiceLoss,
+    LogCoshDiceLoss,
     MaskedDiceLoss,
     dice_ce,
     dice_focal,
