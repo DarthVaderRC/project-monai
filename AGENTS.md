@@ -4,6 +4,11 @@ Project-level guidance for Cursor agents working in this fork. Owned by the plat
 
 This is **not** a Custom Mode. Skills are invoked explicitly with `/`.
 
+## Agent topology (how the personas work together)
+
+- **Each persona's session orchestrates only its own stage.** A persona invokes their own `/` skill(s); work moves to the next persona via an **artifact handoff** (a GitHub issue, a diff + handoff note, a verdict) — never via an automated pipeline. There is no `ship-feature` god-command.
+- **Subagents are an intra-stage tool.** Within a single stage, a persona may delegate a heavy or parallelizable sub-task to a specialist subagent (isolated context window, depth-1). Example: the reviewer can run `/review` as a background subagent. Subagents never advance the flow into another persona's stage.
+
 ## Skills (slash commands)
 
 | Skill | Persona | Purpose |

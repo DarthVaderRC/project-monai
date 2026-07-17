@@ -10,6 +10,8 @@ Panel-safe session script for the `project-monai` workspace (`cursor-onboarding-
 
 This section is what the exercise grades as *judgment about what’s worth solving*, not only a working spine. The live demo proves the artifact; this proves *why*.
 
+**Agent topology (say once):** Each persona drives their own stage and hands off via artifacts (issue → diff+note → verdict). No single command runs the whole SDLC — that would be solo-dev vibe-coding, not a multi-persona org. Subagents are used *within* a stage for context isolation (e.g. background `/review`), never to jump personas.
+
 ### 45-minute agenda
 
 | Block | Time | Goal |
