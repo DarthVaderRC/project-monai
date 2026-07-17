@@ -5,6 +5,9 @@ runnable comparison that shows *what the kit changes about a first contribution*
 The panel asked "what impact would you expect?" — this is how we'd answer with
 evidence instead of a slide.
 
+**Artifacts for the 2026-07-17 run:** [`eval-runs/2026-07-17/`](eval-runs/2026-07-17/)
+(scores JSON, excerpts, scorer, run notes).
+
 ## Protocol (repeatable in ~10 min)
 
 Same task both times: *"Add an intensity transform `RobustScaleIntensity` (array +
@@ -14,8 +17,9 @@ dict) to MONAI."*
    to `.cursor.off/` or use a workspace without the kit) and no `monai-refs`/`@Docs`.
    Prompt with only the task sentence. Save the output.
 2. **Kit-on run.** Restore the kit, `strict` profile, run `/scaffold-transform` on
-   the seeded issue. Save the output.
-3. **Score both** against the rubric below (objective, tool-checkable).
+   the seeded issue (then QA / CI as in the demo spine). Save the output.
+3. **Score both** against the rubric below (objective, tool-checkable) using
+   `python3 docs/cursor-kit/eval-runs/2026-07-17/scripts/score_rubric.py <repo-root>`.
 4. Optionally show `python3 docs/cursor-kit/scripts/ledger-report.py` for the
    kit-on run's stage/persona/deny activity.
 
@@ -30,32 +34,50 @@ dict) to MONAI."*
 | MetaTensor-safe (`convert_to_tensor(track_meta=...)` + `convert_to_dst_type`) | grep |
 | Registered in `__all__` (array + dict) and `monai.transforms` re-exports | `python -c "from monai.transforms import ...d"` |
 | `d`/`D`/`Dict` aliases | grep |
-| No deprecated APIs (`np.float`, `torch.range`, ...) | `check-deprecations.sh` |
+| No deprecated APIs (`np.float`, `torch.range`, ...) | `check-deprecations.sh` / scoped scan |
 | Parameterized tests for array + `d`, incl. an edge case | run `unittest` |
-| American English | review |
-| Stays within approved boundaries (no `monai/networks` reads) | ledger denies |
-| Changelog `[Unreleased]` entry | `check-changelog.sh` |
+| American English | review (RobustScale* class text only) |
+| Stays within approved boundaries (no `monai/networks` reads) | source scan / ledger denies |
+| Changelog `[Unreleased]` entry | `check-changelog.sh` / grep |
 
-## Captured representative result
+## Captured result — 2026-07-17 (measured)
 
-Numbers below are from a representative run; re-run the protocol to refresh. The
-point is the *shape* of the gap, which is stable.
+### How this run was produced
 
-| Rubric item | Kit-off (task sentence only) | Kit-on (`/scaffold-transform`) |
-|---|---|---|
-| Apache header | missing | present |
-| `annotations` future import | missing | present |
-| Array + `d` wrapper | array only (no dict) | both |
-| `backend` attribute | missing | present |
-| MetaTensor-safe | no (raw numpy math) | yes |
-| `__all__` + re-exports | not registered | registered (planted gap is intentional, QA-fixed) |
-| Deprecated APIs | `np.float` used | none (gate clean after QA) |
-| Tests | none | array + `d` parameterized + edge |
-| Boundary respect | reads unrelated packages | strict denies logged |
-| Changelog entry | none | `[Unreleased]` bullet |
-| Score | ~2 / 12 | 12 / 12 (after QA fixes planted defects) |
+| Arm | How |
+|---|---|
+| **Naive draft reference** | The historical junior/first-draft snippet (numpy-only, `np.float`). **Not an agent run** — kept as the baseline the kit was designed against. |
+| **Kit-off (agent)** | Worktree `eval/kit-off-2026-07-17` @ `48b57f3c`. Kit disabled (`.cursor` / `docs/cursor-kit` / `AGENTS.md` moved aside). Constraints: no kit reads, no `golden/*` branches, no reading neighboring transform class bodies. Task sentence only. |
+| **Kit-on** | Branch `golden/robust-scale-intensity` @ `e52ffce6` (vetted array + `d` + tests + registration). Changelog bullet applied locally to match full-spine `/prep-for-ci` parity (golden itself lacked the `[Unreleased]` line). |
 
-### Illustrative kit-off output (typical, abbreviated)
+Scorer: `eval-runs/2026-07-17/scripts/score_rubric.py` (exit 0 = 12/12).
+
+### Scorecard (all 12 conventions)
+
+| Convention | Naive draft | Kit-off (agent) | Kit-on (golden + CI changelog) |
+|---|---|---|---|
+| Apache 2.0 header present | FAIL | PASS | PASS |
+| `from __future__ import annotations` | FAIL | PASS | PASS |
+| Array class + `MapTransform` `d` wrapper both present | FAIL | PASS | PASS |
+| `backend = [TransformBackends.TORCH, TransformBackends.NUMPY]` | FAIL | PASS | PASS |
+| MetaTensor-safe (`convert_to_tensor` + `convert_to_dst_type`) | FAIL | PASS | PASS |
+| Registered in `__all__` / `monai.transforms` re-exports | FAIL | PASS | PASS |
+| `d`/`D`/`Dict` aliases | FAIL | PASS | PASS |
+| No deprecated APIs | FAIL (`np.float`) | PASS | PASS |
+| Parameterized tests for array + `d`, incl. edge case | FAIL | PASS (13 tests) | PASS (20 tests) |
+| American English | PASS | PASS | PASS |
+| Stays within approved boundaries (no `monai/networks`) | PASS | PASS | PASS |
+| Changelog `[Unreleased]` entry | FAIL | PASS | PASS |
+| **Score** | **2 / 12** | **12 / 12** | **12 / 12** |
+
+### Which two did the naive draft pass?
+
+1. **American English** — no British spellings in the snippet.  
+2. **Stays within approved boundaries** — no `monai.networks` usage (and no out-of-bounds package imports).
+
+Everything else fails (no header, no `annotations`, array-only / no `MapTransform` `d`, no `backend`, raw numpy math, not registered, no aliases, deprecated `np.float`, no tests, no changelog).
+
+### Naive draft reference (2/12)
 
 ```python
 import numpy as np
@@ -70,22 +92,41 @@ class RobustScaleIntensity:
                                                 # no registration, div-by-zero on constant input
 ```
 
-### Kit-on output
+Saved at `eval-runs/2026-07-17/naive-draft/`.
+
+### Kit-off vs kit-on (measured agents) — reading the 12/12 vs 12/12
+
+A capable coding agent with MONAI priors, even **without** the kit and without reading neighbor class bodies, can still land a convention-correct implementation (**12/12**). The kit-on golden path also scores **12/12** on this rubric (with changelog added for CI parity).
+
+So the automatable **final-artifact convention rubric saturates** for strong models. What the kit still uniquely demonstrates (see demo spine + ledger):
+
+- **Process rails:** persona handoffs, planted registration/deprecation gaps caught by `/strengthen-tests`, strict boundary denies in the ledger.
+- **Repeatability for juniors:** the naive draft (**2/12**) is what the kit was built to prevent when priors / neighbor-mirroring are weak.
+- **Observability:** `ledger-report.py` stage/persona/deny counts on kit-on runs.
+
+**Method notes**
+
+- Apache header and `from __future__ import annotations` PASS when the class is appended to existing `array.py` / `dictionary.py` that already carry them (inherited module head) — true for both agent arms.
+- Kit-off boundary was scored by source scan (hooks were disabled). Kit-on can additionally show ledger denies in a live strict session.
+- Do not treat an old “~2/12 kit-off agent” headline as a measured agent score; that figure was the **naive draft**, now labeled as such.
+
+### Kit-on pointer
 
 See branch `golden/robust-scale-intensity` for the vetted array + `d` +
-registration + tests that the kit steers the agent toward (Apache header,
-`annotations`, `backend`, MetaTensor-safe, constant-volume guard, parameterized
-tests, three-place registration).
+registration + tests. Excerpt: `eval-runs/2026-07-17/kit-on/RobustScaleIntensity.excerpt.py`.
 
 ## What this does and does not prove
 
-- **Does:** the kit converts a first contribution from "plausible but wrong" to
-  "convention-correct and testable," and makes boundary/deprecation/deploy gates
-  observable.
+- **Does:** make the convention gap vs a naive first draft **itemized and reproducible** (2/12 → 12/12), and show that a strong kit-off agent can also reach 12/12 — so panel claims must separate *junior/naive risk* from *strong-model finals*.
 - **Does not:** measure real ramp-time or defect-rate in the customer's codebase.
   That needs the frame in [`DEMO.md`](DEMO.md) (time-to-first-safe-PR, % first PRs
-  failing conventions) run over real onboarding cohorts.
+  failing conventions) run over real onboarding cohorts. It also does not yet
+  include trajectory evals (tool-call / multi-turn path scoring).
 
 ## Phase 1 archetype packs (loss / metric / network)
 
-Each pack ships a verified reference implementation (kit-on baseline = 12/12 conventions, mypy-clean, tests pass): `LogCoshDiceLoss`, `MedianAbsoluteErrorMetric`, `LayerScale`. Re-run the kit-off vs kit-on protocol per archetype using the pack's named neighbor as the "one file to read" — the same convention rubric applies (header, `from __future__`, registration in package `__init__.py`, parameterized tests, 2D/3D coverage for networks).
+Each pack ships a verified reference implementation (kit-on baseline = conventions +
+mypy-clean + tests pass): `LogCoshDiceLoss`, `MedianAbsoluteErrorMetric`,
+`LayerScale`. Re-run this same scorecard per archetype when you need Phase-1
+kit-off vs kit-on numbers; the 2026-07-17 measured run above covers the intensity
+transform spine only.

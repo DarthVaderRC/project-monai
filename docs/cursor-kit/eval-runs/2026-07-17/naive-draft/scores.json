@@ -1,0 +1,61 @@
+{
+  "label": "naive-draft-reference",
+  "note": "Historical illustrative first-draft snippet (not an agent run). Kept as the junior/unassisted baseline the kit was designed against.",
+  "passed": 2,
+  "total": 12,
+  "score": "2/12",
+  "results": {
+    "Apache 2.0 header present": {
+      "pass": false
+    },
+    "from __future__ import annotations": {
+      "pass": false
+    },
+    "Array class + MapTransform d wrapper both present": {
+      "pass": false
+    },
+    "backend = [TransformBackends.TORCH, TransformBackends.NUMPY]": {
+      "pass": false
+    },
+    "MetaTensor-safe (convert_to_tensor track_meta + convert_to_dst_type)": {
+      "pass": false
+    },
+    "Registered in __all__ (array + dict) and monai.transforms re-exports": {
+      "pass": false
+    },
+    "d/D/Dict aliases": {
+      "pass": false
+    },
+    "No deprecated APIs (np.float, torch.range, ...)": {
+      "pass": false
+    },
+    "Parameterized tests for array + d, incl. an edge case": {
+      "pass": false
+    },
+    "American English": {
+      "pass": true
+    },
+    "Stays within approved boundaries (no monai/networks reads)": {
+      "pass": true
+    },
+    "Changelog [Unreleased] entry": {
+      "pass": false
+    }
+  },
+  "passes": [
+    "American English",
+    "Stays within approved boundaries (no monai/networks reads)"
+  ],
+  "fails": [
+    "Apache 2.0 header present",
+    "from __future__ import annotations",
+    "Array class + MapTransform d wrapper both present",
+    "backend = [TransformBackends.TORCH, TransformBackends.NUMPY]",
+    "MetaTensor-safe (convert_to_tensor track_meta + convert_to_dst_type)",
+    "Registered in __all__ (array + dict) and monai.transforms re-exports",
+    "d/D/Dict aliases",
+    "No deprecated APIs (np.float, torch.range, ...)",
+    "Parameterized tests for array + d, incl. an edge case",
+    "Changelog [Unreleased] entry"
+  ]
+}

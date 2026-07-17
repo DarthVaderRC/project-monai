@@ -1,0 +1,56 @@
+{
+  "root": "/Users/DineshGawande/Code/project-monai/.worktrees/eval-kit-off",
+  "passed": 12,
+  "total": 12,
+  "score": "12/12",
+  "results": {
+    "Apache 2.0 header present": {
+      "pass": true,
+      "evidence": "module head of monai/transforms/intensity/array.py"
+    },
+    "from __future__ import annotations": {
+      "pass": true,
+      "evidence": "monai/transforms/intensity/array.py"
+    },
+    "Array class + MapTransform d wrapper both present": {
+      "pass": true,
+      "evidence": "array=True dict_wrapper=True"
+    },
+    "backend = [TransformBackends.TORCH, TransformBackends.NUMPY]": {
+      "pass": true,
+      "evidence": "RobustScaleIntensity.backend in array.py"
+    },
+    "MetaTensor-safe (convert_to_tensor track_meta + convert_to_dst_type)": {
+      "pass": true,
+      "evidence": "RobustScaleIntensity.__call__ body"
+    },
+    "Registered in __all__ (array + dict) and monai.transforms re-exports": {
+      "pass": true,
+      "evidence": "from monai.transforms import RobustScaleIntensity, RobustScaleIntensityd"
+    },
+    "d/D/Dict aliases": {
+      "pass": true,
+      "evidence": "dictionary.py aliases"
+    },
+    "No deprecated APIs (np.float, torch.range, ...)": {
+      "pass": true,
+      "evidence": "clean"
+    },
+    "Parameterized tests for array + d, incl. an edge case": {
+      "pass": true,
+      "evidence": "files=True parameterized=True edge=True unittest_ok=True '.............\\n----------------------------------------------------------------------\\nRan 13 tests in 0.018s\\n\\nOK\\n'"
+    },
+    "American English": {
+      "pass": true,
+      "evidence": "no British spellings in RobustScale* class text"
+    },
+    "Stays within approved boundaries (no monai/networks reads)": {
+      "pass": true,
+      "evidence": "no monai.networks imports in RobustScale* sources/tests"
+    },
+    "Changelog [Unreleased] entry": {
+      "pass": true,
+      "evidence": "CHANGELOG.md [Unreleased] mentions RobustScaleIntensity"
+    }
+  }
+}
