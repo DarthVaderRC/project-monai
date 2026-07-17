@@ -40,7 +40,11 @@ jobs:
         uses: actions/checkout@v4
       - name: Run cursor-kit sync-check
         run: bash docs/cursor-kit/scripts/sync-check.sh
-      - name: Deprecated-API gate (intensity transforms + transform tests)
+      - name: Deprecated-API gate (kit packs + their tests)
         run: |
           bash docs/cursor-kit/scripts/check-deprecations.sh \
-            $(git ls-files 'monai/transforms/intensity/*.py' 'tests/transforms/test_*.py')
+            $(git ls-files \
+              'monai/transforms/intensity/*.py' 'tests/transforms/test_*.py' \
+              'monai/losses/*.py' 'tests/losses/test_*.py' \
+              'monai/metrics/*.py' 'tests/metrics/test_*.py' \
+              'monai/networks/blocks/*.py' 'tests/networks/blocks/test_*.py')

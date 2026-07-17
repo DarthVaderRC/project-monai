@@ -22,7 +22,8 @@ if [[ ! -f "$RULES_DOC" ]]; then
   exit 1
 fi
 
-# Collect target files: explicit args, else changed transform/test python files.
+# Collect target files: explicit args, else changed kit-scoped python files
+# (transforms + Phase 1 loss/metric/network packs and their tests).
 files=()
 if [[ "$#" -gt 0 ]]; then
   files=("$@")
@@ -31,11 +32,11 @@ else
     [[ -n "$f" ]] && files+=("$f")
   done < <(git status --porcelain 2>/dev/null \
              | sed 's/^...//' \
-             | grep -E '^(monai/transforms/|tests/transforms/).*\.py$' || true)
+             | grep -E '^(monai/(transforms|losses|metrics|networks/blocks)/|tests/(transforms|losses|metrics|networks/blocks)/).*\.py$' || true)
 fi
 
 if [[ "${#files[@]}" -eq 0 ]]; then
-  echo "check-deprecations: no transform/test files to scan (clean)."
+  echo "check-deprecations: no kit-scoped source/test files to scan (clean)."
   exit 0
 fi
 

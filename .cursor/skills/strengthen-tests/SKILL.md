@@ -27,14 +27,17 @@ echo '{"event":"skill","decision":"start","skill":"strengthen-tests","persona":"
 ## Steps
 
 1. Identify paths from `/scaffold-transform` (or user-provided).
-2. **Run the deprecated-API detector first** (this is the real signal, not a checklist):
+2. **Run the deprecated-API detector first** (this is the real signal, not a checklist).
+   Pass the files you just scaffolded (or rely on the default porcelain filter, which
+   covers transforms + loss/metric/network packs):
 
 ```bash
-bash docs/cursor-kit/scripts/check-deprecations.sh
+bash docs/cursor-kit/scripts/check-deprecations.sh <touched .py files>
+# e.g. bash docs/cursor-kit/scripts/check-deprecations.sh monai/losses/dice.py tests/losses/test_*.py
 ```
 
-   Fix every hit — the planted `np.float` dtype default must become `np.float32`
-   in both the array and `d` classes. Re-run until clean (exit 0).
+   Fix every hit — for intensity transforms the planted `np.float` dtype default must
+   become `np.float32` in both the array and `d` classes. Re-run until clean (exit 0).
 3. **Fix the registration gap:** ensure the `*d` class name is present in
    `monai/transforms/intensity/dictionary.py` `__all__` (and aliases exported if peers do).
    Confirm by importing: `python -c "from monai.transforms import <Name>d"`.
