@@ -66,7 +66,7 @@ Do **not** claim production ROI. Propose the frame platform would run:
 | Faster ramp | Time-to-first-safe-PR | Scaffold + refs + rules cut “framework syntax” days |
 | Less convention rework | % first PRs failing style/header/`__all__`/missing `d` tests | Rules + QA path + sync-check CI |
 | Fewer uncaught gaps | Review/CI comments on covered anti-patterns | `/strengthen-tests`, `/review`, post-edit nudges |
-| Multi-role leverage | Non-eng runs of PM/QA skills | Six skills on shared rails |
+| Multi-role leverage | Non-eng runs of PM/QA skills | Nine `/` skills on shared rails (six in live demo spine) |
 | Safe autonomy | Boundary deny vs escape (ledger) | Strict/everyday hooks |
 | Cost awareness | Cursor usage + ledger stage counts | Estimated; not an invoice |
 
@@ -144,7 +144,7 @@ Grounded in the actual event schemas, not assumptions:
 - [ ] Branch: `cursor-onboarding-kit` (push to fork **only when the panel starts**, if required)
 - [ ] `gh auth status` OK; Issues enabled on fork
 - [ ] `@Docs` indexed: https://docs.monai.io/en/stable/
-- [ ] Customize → Rules shows `00`–`40`; Skills show six `/` workflows
+- [ ] Customize → Rules shows `00`–`70`; Skills show nine `/` workflows (live spine uses six — see table below)
 - [ ] `echo everyday > .cursor/boundary-profile`
 - [ ] Optional: `bash docs/cursor-kit/scripts/sync-check.sh` exits 0
 - [x] Seeded issues present:
@@ -194,7 +194,9 @@ git checkout golden/robust-scale-intensity -- \
   monai/transforms/__init__.py \
   tests/transforms/test_robust_scale_intensity.py \
   tests/transforms/test_robust_scale_intensityd.py
-python -m unittest tests.transforms.test_robust_scale_intensity tests.transforms.test_robust_scale_intensityd
+# Strict-mode-safe (matches /strengthen-tests); do not use `python -m unittest ...` while strict is on.
+python3 -m tests.transforms.test_robust_scale_intensity
+python3 -m tests.transforms.test_robust_scale_intensityd
 ```
 
 Frame it honestly to the panel: "the scaffold is generated live; this is a
@@ -294,7 +296,7 @@ Optional delegation beat (shows multi-role automation, not just a menu):
 Delegate the review to a background subagent: launch a Task that runs the /review checklist on the current diff and reports Approve / Request changes. The subagentStart/Stop audit hook logs it to the ledger.
 ```
 
-### I. Optional economics beat
+### I. Optional economics / trajectory beat
 
 ```bash
 python3 docs/cursor-kit/scripts/ledger-report.py
@@ -304,10 +306,22 @@ Shows a per-persona / per-stage / decision dashboard (boundary denies, warns,
 out-of-bounds attachments). Frame it as Cursor-estimated stage/persona metering,
 not a billing invoice — value is measured by ramp time and first-PR defect rate.
 
+**Trajectory scorecard (Layer C):** after the spine, archive and score the ledger:
+
+```bash
+cp .cursor/usage/ledger.jsonl docs/cursor-kit/eval-runs/2026-07-17/demo-spine-$(date +%Y%m%d).jsonl
+python3 docs/cursor-kit/eval-runs/2026-07-17/scripts/score_trajectory.py \
+  docs/cursor-kit/eval-runs/2026-07-17/demo-spine-$(date +%Y%m%d).jsonl \
+  --session all
+```
+
+Pass = `ship_ready_trajectory: true` (all six skills, order, strict deny probe, scaffold under strict). See [`EVALUATION.md`](EVALUATION.md) Layer C.
+
 ---
 
 ## After the session
 
 - Flip back: `echo everyday > .cursor/boundary-profile`
+- Archive + score trajectory: see **§I** (`score_trajectory.py`; target `9/9` required)
 - Do not push kit branch to upstream MONAI
 - If you pushed to the fork for the demo, confirm with the panel whether to leave or remove it afterward
