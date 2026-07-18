@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
-"""beforeSubmitPrompt convention coach.
+"""beforeSubmitPrompt: block high-confidence anti-pattern prompts before send.
 
-Cursor's `beforeSubmitPrompt` can only allow or block (output:
-`{continue, user_message}`) — it cannot silently inject context. So the coach is
-conservative: it blocks only high-confidence anti-patterns (asking for an API that
-already exists) with a helpful pointer, and otherwise lets everything through.
-This turns the kit from a purely reactive guardrail into a proactive guide at the
-moment of asking.
+Can only allow or block (`{continue, user_message}`) — cannot inject context.
+Blocks known "already exists" asks (e.g. SoftClipIntensity) with a pointer;
+otherwise lets the prompt through.
 """
 
 from __future__ import annotations

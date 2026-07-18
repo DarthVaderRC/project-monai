@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""sessionStart: inject MONAI_CURSOR_BOUNDARY from .cursor/boundary-profile."""
+"""sessionStart: inject boundary profile env + kit context into the Agent session.
+
+Reads `.cursor/boundary-profile` (or `MONAI_CURSOR_BOUNDARY`), sets
+`MONAI_CURSOR_BOUNDARY` on the session env, and injects a short reminder of the
+active profile plus available slash skills.
+"""
 
 from __future__ import annotations
 
@@ -20,6 +25,7 @@ def main() -> int:
             f"(strict = deny reads/shell outside transforms + kit paths; "
             f"everyday = warn only). Flip via `.cursor/boundary-profile`. "
             f"Skills: /triage-issues /plan-feature /scaffold-transform "
+            f"/scaffold-loss /scaffold-metric /scaffold-network "
             f"/strengthen-tests /prep-for-ci /review."
         )
         emit({"env": {PROFILE_ENV: mode}, "additional_context": context})

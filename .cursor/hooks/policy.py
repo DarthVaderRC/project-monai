@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Shared boundary policy + usage ledger for MONAI Cursor kit hooks."""
+"""Shared policy helpers for kit hooks: profiles, allowlists, ledger, emit.
+
+Not a Cursor hook itself — imported by the scripts registered in hooks.json.
+Owns path/shell decisions, profile resolution, and ledger append/JSON emit.
+"""
 
 from __future__ import annotations
 

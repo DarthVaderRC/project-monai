@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Append a usage ledger line (for skills / manual metering).
+"""CLI helper: append one usage-ledger JSONL line from stdin.
+
+Used by skills for start/end metering. Not registered in hooks.json.
 
 Usage:
   echo '{"event":"skill","decision":"start","skill":"triage-issues","persona":"PM"}' \\
     | python3 .cursor/hooks/ledger_append.py
-
-Or pass fields as CLI kwargs-like JSON on stdin only.
 """
 
 from __future__ import annotations

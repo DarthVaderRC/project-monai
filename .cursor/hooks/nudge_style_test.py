@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
-"""afterFileEdit accounting hook.
+"""afterFileEdit: record agent file edits to the usage ledger (accounting only).
 
-Cursor's `afterFileEdit` event does NOT honor any output fields (input only:
-`file_path`, `edits`). So this hook is accounting-only: it records agent-written
-edits to the usage ledger. The user-facing "run style + scoped tests" nudge is
-surfaced by `post_edit_nudge.py` on `postToolUse`, which *does* support
-`additional_context`.
+`afterFileEdit` accepts no output fields, so this hook only logs path + edit
+count. The user-facing style/test nudge lives in `post_edit_nudge.py`.
 """
 
 from __future__ import annotations

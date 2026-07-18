@@ -141,4 +141,12 @@ Human dashboard (non-scoring): `python3 docs/cursor-kit/scripts/ledger-report.py
 
 ## Phase 1 archetype packs (loss / metric / network)
 
-Reference implementations ship verified (`LogCoshDiceLoss`, `MedianAbsoluteErrorMetric`, `LayerScale`). Re-run **Layer A** (process scorer adapted per archetype) when you need pack-level kit-off vs kit-on numbers; intensity transform runs above cover the demo spine.
+Each pack ships a verified reference implementation (kit-on baseline = conventions + mypy-clean + tests pass):
+
+| Archetype | Class | Neighbor | Pack surfaces |
+|---|---|---|---|
+| Loss | `LogCoshDiceLoss` | `DiceLoss` | `50-losses.mdc`, `monai-refs/losses.md`, `/scaffold-loss` |
+| Metric | `MedianAbsoluteErrorMetric` | `MAEMetric` | `60-metrics.mdc`, `monai-refs/metrics.md`, `/scaffold-metric` |
+| Network block | `LayerScale` | `MLPBlock` / `aspp.py` | `70-networks.mdc`, `monai-refs/networks.md`, `/scaffold-network` |
+
+Re-run **Layer A** (process scorer adapted per archetype) when you need pack-level kit-off vs kit-on numbers; intensity transform runs above cover the demo spine.

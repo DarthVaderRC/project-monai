@@ -30,7 +30,7 @@ Preferred (mid-session flip without relaunching Cursor): write `.cursor/boundary
 | File contents | Behavior |
 |---|---|
 | `everyday` (default) | Warn on out-of-allowlist reads/shell; do not block. `gh` allowed. |
-| `strict` | Deny out-of-allowlist file reads and risky shell. Use for `/scaffold-transform` demo. |
+| `strict` | Deny out-of-allowlist file reads and risky shell. Use for `/scaffold-*` demos (transforms allowlist; Phase 1 packs available under everyday). |
 
 ```bash
 echo everyday > .cursor/boundary-profile
@@ -43,6 +43,9 @@ Hooks also honor `MONAI_CURSOR_BOUNDARY` if the profile file is absent. `session
 
 1. In-repo refs under `docs/cursor-kit/monai-refs/`:
    - `transforms-array-dict.md` — array + `d` intensity pattern
+   - `losses.md` — loss conventions + `LogCoshDiceLoss` neighbor (`DiceLoss`)
+   - `metrics.md` — metric conventions + `MedianAbsoluteErrorMetric` neighbor (`MAEMetric`)
+   - `networks.md` — network-block conventions + `LayerScale` neighbors
    - `testing.md` — parameterized tests / `runtests.sh`
    - `contributing-checklist.md` — style, license, DCO, fork-only PRs
 2. Cursor `@Docs`: index **https://docs.monai.io/en/stable/** (setup steps in `docs/cursor-kit/README.md`).

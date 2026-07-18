@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""beforeShellExecution boundary hook."""
+"""beforeShellExecution: gate risky shell commands by boundary profile.
+
+In `strict`, denies out-of-allowlist / dangerous commands; in `everyday`, allows
+with warnings. Audits `gh` usage to the ledger when allowed.
+"""
 
 from __future__ import annotations
 

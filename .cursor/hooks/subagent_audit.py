@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
-"""subagentStart / subagentStop audit hook.
+"""subagentStart / subagentStop: audit Task/subagent lifecycle to the ledger.
 
-Demonstrates awareness of Cursor's subagent (Task tool) lifecycle: the kit
-allows delegation (e.g. running /review as a background subagent) but records it
-in the usage ledger so multi-role automation stays observable. Lightweight by
-design — it audits and allows; it does not gate subagents in v1.
+Allows all subagents (does not gate). Logs type, task snippet, status, and
+modified-file counts so intra-stage delegation stays observable.
 """
 
 from __future__ import annotations

@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-"""postToolUse nudge: surface style + scoped-test reminder after transform edits.
+"""postToolUse: inject style + scoped-test reminder after transform file edits.
 
-`afterFileEdit` cannot return context to the agent, but `postToolUse` supports
-`additional_context`. This hook fires after any tool, filters to file-editing
-tools that touched `monai/transforms/**` or `tests/transforms/**`, and injects a
-short reminder to run the CI-equivalent checks. Reads (no write payload) and
-non-transform edits are ignored.
+`afterFileEdit` cannot return context; this hook filters write tools that touched
+`monai/transforms/**` or `tests/transforms/**` and returns `additional_context`
+reminding the agent to run ruff, scoped tests, and deprecation checks.
 """
 
 from __future__ import annotations

@@ -4,7 +4,7 @@
 
 ## Why a skeleton, not a plugin (yet)
 
-Publishing this fork's folder as a Marketplace/org plugin as-is would be wrong: the content pack is MONAI/transforms-specific. The value that generalizes is the **platform core** (persona SDLC rails), not the MONAI text. So v1 keeps the pack in-repo for a reliable demo and captures the split here. This is a deliberate scope decision, not an omission.
+Publishing this fork's folder as a Marketplace/org plugin as-is would be wrong: the content pack is MONAI-specific (intensity transforms plus Phase 1 loss/metric/network packs). The value that generalizes is the **platform core** (persona SDLC rails), not the MONAI text. So v1 keeps the pack in-repo for a reliable demo and captures the split here. This is a deliberate scope decision, not an omission.
 
 ## Core vs pack
 
@@ -21,7 +21,8 @@ flowchart TD
   subgraph pack [Library pack - swappable, one per library]
     RT[Rules text]
     RF[Curated refs / monai-refs]
-    CT[Catalog transforms + tests]
+    CT[Catalog examples + tests]
+    P1[Phase 1 packs: loss / metric / network]
     PD[Planted-defect recipe]
     PC[Pack config: allowlists, deprecated APIs, changelog format]
   end
@@ -32,7 +33,7 @@ flowchart TD
 | Layer | Portable? | Contents | Extraction move |
 |---|---|---|---|
 | Platform core | Yes | Hook engine, persona skill *shells*, sync-check *pattern*, ledger schema + report, AGENTS pattern, boundary mechanism | Ship verbatim to an org/private plugin |
-| Library pack | No | Rules text, `monai-refs/`, catalog transforms + tests, planted-defect recipe, and pack **config** (path allowlists, deprecated-API patterns, changelog format) | Swap this folder per target library |
+| Library pack | No | Rules text, `monai-refs/`, catalog examples + tests (transforms + Phase 1 loss/metric/network), planted-defect recipe, and pack **config** (path allowlists, deprecated-API patterns, changelog format) | Swap this folder per target library |
 
 The one seam to fix during extraction: today a few library specifics live *inside* core scripts (allowlists in `policy.py`, anti-pattern strings in `prompt_coach.py`, checked-file list in `sync-check.sh`). Extraction hoists those into pack-provided config injected at load. See `not_in_v1` in [`manifest.json`](manifest.json).
 
@@ -40,7 +41,7 @@ The one seam to fix during extraction: today a few library specifics live *insid
 
 1. Move `core` components (see manifest) into an org/private Cursor plugin unchanged.
 2. Replace inlined library constants with a `pack.config` contract (allowlists, deprecation rules, changelog format, checked-file manifest).
-3. Keep `pack` folders per library (`monai-intensity-transforms`, then the next target); the plugin loads one pack at a time.
+3. Keep `pack` folders per library (`monai-cursor-kit` with transform + Phase 1 archetype packs, then the next target); the plugin loads one pack at a time.
 4. Version core and packs independently; `sync-check` + CODEOWNERS + kit CI move with core, guard lists move with pack.
 
 ## Agents / subagents (next, out of scope for v1)

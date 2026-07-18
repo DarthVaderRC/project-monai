@@ -1,6 +1,6 @@
 # Cursor kit for MONAI (this fork)
 
-Onboarding kit that encodes MONAI contribution norms into Cursor **rules**, **skills**, **hooks**, **AGENTS.md**, and curated **docs**. Designed for a multi-persona SDLC demo on intensity transforms.
+Onboarding kit that encodes MONAI contribution norms into Cursor **rules**, **skills**, **hooks**, **AGENTS.md**, and curated **docs**. The live demo spine stays on intensity transforms; Phase 1 adds full-stack packs for **losses**, **metrics**, and **network blocks** (rules + refs + `/scaffold-*` skills + worked examples).
 
 ## Quick map
 

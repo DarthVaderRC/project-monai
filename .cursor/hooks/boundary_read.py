@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""beforeReadFile boundary hook."""
+"""beforeReadFile: enforce the kit path allowlist on file reads.
+
+In `strict`, denies reads outside transforms + kit paths; in `everyday`, allows
+but warns. Also audits out-of-bounds `@` attachments (observe-only — cannot strip).
+"""
 
 from __future__ import annotations
 
