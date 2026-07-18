@@ -114,8 +114,13 @@ def rel_path(abs_path: str | Path, root: Path | None = None) -> str:
 
 
 def path_allowed(rel: str, mode: str) -> bool:
-    rel = rel.lstrip("./")
-    if rel.startswith("../") or rel.startswith("/"):
+    # Strip leading "./" only (not lstrip("./") — that also eats the "." in ".cursor/").
+    while rel.startswith("./"):
+        rel = rel[2:]
+    if not rel or rel.startswith("/") or rel.startswith("../"):
+        return False
+    # Reject traversal even when prefixed by an allowlisted directory.
+    if ".." in rel.split("/"):
         return False
     files = STRICT_FILES if mode == "strict" else EVERYDAY_FILES
     prefixes = STRICT_PREFIXES if mode == "strict" else EVERYDAY_PREFIXES
@@ -231,4 +236,4 @@ def path_hint_ok(cmd: str, mode: str) -> bool:
     mentions = re.findall(r"(?:^|[\s\"'=])((?:\.cursor|docs|monai|tests|AGENTS\.md)[^\s\"']*)", cmd)
     if not mentions:
         return False
-    return all(path_allowed(m.lstrip("./"), mode) for m in mentions)
+    return all(path_allowed(m, mode) for m in mentions)

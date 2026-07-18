@@ -135,6 +135,15 @@ Grounded in the actual event schemas, not assumptions:
   so the convention coach blocks only high-confidence anti-patterns (e.g. soft-clip).
 - `subagentStart/Stop` are audited to the ledger; the kit allows delegation and
   observes it rather than gating it in v1.
+- `beforeShellExecution` uses **`failClosed: false`**. When the hook process
+  runs, strict/everyday deny/allow still apply. But Cursor can fail to *spawn*
+  the hook (Agents Window race: “Shell execution is not available in the worker
+  extension host”); with `failClosed: true` that hard-locks Shell for the whole
+  chat and agents flee to MCP/browser. Fail-open on spawn failure keeps the PM
+  `gh` path alive; policy denials when the script runs are unchanged.
+  `beforeReadFile` stays `failClosed: true`. If Shell still wedges: **Developer:
+  Reload Window**, then warm up with `echo ok && gh auth status` before
+  `/plan-feature`.
 
 ---
 
@@ -217,38 +226,90 @@ Read/deny hooks honor the file immediately. Prefer a fresh Agent chat after flip
 
 Use these in **Agent chat** with the `project-monai` workspace.
 
+Each prompt has a short talk track: **Under the hood** (what should fire),
+**You should see** (good outcome), **Say out loud** (judgment line),
+**Fail / thrash** (kit or model misfire — stop and recover).
+
+Prefer **`everyday`** unless a beat says otherwise. Fresh Agent chat after
+profile flips keeps the narrative clean.
+
 ### A. Rules / docs smoke
 
 ```text
 With @monai/transforms/intensity/array.py in context: which project rules apply, and what is the array vs dict (d) pattern for a new intensity transform?
 ```
 
+- **Under the hood:** `@array.py` attaches; `00-repo-guardrails.mdc` (`alwaysApply`) + `10-transforms.mdc` (globs `monai/transforms/**`); optional read of `docs/cursor-kit/monai-refs/transforms-array-dict.md`. `beforeReadFile` allows `.cursor/` + transforms paths.
+- **You should see:** Names those rules; summarizes array (`Transform` / `RandomizableTransform` in `intensity/array.py`) vs dict (`MapTransform` + aliases in `intensity/dictionary.py`) + three registration sites.
+- **Say out loud:** “Rules are path-scoped convention packs — the agent doesn’t need the whole repo to get the pattern right.”
+- **Fail / thrash:** Hunting `10-transforms-intensity.mdc`; fighting hooks to read `.cursor/rules`; opening `monai/networks`.
+
 ```text
 Using @Docs and @docs/cursor-kit/monai-refs/transforms-array-dict.md — how do I add a MapTransform wrapper for an intensity transform? Do not open monai/networks.
 ```
 
+- **Under the hood:** `@Docs` + owned ref; same transform rules as above; agent should stay on allowlist without a deny probe.
+- **You should see:** Wrapper recipe from the ref (`keys`, hold array transform, `key_iterator`, `*d` / `*D` / `*Dict` aliases) — not a networks digression.
+- **Say out loud:** “Official docs for API; `monai-refs` for our non-negotiable conventions — no custom docs MCP.”
+- **Fail / thrash:** Reads `monai/networks/**`; invents SoftClipIntensity; ignores the ref file that was attached. Without “*Do not open monai/networks*” agents often wander into unrelated packages “for
+  context.”
+
 ### B. PM — triage
+
+Profile: **`everyday`** (`gh` needed).
 
 ```text
 /triage-issues
 ```
 
+- **Under the hood:** Skill `.cursor/skills/triage-issues/SKILL.md` (`disable-model-invocation`); ledger `skill` start/end (persona PM, stage triage); `gh` against upstream (read-only) + fork; `00-repo-guardrails` fork-only remotes.
+- **You should see:** Ranked table; recommend fork **#1 RobustScaleIntensity** (or backup #2/#3); upstream good-first issues as context only.
+- **Say out loud:** “Multi-audience PM — real backlog optics plus a seeded fork catalog”
+- **Fail / thrash:** Recommends implementing an upstream issue on this fork; creates/edits upstream; skips ledger skill markers.
+- **NOTE**: The scaffolder is deliberately narrow so the platform pattern is demonstrably reliable; generalizing families is a product roadmap item, not 
+  a missing demo checkbox. I didn’t under-build the scaffolder — I scoped the first pack.
+- **KPI is time-to-first-safe-merge**, not “one skill that scaffolds all of MONAI.” Intensity transforms are the densest, CPU-testable convention surface for a 45-minute spine.
+
 ```text
 First briefly scan upstream Project-MONAI/MONAI good first issues (read-only) for context. Then rank open issues on this fork and recommend RobustScaleIntensity (#1) unless blocked. Do not recommend implementing an upstream issue on this fork.
 ```
 
+- **Under the hood:** Same as `/triage-issues` without relying on slash dispatch — still `everyday` + `gh`.
+- **You should see:** Explicit upstream-then-fork narrative ending on #1.
+- **Say out loud:** “Writable work stays on the fork; upstream is a mirror for prioritization optics.”
+- **Fail / thrash:** Treats decoy networks issue #4 as the build target; opens PRs/issues on upstream.
+
 ### C. PM — plan
+
+Profile: **`everyday`**. If this chat’s first Shell call just failed closed, **Reload
+Window**, warm up with `echo ok && gh auth status`, then paste below (do not let
+the agent “recover” via MCP/browser).
+
+**TRADE OFF**: Fail-closed is right for real hook failures. Cursor currently conflates ‘hook didn’t spawn’ with ‘hook denied,’ which bricks PM gh. We fail-open on spawn failure so the demo’s enforcement  path stays the script’s allow/deny, not an infra hard-lock. beforeReadFile stays fail-closed.
 
 ```text
 /plan-feature
 Use fork issue #1 (RobustScaleIntensity) from triage. Confirm/update acceptance criteria, non-goals, touch paths under monai/transforms/intensity/, and test expectations on the live GitHub issue. Fork only — no upstream edits.
 ```
 
-### D. Boundary deny moment
+- **Under the hood:** Skill `plan-feature`; ledger PM/`plan`; `gh issue view|edit` on **fork only**; refs/rules for transforms touch paths. Shell hook must actually run (see fail-closed note above).
+- **You should see:** Live GitHub issue #1 updated (acceptance criteria, non-goals, paths, tests) — not a local markdown plan-only artifact.
+- **Say out loud:** “Runnable PM artifact — the issue is the handoff from triaging.”
+- **Fail / thrash:** Edits upstream; chat-only plan; MCP/browser issue edit because Shell wedged; expands scope outside `monai/transforms/intensity/`.
 
-```text
+### D. Boundary deny moment
+Why Boundary? Reduces accidental out-of-bounds context and keep the default agent on the contribution path. They help ramp and convention discipline; they do not stop a determined engineer. `Strict` is the contribution boundary; `everyday` is the org boundary. Same rails, different permission sets per stage.
+
+**When you’d invest more**: org-managed hooks, CI as source of truth, CODEOWNERS/review, maybe cloud agents with locked config. Local boundary-profile alone is never your hard perimeter.
+
+```bash
 echo strict > .cursor/boundary-profile
 ```
+
+- **Under the hood:** Hooks re-read `.cursor/boundary-profile` immediately (`policy.profile`); prefer a **fresh Agent chat** so `sessionStart` injects `MONAI_CURSOR_BOUNDARY=strict`.
+- **You should see:** No agent output yet — profile flip only.
+- **Say out loud:** “Strict = approved contribution boundary, not a toy sandbox.”
+- **Fail / thrash:** Profile file still `everyday`; continuing in an old chat that never picked up strict.
 
 Then:
 
@@ -256,32 +317,61 @@ Then:
 Read monai/networks/nets/unet.py and summarize the UNet constructor.
 ```
 
-Expected: deny / blocked message pointing back to transforms + kit paths.
+- **Under the hood:** `beforeReadFile` → `boundary_read.py` → **deny** (networks outside strict allowlist); ledger `decision: deny`; user sees deny message pointing at transforms + kit paths. Hook cannot strip `@` attachments already in the prompt — this beat uses an agent **Read**, not an attachment.
+- **You should see:** Blocked read; no UNet constructor summary from file contents.
+- **Say out loud:** “The agent cannot quietly leave transforms during the engineer stage.”
+- **Fail / thrash:** Read succeeds; agent summarizes from training memory as if the read worked; Shell/`cat` bypass succeeds without you calling out hooks ≠ OS sandbox.
 
 ### E. Engineer — scaffold
+
+Stay on **`strict`**.
+
+Smoke run: open docs/cursor-kit/monai-refs/transforms-array-dict.md)
 
 ```text
 /scaffold-transform
 Implement the transform from issue #1 under monai/transforms/intensity/ (array + d). Follow monai-refs. Leave the planted dictionary __all__ gap for QA. Stay in strict allowlist.
 ```
 
+- **Under the hood:** Skill `scaffold-transform`; ledger engineer/`build`; rules `10-transforms` + `20-testing` + `30-style`; ref `transforms-array-dict.md`; `beforeReadFile`/`beforeShellExecution` keep work in transforms + kit; post-edit nudges may fire on intensity edits.
+- **You should see:** Array + `d` classes; stub tests; **planted** (1) `np.float` dtype default (2) `*d` missing from `dictionary.py` `__all__`; handoff note cites both. No full CI.
+- **Say out loud:** “Correct first contribution without reading the whole library - defects are intentional training signals for QA.”
+- **Fail / thrash:** Fixes the planted gaps itself; drifts into networks/losses; `gh` under strict (denied); silent skip of array or `d`.
+
 ### F. QA — strengthen
+
+Still **`strict`** unless a check needs `gh` (it shouldn’t).
 
 ```text
 /strengthen-tests
 Fix the planted __all__ gap and harden parameterized tests for the new transform (array + d).
 ```
 
+- **Under the hood:** Skill `strengthen-tests`; ledger QA/`test`; rule `20-testing.mdc`; runs `check-deprecations.sh` first; fixes `np.float` → `np.float32` and `dictionary.py` `__all__`; hardens parameterized array + `d` tests; prefer `python3 -m tests.transforms...` (strict shell allowlist).
+- **You should see:** Deprecation script clean; `from monai.transforms import <Name>d` works; stronger tests; planted gaps gone.
+- **Say out loud:** “Catch mistakes before human review — tooling signal, not a checklist recited from memory.”
+- **Fail / thrash:** Leaves `np.float` or `__all__` gap; only edits tests without fixing registration; uses non-allowlisted unittest invocation that strict denies mid-demo.
+
 ### G. DevOps — CI
 
-```text
+```bash
 echo everyday > .cursor/boundary-profile
 ```
+
+- **Under the hood:** Flip before `gh` / broader shell; fresh chat optional but cleaner.
+- **You should see:** Profile back to warn-only.
+- **Say out loud:** “Everyday for integration commands; strict was for the contribution boundary.”
+- **Fail / thrash:** Running `/prep-for-ci` while still strict and wondering why `gh` is denied.
 
 ```text
 /prep-for-ci
 Run local ruff + scoped tests, run docs/cursor-kit/scripts/check-deprecations.sh and check-changelog.sh, confirm DCO and a [Unreleased] changelog entry, map to CI workflows including docs/cursor-kit sync-check. Do not open a PR against upstream; draft to the fork only if I ask.
 ```
+
+- **Under the hood:** Skill `prep-for-ci`; ledger DevOps/`ci`; maps local commands → `.github/workflows/` + `cursor-kit-sync.yml`; changelog/DCO/release-train narrative; fork-only remotes.
+- **You should see:** Local check results; CI map including sync-check + deprecation gate; `[Unreleased]` note; no upstream PR.
+- **Say out loud:** “Path to production — sync-check means the team owns the kit when norms drift.”
+- **Fail / thrash:** Opens PR against `Project-MONAI/MONAI`; skips changelog/deprecation gates; claims deploy = manual NGC push.
 
 ### H. Reviewer
 
@@ -290,11 +380,21 @@ Run local ruff + scoped tests, run docs/cursor-kit/scripts/check-deprecations.sh
 Review the transform diff against CONTRIBUTING and Cursor rules. Include CODEOWNERS note and planted-gap status.
 ```
 
+- **Under the hood:** Skill `review`; ledger reviewer/`review`; checklist vs `contributing-checklist.md`, rules, `CONTRIBUTING.md`, `.github/CODEOWNERS`; confirms planted gaps are fixed (post-QA).
+- **You should see:** Pass/fail table with evidence; Approve or Request changes; CODEOWNERS + planted-gap status called out.
+- **Say out loud:** “Same rails for the reviewer persona — not a separate tool stack.”
+- **Fail / thrash:** Rubber-loops Approve with no checklist; misses remaining `__all__`/deprecated API; suggests upstream PR.
+
 Optional delegation beat (shows multi-role automation, not just a menu):
 
 ```text
 Delegate the review to a background subagent: launch a Task that runs the /review checklist on the current diff and reports Approve / Request changes. The subagentStart/Stop audit hook logs it to the ledger.
 ```
+
+- **Under the hood:** `subagentStart` / `subagentStop` → `subagent_audit.py` → ledger allow/completed (kit observes; does not gate delegation in v1).
+- **You should see:** Subagent verdict; ledger rows for start/stop with subagent type + tool counts.
+- **Say out loud:** “Subagents isolate work inside a stage — they don’t jump personas across the SDLC.”
+- **Fail / thrash:** No ledger audit rows; subagent used to skip to a different persona’s stage.
 
 ### I. Optional economics / trajectory beat
 
@@ -302,9 +402,10 @@ Delegate the review to a background subagent: launch a Task that runs the /revie
 python3 docs/cursor-kit/scripts/ledger-report.py
 ```
 
-Shows a per-persona / per-stage / decision dashboard (boundary denies, warns,
-out-of-bounds attachments). Frame it as Cursor-estimated stage/persona metering,
-not a billing invoice — value is measured by ramp time and first-PR defect rate.
+- **Under the hood:** Reads `.cursor/usage/ledger.jsonl` written by hooks/skills across the session.
+- **You should see:** Per-persona / per-stage / decision counts (denies, warns, out-of-bounds attachments).
+- **Say out loud:** “Cursor-estimated stage metering — not a billing invoice. Value is ramp time and first-PR defect rate.”
+- **Fail / thrash:** Framing ledger lines as precise cost; empty ledger because skills never appended start/end.
 
 **Trajectory scorecard (Layer C):** after the spine, archive and score the ledger:
 
@@ -315,7 +416,10 @@ python3 docs/cursor-kit/eval-runs/2026-07-17/scripts/score_trajectory.py \
   --session all
 ```
 
-Pass = `ship_ready_trajectory: true` (all six skills, order, strict deny probe, scaffold under strict). See [`EVALUATION.md`](EVALUATION.md) Layer C.
+- **Under the hood:** Layer C scorer checks skill order, strict deny probe, scaffold-under-strict, etc. (see [`EVALUATION.md`](EVALUATION.md)).
+- **You should see:** `ship_ready_trajectory: true` (target **9/9** required).
+- **Say out loud:** “We measure whether the session followed the kit path — process evidence, not LOC.”
+- **Fail / thrash:** Score fails because deny probe or skill ledger markers were skipped during the live spine.
 
 ---
 

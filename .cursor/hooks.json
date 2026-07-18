@@ -15,7 +15,7 @@
     "beforeShellExecution": [
       {
         "command": "python3 .cursor/hooks/boundary_shell.py",
-        "failClosed": true
+        "failClosed": false
       }
     ],
     "afterFileEdit": [
