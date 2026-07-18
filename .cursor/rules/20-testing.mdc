@@ -1,19 +1,30 @@
 ---
-description: MONAI unit test conventions — parameterized, naming, runtests
+description: MONAI unit test conventions — parameterized, naming, runtests (all archetypes)
 globs: tests/**
 alwaysApply: false
 ---
 
 # Testing
 
-- Place transform tests under `tests/transforms/` (e.g. `test_scale_intensity.py` + paired `*d` file).
-- Naming: `test_[module_or_feature].py`.
-- Prefer **`parameterized`** test cases; keep deps to torch/numpy when possible; otherwise list optional deps and update `tests/min_tests.py` `exclude_cases` as needed.
-- Cover **array and dict (`d`)** variants for new transforms; include edge cases (empty/constant volumes, dtype, device) when peers do.
+- Naming: `test_[module_or_feature].py`. Prefer **`parameterized`** cases; keep deps to torch/numpy when possible; otherwise list optional deps and update `tests/min_tests.py` `exclude_cases`.
 - Do not commit large binary test data.
-- Local runs (examples):
-  - `./runtests.sh --quick --unittests`
-  - `python -m tests.transforms.test_<name>` (after editable install)
-- Prefer scoped tests for the touched module before full suites.
+- Prefer scoped module tests before full suites.
 
-**Source of truth:** `CONTRIBUTING.md` (Unit testing), `tests/transforms/test_scale_intensity.py`, `tests/transforms/test_normalize_intensity.py`, `docs/cursor-kit/monai-refs/testing.md`
+## Where tests live (by archetype)
+
+| Archetype | Test path | Notes |
+|---|---|---|
+| Transforms | `tests/transforms/` | Pair array + dict (`d`) files |
+| Losses | `tests/losses/` | Mirror a neighbor loss test |
+| Metrics | `tests/metrics/` | Lifecycle: construct → call → `aggregate()` |
+| Network blocks | `tests/networks/blocks/` | Cover **2D and 3D** under `eval_mode` |
+
+## Local runs (examples)
+
+- `./runtests.sh --quick --unittests`
+- `python -m tests.transforms.test_<name>`
+- `python -m tests.losses.test_<name>`
+- `python -m tests.metrics.test_<name>`
+- `python -m tests.networks.blocks.test_<name>`
+
+**Source of truth:** `CONTRIBUTING.md` (Unit testing), `docs/cursor-kit/monai-refs/testing.md`, `tests/transforms/test_scale_intensity.py`, `tests/losses/test_logcosh_dice_loss.py`, `tests/metrics/test_median_absolute_error.py`, `tests/networks/blocks/test_layerscale.py`

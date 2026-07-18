@@ -1,6 +1,6 @@
 ---
 description: Loss conventions — subclass _Loss, reduction, registration in losses/__init__
-globs: monai/losses/**
+globs: monai/losses/**,tests/losses/**
 alwaysApply: false
 ---
 

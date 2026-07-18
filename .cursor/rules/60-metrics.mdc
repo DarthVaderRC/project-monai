@@ -1,6 +1,6 @@
 ---
 description: Metric conventions — RegressionMetric/CumulativeIterationMetric, aggregate, registration
-globs: monai/metrics/**
+globs: monai/metrics/**,tests/metrics/**
 alwaysApply: false
 ---
 

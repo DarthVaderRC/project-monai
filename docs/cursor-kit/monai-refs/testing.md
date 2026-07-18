@@ -1,20 +1,17 @@
-# Testing transforms (curated)
+# Testing (curated)
 
-Canonical: [`CONTRIBUTING.md`](../../../CONTRIBUTING.md) (Unit testing) and existing tests under `tests/transforms/`.
+Canonical: [`CONTRIBUTING.md`](../../../CONTRIBUTING.md) (Unit testing). Prefer **`parameterized`** cases; use helpers from `tests.test_utils` (`assert_allclose`, etc.). Keep default deps to torch/numpy when possible; optional deps → document and update `tests/min_tests.py` `exclude_cases`. Do not commit large binary fixtures.
 
-## Layout & naming
+## Layout by archetype
 
-- Transform tests live under `tests/transforms/` (and nested packages when present).
-- Name files `test_<feature>.py`; pair array and dict coverage, e.g.:
-  - [`tests/transforms/test_scale_intensity.py`](../../../tests/transforms/test_scale_intensity.py)
-  - [`tests/transforms/test_scale_intensityd.py`](../../../tests/transforms/test_scale_intensityd.py)
+| Archetype | Directory | Pairing / coverage notes | Neighbor example |
+|---|---|---|---|
+| Transforms | `tests/transforms/` | Array + dict (`d`) files | [`test_scale_intensity.py`](../../../tests/transforms/test_scale_intensity.py) |
+| Losses | `tests/losses/` | Mirror a peer loss test | [`test_logcosh_dice_loss.py`](../../../tests/losses/test_logcosh_dice_loss.py) |
+| Metrics | `tests/metrics/` | Construct → call → `aggregate()` | [`test_median_absolute_error.py`](../../../tests/metrics/test_median_absolute_error.py) |
+| Network blocks | `tests/networks/blocks/` | **2D and 3D** under `eval_mode` | [`test_layerscale.py`](../../../tests/networks/blocks/test_layerscale.py) |
 
-## Patterns to copy
-
-- Prefer **`parameterized`** for input variants (`TEST_NDARRAYS`, shapes, kwargs).
-- Use shared helpers from `tests.test_utils` (`assert_allclose`, image test case bases).
-- Keep default deps to torch/numpy when possible; optional deps → document and update `tests/min_tests.py` `exclude_cases` if needed.
-- Do not commit large binary fixtures.
+Name files `test_<feature>.py`.
 
 ## Local commands
 
@@ -24,11 +21,11 @@ Canonical: [`CONTRIBUTING.md`](../../../CONTRIBUTING.md) (Unit testing) and exis
 
 # single module (after editable install)
 python -m tests.transforms.test_scale_intensity
-python -m tests.transforms.test_scale_intensityd
+python -m tests.losses.test_logcosh_dice_loss
+python -m tests.metrics.test_median_absolute_error
+python -m tests.networks.blocks.test_layerscale
 ```
-
-For new transforms, add matching `test_<name>.py` and `test_<name>d.py` (or equivalent) covering happy path + at least one edge (constant volume, dtype, or channel-wise) when peers do.
 
 ## Docs
 
-Official testing/transform notes: [@Docs](https://docs.monai.io/en/stable/) (index via Cursor — see `docs/cursor-kit/README.md`).
+Official notes: [@Docs](https://docs.monai.io/en/stable/) (index via Cursor — see `docs/cursor-kit/README.md`).

@@ -32,7 +32,7 @@ Prefer the smallest local subset that covers touched files before a full matrix.
 
 ## Deploy / release (the step after merge)
 
-"Fit the path to production" does not end at a green PR. For a user-facing transform:
+"Fit the path to production" does not end at a green PR. For a user-facing API change:
 
 - **Document for release:** add a bullet under `## [Unreleased]` -> `### Added` in
   `CHANGELOG.md`. Gate: `bash docs/cursor-kit/scripts/check-changelog.sh <Name> <Named>`.

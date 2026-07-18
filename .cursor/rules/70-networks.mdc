@@ -1,6 +1,6 @@
 ---
 description: Network block conventions — nn.Module, spatial_dims, factories, registration
-globs: monai/networks/**
+globs: monai/networks/**,tests/networks/**
 alwaysApply: false
 ---
 

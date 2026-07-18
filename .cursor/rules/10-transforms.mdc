@@ -1,6 +1,6 @@
 ---
 description: Intensity transform conventions — array + MapTransform d pattern
-globs: monai/transforms/**
+globs: monai/transforms/**,tests/transforms/**
 alwaysApply: false
 ---
 
