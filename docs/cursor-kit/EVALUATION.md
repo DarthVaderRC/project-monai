@@ -14,7 +14,7 @@ This answers "what impact would you expect?" with evidence.
 | **A. Process / QA rubric** (primary) | Do tool-detectable ship-blockers get planted, caught, and fixed through the persona workflow? | **No** — kit-on scaffold deliberately fails until QA |
 | **B. Convention rubric** (secondary) | Does the final artifact match MONAI house style? | **Yes** — strong kit-off agents can hit 12/12 |
 
-Lead with **Layer A** in the demo. Use **Layer B** to show the naive/junior floor (2/12 draft) and why convention checklists alone are insufficient.
+Lead with **Layer A** in the panel. Use **Layer B** to show the naive/junior floor (2/12 draft) and why convention checklists alone are insufficient.
 
 ---
 
@@ -114,24 +114,24 @@ Naive draft + excerpts: `eval-runs/2026-07-17/naive-draft/`.
 
 ## Layer C (Trajectory rubric)
 
-**Question:** *Did the session follow the demo spine path — personas, skills, boundaries — not just produce a good diff?*
+**Question:** *Did the session follow the contribution spine — personas, skills, boundaries — not just produce a good diff?*
 
 **Scorer:** `python3 docs/cursor-kit/eval-runs/2026-07-17/scripts/score_trajectory.py [ledger.jsonl]`
 
 Defaults to the latest `sessionStart` slice of `.cursor/usage/ledger.jsonl`. Archive a rehearsal copy:
 
 ```bash
-cp .cursor/usage/ledger.jsonl docs/cursor-kit/eval-runs/2026-07-17/demo-spine-$(date +%Y%m%d).jsonl
+cp .cursor/usage/ledger.jsonl docs/cursor-kit/eval-runs/2026-07-17/kit-spine-$(date +%Y%m%d).jsonl
 python3 docs/cursor-kit/eval-runs/2026-07-17/scripts/score_trajectory.py \
-  docs/cursor-kit/eval-runs/2026-07-17/demo-spine-$(date +%Y%m%d).jsonl \
-  --session all --json-out docs/cursor-kit/eval-runs/2026-07-17/demo-spine-scores.json
+  docs/cursor-kit/eval-runs/2026-07-17/kit-spine-$(date +%Y%m%d).jsonl \
+  --session all --json-out docs/cursor-kit/eval-runs/2026-07-17/kit-spine-scores.json
 ```
 
-**Required checks (9):** all six demo-spine skills logged (`start`), correct order, strict read deny on out-of-bounds path, scaffold under strict.
+**Required checks (9):** all six kit-spine skills logged (`start`), correct order, strict read deny on out-of-bounds path, scaffold under strict.
 
 **Optional checks (5):** PM under everyday, transform-edit nudge, gh deny in strict, prompt coach, subagent audit (`--require-subagent` to promote subagent to required).
 
-**Reference fixture:** [`fixtures/demo-spine-kit-on.jsonl`](eval-runs/2026-07-17/fixtures/demo-spine-kit-on.jsonl) — should score `ship_ready_trajectory: true`.
+**Reference fixture:** [`fixtures/kit-spine-kit-on.jsonl`](eval-runs/2026-07-17/fixtures/kit-spine-kit-on.jsonl) — should score `ship_ready_trajectory: true`.
 
 **Panel line:** *"Layer A proves gates catch defects; Layer C proves the multi-persona workflow actually ran."*
 
@@ -149,4 +149,4 @@ Each pack ships a verified reference implementation (kit-on baseline = conventio
 | Metric | `MedianAbsoluteErrorMetric` | `MAEMetric` | `60-metrics.mdc`, `monai-refs/metrics.md`, `/scaffold-metric` |
 | Network block | `LayerScale` | `MLPBlock` / `aspp.py` | `70-networks.mdc`, `monai-refs/networks.md`, `/scaffold-network` |
 
-Re-run **Layer A** (process scorer adapted per archetype) when you need pack-level kit-off vs kit-on numbers; intensity transform runs above cover the demo spine.
+Re-run **Layer A** (process scorer adapted per archetype) when you need pack-level kit-off vs kit-on numbers; intensity transform runs above cover the contribution spine.

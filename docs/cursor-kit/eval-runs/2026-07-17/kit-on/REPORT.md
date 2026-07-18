@@ -3,7 +3,7 @@
 ## Source
 
 - Branch: `golden/robust-scale-intensity`
-- Commit: `e52ffce6` — GOLDEN (demo fallback): RobustScaleIntensity array + d + tests
+- Commit: `e52ffce6` — GOLDEN (spine fallback): RobustScaleIntensity array + d + tests
 - Worktree: `.worktrees/eval-kit-on`
 - Full-spine parity: added `[Unreleased]` changelog bullet locally before scoring
   (golden commit itself did not include CHANGELOG; `/prep-for-ci` would)

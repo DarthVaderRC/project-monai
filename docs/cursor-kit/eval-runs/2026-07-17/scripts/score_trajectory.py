@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Score demo-spine trajectory from the Cursor kit usage ledger.
+"""Score kit-spine trajectory from the Cursor kit usage ledger.
 
 Reads `.cursor/usage/ledger.jsonl` (or a saved copy) and checks whether the
 session followed the expected persona/skill path, boundary profile discipline,
@@ -7,7 +7,7 @@ and hook observability signals documented in DEMO.md.
 
 Usage:
   python3 docs/cursor-kit/eval-runs/2026-07-17/scripts/score_trajectory.py
-  python3 .../score_trajectory.py path/to/demo-spine.jsonl --json-out scores.json
+  python3 .../score_trajectory.py path/to/kit-spine.jsonl --json-out scores.json
   python3 .../score_trajectory.py --session all --require-subagent
 """
 from __future__ import annotations
@@ -153,7 +153,7 @@ def score_trajectory(
     checks.append(
         Check(
             id="demo_spine_order",
-            label="Demo spine skill order",
+            label="Kit spine skill order",
             passed=order_ok and len(skill_starts) >= 2,
             required=True,
             detail="; ".join(order_details) if order_details else "no skills to compare",
@@ -316,7 +316,7 @@ def _default_ledger(root: Path) -> Path:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Score demo-spine trajectory from usage ledger.")
+    ap = argparse.ArgumentParser(description="Score kit-spine trajectory from usage ledger.")
     ap.add_argument(
         "ledger",
         nargs="?",

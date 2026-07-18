@@ -36,7 +36,7 @@ Losses are light; run inline by default. Only if combining with other build work
 4. Register the class name in `monai/losses/__init__.py` (case-insensitive alphabetical).
 5. Add `tests/losses/test_<name>.py` with `parameterized` cases.
 
-## Planted QA defect (required for demo — tool-detectable)
+## Planted QA defect (required — intentional, tool-detectable training signal)
 
 Leave the class **out** of `monai/losses/__init__.py` (implement + test everything else). This surfaces as an `ImportError` at test/import time — a real ship-blocker for `/strengthen-tests` to fix. Handoff note must say: "Planted: loss missing from `monai/losses/__init__.py` — caught at import time. For `/strengthen-tests`."
 

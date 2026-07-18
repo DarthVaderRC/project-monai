@@ -9,7 +9,7 @@ alwaysApply: true
 - Every new/edited Python source file must start with the **Apache 2.0 MONAI Consortium** copyright header from `CONTRIBUTING.md`.
 - **Never invent APIs.** Prefer existing MONAI patterns; consult `docs/cursor-kit/monai-refs/` and `@Docs` (https://docs.monai.io/en/stable/).
 - Respect approved boundaries: under `MONAI_CURSOR_BOUNDARY=strict`, stay in transforms + kit paths; do not open unrelated packages (e.g. `monai/networks/`) unless the user explicitly expands scope.
-- **Demo remotes:** create/update GitHub issues and PRs on the **fork only** (`DarthVaderRC/project-monai` / `origin`). Never target upstream `Project-MONAI/MONAI` for demo work.
+- **Fork remotes:** create/update GitHub issues and PRs on the **fork only** (`DarthVaderRC/project-monai` / `origin`). Never target upstream `Project-MONAI/MONAI` from this kit.
 - Ask whether a change belongs in PyTorch vs MONAI when it is general DL, not medical-specific (`CONTRIBUTING.md`).
 
 **Source of truth:** `CONTRIBUTING.md`, `AGENTS.md`, `docs/cursor-kit/monai-refs/`

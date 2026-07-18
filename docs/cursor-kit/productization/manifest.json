@@ -2,8 +2,8 @@
   "name": "cursor-onboarding-platform",
   "version": "0.1.0-skeleton",
   "status": "SKELETON — not published, not loaded, no runtime behavior. Documents the intended platform-core vs library-pack split so extraction is a lift-and-shift, not a rewrite.",
-  "description": "Portable Cursor onboarding platform (persona SDLC rails) plus a swappable per-library content pack. This fork ships the MONAI pack in-repo for a reliable live demo; the manifest below is the extraction contract.",
-  "why_skeleton": "Publishing this folder as-is would be wrong for other libraries (the pack is MONAI-specific: intensity transforms + Phase 1 loss/metric/network packs). We keep the pack in-repo for v1 and record the split here so the demo stays reliable while showing the productization path.",
+  "description": "Portable Cursor onboarding platform (persona SDLC rails) plus a swappable per-library content pack. This fork ships the MONAI pack in-repo for a reliable v1 walkthrough; the manifest below is the extraction contract.",
+  "why_skeleton": "Publishing this folder as-is would be wrong for other libraries (the pack is MONAI-specific: intensity transforms + Phase 1 loss/metric/network packs). We keep the pack in-repo for v1 and record the split here so the walkthrough stays reliable while showing the productization path.",
   "layers": {
     "core": {
       "portable": true,
@@ -84,7 +84,7 @@
     },
     "pack": {
       "portable": false,
-      "summary": "MONAI content: intensity-transform demo spine plus Phase 1 loss/metric/network archetype packs. One pack per target library; swap this folder to retarget the platform.",
+      "summary": "MONAI content: intensity-transform contribution spine plus Phase 1 loss/metric/network archetype packs. One pack per target library; swap this folder to retarget the platform.",
       "id": "monai-cursor-kit",
       "components": [
         {
@@ -126,11 +126,11 @@
             "tests/transforms/test_robust_scale_intensity.py",
             "tests/transforms/test_robust_scale_intensityd.py"
           ],
-          "note": "Demo catalog (RobustScaleIntensity primary; AsinhIntensity / TanhSqueezeIntensity backups)."
+          "note": "Seeded catalog (RobustScaleIntensity primary; AsinhIntensity / TanhSqueezeIntensity backups)."
         },
         {
           "id": "planted-defect-recipe",
-          "kind": "demo-asset",
+          "kind": "kit-asset",
           "location": ".cursor/skills/scaffold-transform/SKILL.md",
           "note": "Deprecated np.float arg + missing __all__ registration, caught by check-deprecations.sh and /strengthen-tests."
         },
@@ -157,7 +157,7 @@
   "extraction_plan_ref": "docs/cursor-kit/productization/PRODUCTIZATION.md",
   "not_in_v1": [
     "Marketplace/plugin publish",
-    "Standing persona agents/subagents (skills stay for explicit / demos)",
+    "Standing persona agents/subagents (skills stay for explicit / stage control)",
     "Hoisting pack config out of core scripts"
   ]
 }

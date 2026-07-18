@@ -46,7 +46,7 @@ release path:
 - **Release train mapping:** merge to default -> nightly (`cron.yml`) /
   `weekly-preview.yml` -> tagged release (`release.yml`) -> NGC bundle
   (`cron-ngc-bundle.yml`). Version is git-tag/versioneer driven — do not hand-edit.
-- Say out loud in the demo: "deploy here means merge-ready + documented for the
+- Narrate when presenting: "deploy here means merge-ready + documented for the
   next release train, not a manual NGC push."
 
 ## Steps

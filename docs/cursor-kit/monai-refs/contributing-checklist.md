@@ -29,7 +29,7 @@ Config sources: `pyproject.toml`, `setup.cfg`, `.pre-commit-config.yaml`.
 - [ ] Unit tests with `parameterized` where appropriate (see `monai-refs/testing.md`)
 - [ ] Update docs / examples if public API changes (`CONTRIBUTING.md` — Building the documentation)
 
-## Commits & PRs (this fork demo)
+## Commits & PRs (this fork)
 
 - [ ] Every commit has `Signed-off-by:` (DCO)
 - [ ] Open draft PRs against the **fork** only — not upstream `Project-MONAI/MONAI`

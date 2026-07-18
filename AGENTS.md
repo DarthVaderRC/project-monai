@@ -30,7 +30,7 @@ Preferred (mid-session flip without relaunching Cursor): write `.cursor/boundary
 | File contents | Behavior |
 |---|---|
 | `everyday` (default) | Warn on out-of-allowlist reads/shell; do not block. `gh` allowed. |
-| `strict` | Deny out-of-allowlist file reads and risky shell. Use for `/scaffold-*` demos (transforms allowlist; Phase 1 packs available under everyday). |
+| `strict` | Deny out-of-allowlist file reads and risky shell. Use for `/scaffold-*` (transforms allowlist; Phase 1 packs available under everyday). |
 
 ```bash
 echo everyday > .cursor/boundary-profile
@@ -53,10 +53,10 @@ Hooks also honor `MONAI_CURSOR_BOUNDARY` if the profile file is absent. `session
 
 Do **not** scrape random web pages for MONAI conventions. Prefer refs + `@Docs` + in-repo sources.
 
-## Remote policy (demo / this fork)
+## Remote policy (this fork)
 
 - **Issues and PRs target the fork only** (`origin` → `DarthVaderRC/project-monai`).
-- Never open demo issues or PRs against upstream `Project-MONAI/MONAI`.
+- Never open issues or PRs against upstream `Project-MONAI/MONAI` from this kit.
 - Use `gh` with `-R DarthVaderRC/project-monai` (or detect `origin`) for PM/DevOps skills.
 
 ## Contribution pointers
@@ -64,4 +64,4 @@ Do **not** scrape random web pages for MONAI conventions. Prefer refs + `@Docs` 
 - Full process: [`CONTRIBUTING.md`](CONTRIBUTING.md) (American English, Apache header, style, tests, DCO).
 - Kit maintainability: `docs/cursor-kit/README.md`.
 - Sync check: `docs/cursor-kit/scripts/sync-check.sh` (verifies rule “Source of truth” paths still exist).
-- Demo runbook: `docs/cursor-kit/DEMO.md`.
+- Panel runbook: `docs/cursor-kit/DEMO.md`.

@@ -47,7 +47,7 @@ Why robust (or asinh / tanh-squeeze) intensity prep helps medical imaging pipeli
 ### Non-goals
 - Soft-clip (already covered by `ClipIntensityPercentiles` / `soft_clip`)
 - GPU-only / networks work
-- Upstream MONAI PR in this demo
+- Upstream MONAI PR from this fork
 
 ### Touch paths
 - `monai/transforms/intensity/array.py`
@@ -58,7 +58,7 @@ Why robust (or asinh / tanh-squeeze) intensity prep helps medical imaging pipeli
 - Happy path + ≥1 edge (constant volume / channel-wise / dtype) with `parameterized`
 
 3. Apply with `gh issue edit <n> -R <fork> --body ...` or `gh issue comment`, or `gh issue create` if creating new.
-4. Prefer label `good first issue` when creating catalog issues.
+4. Prefer labels `good first issue` and `kit-seed` when creating catalog issues.
 
 ## Output
 

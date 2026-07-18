@@ -115,7 +115,7 @@ Do not introduce APIs flagged in [`deprecations.md`](deprecations.md). MONAI mar
 removals with `@deprecated` / `@deprecated_arg` from `monai/utils/deprecate_utils.py`;
 run `bash docs/cursor-kit/scripts/check-deprecations.sh` on touched files.
 
-## Demo catalog (this fork)
+## Seeded catalog (this fork)
 
 Primary: `RobustScaleIntensity` / `RobustScaleIntensityd`.
 Backups: `AsinhIntensity`, `TanhSqueezeIntensity` (same shape, different math).

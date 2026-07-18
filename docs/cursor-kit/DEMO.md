@@ -1,14 +1,14 @@
-# DEMO runbook — MONAI Cursor onboarding kit
+# Panel runbook — MONAI Cursor onboarding kit
 
-Panel-safe session script for the `project-monai` workspace (`cursor-onboarding-kit` branch).
+Session script for the `project-monai` workspace (`cursor-onboarding-kit` branch).
 
-**Push to origin only during the live demo** (closed assignment — keep kit local until then).
+**Push to origin only during the live panel** (closed assignment — keep kit local until then).
 
 ---
 
 ## Panel narrative (judgment — read this first)
 
-This section is what the exercise grades as *judgment about what’s worth solving*, not only a working spine. The live demo proves the artifact; this proves *why*.
+This section is what the exercise grades as *judgment about what’s worth solving*, not only a working spine. The live walkthrough proves the artifact; this proves *why*.
 
 **Agent topology (say once):** Each persona drives their own stage and hands off via artifacts (issue → diff+note → verdict). No single command runs the whole SDLC — that would be solo-dev vibe-coding, not a multi-persona org. Subagents are used *within* a stage for context isolation (e.g. background `/review`), never to jump personas.
 
@@ -18,20 +18,20 @@ This section is what the exercise grades as *judgment about what’s worth solvi
 |---|---|---|
 | Judgment | 5–8 min | Business pain, prioritize/skip, tooling choices, how we’d measure value |
 | Live spine | 20–25 min | Triage → plan → strict deny → scaffold → QA → CI → review |
-| Limitations / next | 5 min | Honesty + beyond-demo (plugin core vs packs, agents) |
+| Limitations / next | 5 min | Honesty + productization next (plugin core vs packs, agents) |
 
 **Trim talking track:** do not narrate every layer equally. Deep-dive shared rails (rules/hooks/refs) + one deny + one planted QA fix. Skills are thin orchestrators — say that once.
 
 ### Business problem
 
-Platform onboards engineers onto a **convention-heavy** library; **ramp is slow** and PRs drift from standards. They care about the **full SDLC** (plan → design → build → test → review → CI), and want **one solution** PM / eng / QA / DevOps can share.
+Platform onboards engineers onto a **convention-heavy** MONAI library; **ramp is slow** and PRs drift from standards. They care about the **full SDLC** (plan → design → build → test → review → CI), and want **one solution** PM / eng / QA / DevOps can share.
 
 **KPI to attack:** *time-to-first-safe-merge* (scoped change, green checks, DCO) and *convention consistency* on early PRs.
 
 ### Why MONAI + transforms (not a toy)
 
 - Encodable conventions (array + `d`, `__all__`, Apache header, American English, lint stack).
-- CPU-runnable transform tests → live demo fits 45 minutes.
+- CPU-runnable transform tests → live walkthrough fits 45 minutes.
 - Clinical PM stories + dense tests + real CI → multi-persona without faking SDLC.
 
 ### Prioritize / skip
@@ -44,13 +44,13 @@ Platform onboards engineers onto a **convention-heavy** library; **ramp is slow*
 | sync-check + CODEOWNERS + kit CI | GPU/distributed automation |
 | | Full cost dashboard; Marketplace plugin extract |
 
-**Equal depth vs demo sequencing:** all five requirements are designed in; the **live** path is short on purpose (presentation choice, not a depth cut).
+**Equal depth vs live sequencing:** all five requirements are designed in; the **live** path is short on purpose (presentation choice, not a depth cut).
 
 ### Tooling choices (defend live)
 
 | Choice | Why |
 |---|---|
-| Approach A (in-repo kit) | Reliable panel-safe demo; versioned with the fork |
+| Approach A (in-repo kit) | Reliable panel-safe walkthrough; versioned with the fork |
 | `@Docs` + `monai-refs/` | Official API + owned conventions; no custom docs MCP |
 | Hooks (strict/everyday) | Honest boundary enforcement for req #3 |
 | `AGENTS.md` only | Portable working guidance without Custom Mode |
@@ -66,7 +66,7 @@ Do **not** claim production ROI. Propose the frame platform would run:
 | Faster ramp | Time-to-first-safe-PR | Scaffold + refs + rules cut “framework syntax” days |
 | Less convention rework | % first PRs failing style/header/`__all__`/missing `d` tests | Rules + QA path + sync-check CI |
 | Fewer uncaught gaps | Review/CI comments on covered anti-patterns | `/strengthen-tests`, `/review`, post-edit nudges |
-| Multi-role leverage | Non-eng runs of PM/QA skills | Nine `/` skills on shared rails (six in live demo spine) |
+| Multi-role leverage | Non-eng runs of PM/QA skills | Nine `/` skills on shared rails (six in live contribution spine) |
 | Safe autonomy | Boundary deny vs escape (ledger) | Strict/everyday hooks |
 | Cost awareness | Cursor usage + ledger stage counts | Estimated; not an invoice |
 
@@ -90,7 +90,7 @@ Do **not** claim production ROI. Propose the frame platform would run:
 
 Ownership is not the script alone. **Versioned kit + CODEOWNERS + sync gate** so when CONTRIBUTING/paths drift, CI fails instead of silently teaching wrong norms. README tells the team how to bump rules/refs.
 
-### Beyond demo (productization — talk, don’t rebuild mid-panel)
+### Productization next (talk, don’t rebuild mid-panel)
 
 Today’s **content pack** is MONAI/transforms-specific (correct for the stand-in). A Marketplace plugin of “this folder as-is” would be wrong for other libs.
 
@@ -99,13 +99,13 @@ Today’s **content pack** is MONAI/transforms-specific (correct for the stand-i
 | Platform core | Yes | Hook engine, persona skill *shells*, sync-check *pattern*, ledger schema, AGENTS pattern |
 | Library pack | No | MONAI rules text, `monai-refs/`, catalog transforms, planted-defect recipe |
 
-**Next:** extract core to a private/org plugin; keep packs per library. **Agents/subagents:** same persona prompts as standing agents so the default agent can delegate QA/review — skills stay for explicit `/` demos. Not built in v1 on purpose.
+**Next:** extract core to a private/org plugin; keep packs per library. **Agents/subagents:** same persona prompts as standing agents so the default agent can delegate QA/review — skills stay for explicit `/` stage control. Not built in v1 on purpose.
 
-The split is physicalized as a **skeleton** in [`productization/`](productization/) (`manifest.json` tags every file `core` vs `pack`; `PRODUCTIZATION.md` is the extraction plan). It is not loaded and changes no runtime behavior — deleting it changes nothing about the demo. Point at it to show the productization path is designed, not just talked.
+The split is physicalized as a **skeleton** in [`productization/`](productization/) (`manifest.json` tags every file `core` vs `pack`; `PRODUCTIZATION.md` is the extraction plan). It is not loaded and changes no runtime behavior — deleting it changes nothing about the kit. Point at it to show the productization path is designed, not just talked.
 
 **Strong panel answers (copy):**
 
-- *“I’d productize the platform core as a plugin next; this fork keeps the MONAI pack in-repo for a reliable live demo.”*
+- *“I’d productize the platform core as a plugin next; this fork keeps the MONAI pack in-repo for a reliable v1 walkthrough.”*
 - *“LOC isn’t the KPI — ramp time and convention adherence are.”*
 - *“Upstream good-first issues are context; writable work stays on the fork catalog.”*
 
@@ -160,11 +160,11 @@ Grounded in the actual event schemas, not assumptions:
 
 ---
 
-## Demo spine
+## Contribution spine
 
 | Step | Action | Artifact | Spoken line (judgment) |
 |---|---|---|---|
-| 1 | `/triage-issues` | Ranked table; recommend #1 | Multi-audience PM; A+D = real backlog optics + controlled demo |
+| 1 | `/triage-issues` | Ranked table; recommend #1 | Multi-audience PM; A+D = real backlog optics + seeded fork catalog (`kit-seed`) |
 | 2 | `/plan-feature` on #1 | Live issue updated | Runnable PM artifact — not markdown theater |
 | 3 | `echo strict > .cursor/boundary-profile` | Boundary on | Req #3 — approved boundaries |
 | 4 | Deny probe | Hook deny | Show teeth: agent cannot quietly leave transforms |
@@ -185,7 +185,7 @@ If primary is blocked, triage → AsinhIntensity (#2), then TanhSqueezeIntensity
 
 A vetted `RobustScaleIntensity` (array + `d` + 20 passing tests) lives on branch
 `golden/robust-scale-intensity` (never merged into the kit branch, so the live
-scaffold is genuine). Recover instantly without leaving the demo branch:
+scaffold is genuine). Recover instantly without leaving the kit branch:
 
 ```bash
 git checkout golden/robust-scale-intensity -- \
@@ -234,7 +234,7 @@ Using @Docs and @docs/cursor-kit/monai-refs/transforms-array-dict.md — how do 
 ```
 
 ```text
-First briefly scan upstream Project-MONAI/MONAI good first issues (read-only) for context. Then rank open issues on this fork and recommend RobustScaleIntensity (#1) unless blocked. Do not recommend implementing an upstream issue in this demo.
+First briefly scan upstream Project-MONAI/MONAI good first issues (read-only) for context. Then rank open issues on this fork and recommend RobustScaleIntensity (#1) unless blocked. Do not recommend implementing an upstream issue on this fork.
 ```
 
 ### C. PM — plan
@@ -309,9 +309,9 @@ not a billing invoice — value is measured by ramp time and first-PR defect rat
 **Trajectory scorecard (Layer C):** after the spine, archive and score the ledger:
 
 ```bash
-cp .cursor/usage/ledger.jsonl docs/cursor-kit/eval-runs/2026-07-17/demo-spine-$(date +%Y%m%d).jsonl
+cp .cursor/usage/ledger.jsonl docs/cursor-kit/eval-runs/2026-07-17/kit-spine-$(date +%Y%m%d).jsonl
 python3 docs/cursor-kit/eval-runs/2026-07-17/scripts/score_trajectory.py \
-  docs/cursor-kit/eval-runs/2026-07-17/demo-spine-$(date +%Y%m%d).jsonl \
+  docs/cursor-kit/eval-runs/2026-07-17/kit-spine-$(date +%Y%m%d).jsonl \
   --session all
 ```
 
@@ -324,4 +324,4 @@ Pass = `ship_ready_trajectory: true` (all six skills, order, strict deny probe, 
 - Flip back: `echo everyday > .cursor/boundary-profile`
 - Archive + score trajectory: see **§I** (`score_trajectory.py`; target `9/9` required)
 - Do not push kit branch to upstream MONAI
-- If you pushed to the fork for the demo, confirm with the panel whether to leave or remove it afterward
+- If you pushed to the fork for the panel, confirm whether to leave or remove it afterward

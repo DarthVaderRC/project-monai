@@ -28,7 +28,7 @@ Prefer the smallest local subset that covers touched files before a full matrix.
 - Review routing is defined in `.github/CODEOWNERS`.
 - Kit paths (`.cursor/`, `AGENTS.md`, `docs/cursor-kit/`) are owned by the platform team entry there.
 
-**Demo:** open draft PRs against the **fork** default branch only — not upstream.
+**Fork only:** open draft PRs against the **fork** default branch only — not upstream.
 
 ## Deploy / release (the step after merge)
 

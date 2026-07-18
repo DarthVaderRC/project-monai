@@ -1,10 +1,10 @@
 # Productization (skeleton)
 
-**Status:** skeleton only. Nothing here is published, loaded, or changes runtime behavior. The live demo runs entirely off the in-repo kit (`.cursor/`, `docs/cursor-kit/`). This document + [`manifest.json`](manifest.json) record *how* the kit would split into a portable platform and per-library packs, so extraction is a lift-and-shift rather than a rewrite.
+**Status:** skeleton only. Nothing here is published, loaded, or changes runtime behavior. The live walkthrough runs entirely off the in-repo kit (`.cursor/`, `docs/cursor-kit/`). This document + [`manifest.json`](manifest.json) record *how* the kit would split into a portable platform and per-library packs, so extraction is a lift-and-shift rather than a rewrite.
 
 ## Why a skeleton, not a plugin (yet)
 
-Publishing this fork's folder as a Marketplace/org plugin as-is would be wrong: the content pack is MONAI-specific (intensity transforms plus Phase 1 loss/metric/network packs). The value that generalizes is the **platform core** (persona SDLC rails), not the MONAI text. So v1 keeps the pack in-repo for a reliable demo and captures the split here. This is a deliberate scope decision, not an omission.
+Publishing this fork's folder as a Marketplace/org plugin as-is would be wrong: the content pack is MONAI-specific (intensity transforms plus Phase 1 loss/metric/network packs). The value that generalizes is the **platform core** (persona SDLC rails), not the MONAI text. So v1 keeps the pack in-repo for a reliable walkthrough and captures the split here. This is a deliberate scope decision, not an omission.
 
 ## Core vs pack
 
@@ -46,12 +46,12 @@ The one seam to fix during extraction: today a few library specifics live *insid
 
 ## Agents / subagents (next, out of scope for v1)
 
-The same persona prompts can be registered as **standing agents** so the default agent delegates QA/review automatically; the `/`-invoked skills stay for explicit demo control. The `subagentStart`/`subagentStop` audit hook already logs delegation to the ledger, so the observability half is in place. Not built in v1 on purpose — it would add demo variance for no grading benefit.
+The same persona prompts can be registered as **standing agents** so the default agent delegates QA/review automatically; the `/`-invoked skills stay for explicit stage control. The `subagentStart`/`subagentStop` audit hook already logs delegation to the ledger, so the observability half is in place. Not built in v1 on purpose — it would add session variance without improving the evaluation story.
 
 ## What this is *not*
 
 - Not a published plugin, not wired into Cursor, not on any load path.
-- No new runtime behavior: removing this folder changes nothing about the demo.
+- No new runtime behavior: removing this folder changes nothing about the kit.
 - Not a LOC exercise. The KPI is ramp time and convention adherence, not lines shipped.
 
-**Source of truth:** [`manifest.json`](manifest.json), and the "Beyond demo" section of [`../DEMO.md`](../DEMO.md).
+**Source of truth:** [`manifest.json`](manifest.json), and the "Productization next" section of [`../DEMO.md`](../DEMO.md).

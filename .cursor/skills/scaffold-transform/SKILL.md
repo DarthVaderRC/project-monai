@@ -49,7 +49,7 @@ Issue number/URL (primary: RobustScaleIntensity; backups: AsinhIntensity, TanhSq
 | `AsinhIntensity` | `asinh`-based compression of dynamic range |
 | `TanhSqueezeIntensity` | `tanh` squeeze of intensities into a bounded range |
 
-### Planted QA defects (required for demo — both are tool-detectable, real signals)
+### Planted QA defects (required — intentional, tool-detectable training signals)
 
 Plant these two so `/strengthen-tests` fixes issues surfaced by tooling, not a checklist:
 

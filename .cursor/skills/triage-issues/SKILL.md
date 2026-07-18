@@ -26,7 +26,7 @@ echo '{"event":"skill","decision":"start","skill":"triage-issues","persona":"PM"
 | Role | Repo | Allowed actions |
 |---|---|---|
 | **Upstream (context only)** | `Project-MONAI/MONAI` | **Read-only** `gh issue list` / `view` |
-| **Fork (demo backlog)** | `DarthVaderRC/project-monai` (`origin`) | List + **recommend**; never create/edit here in this skill |
+| **Fork (kit backlog)** | `DarthVaderRC/project-monai` (`origin`) | List + **recommend**; never create/edit here in this skill |
 
 - Resolve fork via `git remote get-url origin`.
 - **Never** `gh issue create|edit|comment|close` or open PRs against upstream.
@@ -36,13 +36,13 @@ Profile: `everyday` (needs `gh`).
 
 ## Steps (hybrid A+D)
 
-### Pass D — upstream scan (optional but preferred in demo)
+### Pass D — upstream scan (optional but preferred)
 
 ```bash
 gh issue list -R Project-MONAI/MONAI --label "good first issue" --state open --limit 5
 ```
 
-Summarize 1–3 real community issues in a short “Upstream context” note (titles + why they may/may not fit a 45‑minute first contribution). **Do not recommend upstream issues for implementation in this demo.**
+Summarize 1–3 real community issues in a short “Upstream context” note (titles + why they may/may not fit a first contribution). **Do not recommend upstream issues for implementation on this fork.**
 
 ### Pass A — fork backlog (authoritative)
 

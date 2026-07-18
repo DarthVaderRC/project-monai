@@ -75,7 +75,7 @@ WARN_MSG = (
 def profile() -> str:
     """Resolve boundary profile.
 
-    Preference order (demo-friendly):
+    Preference order (session-friendly):
     1. `.cursor/boundary-profile` file contents (`strict`|`everyday`) — flip mid-session
     2. `MONAI_CURSOR_BOUNDARY` environment variable
     3. `everyday`

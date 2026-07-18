@@ -36,7 +36,7 @@ Metrics are light; run inline by default. May be delegated to a depth-1 speciali
 4. Register in `monai/metrics/__init__.py` (case-insensitive alphabetical).
 5. Add `tests/metrics/test_<name>.py`.
 
-## Planted QA defect (required for demo — tool-detectable)
+## Planted QA defect (required — intentional, tool-detectable training signal)
 
 Leave the class **out** of `monai/metrics/__init__.py`. Surfaces as `ImportError` at test/import time. Handoff note: "Planted: metric missing from `monai/metrics/__init__.py` — caught at import time. For `/strengthen-tests`."
 

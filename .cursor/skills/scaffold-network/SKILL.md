@@ -36,7 +36,7 @@ Networks carry the heaviest context. The Engineer SHOULD delegate this skill bod
 4. Register `from .<name> import <Class>` in `monai/networks/blocks/__init__.py` (alphabetical by module name).
 5. Add `tests/networks/blocks/test_<name>.py` with 2D AND 3D cases under `eval_mode`.
 
-## Planted QA defect (required for demo — tool-detectable)
+## Planted QA defect (required — intentional, tool-detectable training signal)
 
 Leave the `from .<name> import <Class>` line **out** of `monai/networks/blocks/__init__.py`. Surfaces as `ImportError` at test/import time. Handoff note: "Planted: block missing from `monai/networks/blocks/__init__.py` — caught at import time. For `/strengthen-tests`."
 

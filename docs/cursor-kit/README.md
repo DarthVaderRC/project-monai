@@ -1,6 +1,6 @@
 # Cursor kit for MONAI (this fork)
 
-Onboarding kit that encodes MONAI contribution norms into Cursor **rules**, **skills**, **hooks**, **AGENTS.md**, and curated **docs**. The live demo spine stays on intensity transforms; Phase 1 adds full-stack packs for **losses**, **metrics**, and **network blocks** (rules + refs + `/scaffold-*` skills + worked examples).
+Onboarding kit that encodes MONAI contribution norms into Cursor **rules**, **skills**, **hooks**, **AGENTS.md**, and curated **docs**. The contribution spine stays on intensity transforms; Phase 1 adds full-stack packs for **losses**, **metrics**, and **network blocks** (rules + refs + `/scaffold-*` skills + worked examples).
 
 ## Quick map
 
@@ -12,7 +12,7 @@ Onboarding kit that encodes MONAI contribution norms into Cursor **rules**, **sk
 | Hooks | [`.cursor/hooks.json`](../../.cursor/hooks.json) + [`.cursor/hooks/`](../../.cursor/hooks/) |
 | Boundary profile | [`.cursor/boundary-profile`](../../.cursor/boundary-profile) (`everyday` \| `strict`) |
 | Refs | [`monai-refs/`](monai-refs/) |
-| Demo runbook + **panel narrative** | [`DEMO.md`](DEMO.md) |
+| Panel runbook + narrative | [`DEMO.md`](DEMO.md) |
 | Kit-off vs kit-on evaluation | [`EVALUATION.md`](EVALUATION.md) |
 | Sync check | [`scripts/sync-check.sh`](scripts/sync-check.sh) |
 | Kit CI | [`.github/workflows/cursor-kit-sync.yml`](../../.github/workflows/cursor-kit-sync.yml) |
@@ -86,7 +86,7 @@ bash docs/cursor-kit/scripts/sync-check.sh
 1. Add script under `.cursor/hooks/`
 2. Register in `.cursor/hooks.json`
 3. `chmod +x` if needed; prefer `python3` over `jq`
-4. Dry-run with stdin JSON before relying on demo
+4. Dry-run with stdin JSON before relying on it in a live session
 
 ## When CONTRIBUTING.md changes
 
@@ -99,7 +99,7 @@ bash docs/cursor-kit/scripts/sync-check.sh
 
 Platform ownership for kit paths is recorded in `.github/CODEOWNERS` (`.cursor/`, `AGENTS.md`, `docs/cursor-kit/`).
 
-**Panel narrative** (business judgment, value metrics, beyond-demo plugin/agents path) lives in [`DEMO.md`](DEMO.md) — start there for the interview, not only the live spine.
+**Panel narrative** (business judgment, value metrics, productization / agents path) lives in [`DEMO.md`](DEMO.md) — start there for the interview, not only the live spine.
 
 ## Usage ledger
 
