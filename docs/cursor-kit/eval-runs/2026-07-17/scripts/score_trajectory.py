@@ -27,7 +27,7 @@ DEMO_SPINE_SKILLS: tuple[str, ...] = (
     "scaffold-transform",
     "strengthen-tests",
     "prep-for-ci",
-    "review",
+    "review-contribution",
 )
 
 _OUT_OF_BOUNDS_READ = re.compile(
@@ -135,7 +135,7 @@ def score_trajectory(
         ("plan-feature", "scaffold-transform"),
         ("scaffold-transform", "strengthen-tests"),
         ("strengthen-tests", "prep-for-ci"),
-        ("prep-for-ci", "review"),
+        ("prep-for-ci", "review-contribution"),
     ]
     order_ok = True
     order_details: list[str] = []

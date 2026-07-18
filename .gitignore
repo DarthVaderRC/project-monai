@@ -168,4 +168,6 @@ runs
 
 # Cursor kit usage metering (local)
 .cursor/usage/ledger.jsonl
+.cursor/usage/ledger-dashboard*.html
+.cursor/usage/ledger-dashboard*.json
 .worktrees/

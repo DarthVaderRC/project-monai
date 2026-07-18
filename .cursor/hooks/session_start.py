@@ -26,7 +26,7 @@ def main() -> int:
             f"everyday = warn only). Flip via `.cursor/boundary-profile`. "
             f"Skills: /triage-issues /plan-feature /scaffold-transform "
             f"/scaffold-loss /scaffold-metric /scaffold-network "
-            f"/strengthen-tests /prep-for-ci /review."
+            f"/strengthen-tests /prep-for-ci /review-contribution."
         )
         emit({"env": {PROFILE_ENV: mode}, "additional_context": context})
         return 0

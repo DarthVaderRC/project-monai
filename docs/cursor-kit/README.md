@@ -105,8 +105,15 @@ Platform ownership for kit paths is recorded in `.github/CODEOWNERS` (`.cursor/`
 
 `.cursor/usage/ledger.jsonl` is local metering (gitignored). Treat token economics as **Cursor-estimated**, not a billing product.
 
-Aggregate it into a dashboard (per-persona / per-stage / decision, boundary denies, out-of-bounds attachments):
+Aggregate counts + Layer C trajectory score into a minimal HTML page (preferred), or terminal tables:
 
 ```bash
-python3 docs/cursor-kit/scripts/ledger-report.py
+python3 docs/cursor-kit/scripts/ledger-dashboard.py
+# writes .cursor/usage/ledger-dashboard.html (+ .json sidecar)
+open .cursor/usage/ledger-dashboard.html   # macOS
+
+# Baseline (plain) for visual compare:
+# open .cursor/usage/ledger-dashboard-plain.html
+
+python3 docs/cursor-kit/scripts/ledger-report.py   # terminal-only counts
 ```

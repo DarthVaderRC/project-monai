@@ -101,6 +101,8 @@ for req in \
   docs/cursor-kit/scripts/check-deprecations.sh \
   docs/cursor-kit/scripts/check-changelog.sh \
   docs/cursor-kit/scripts/ledger-report.py \
+  docs/cursor-kit/scripts/ledger-dashboard.py \
+  docs/cursor-kit/scripts/ledger-dashboard-plain.py \
   docs/cursor-kit/productization/manifest.json \
   docs/cursor-kit/productization/PRODUCTIZATION.md \
   .cursor/skills/triage-issues/SKILL.md \
@@ -108,7 +110,7 @@ for req in \
   .cursor/skills/scaffold-transform/SKILL.md \
   .cursor/skills/strengthen-tests/SKILL.md \
   .cursor/skills/prep-for-ci/SKILL.md \
-  .cursor/skills/review/SKILL.md \
+  .cursor/skills/review-contribution/SKILL.md \
   .cursor/rules/50-losses.mdc \
   .cursor/rules/60-metrics.mdc \
   .cursor/rules/70-networks.mdc \

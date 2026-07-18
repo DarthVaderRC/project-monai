@@ -10,7 +10,7 @@ Session script for the `project-monai` workspace (`cursor-onboarding-kit` branch
 
 This section is what the exercise grades as *judgment about what’s worth solving*, not only a working spine. The live walkthrough proves the artifact; this proves *why*.
 
-**Agent topology (say once):** Each persona drives their own stage and hands off via artifacts (issue → diff+note → verdict). No single command runs the whole SDLC — that would be solo-dev vibe-coding, not a multi-persona org. Subagents are used *within* a stage for context isolation (e.g. background `/review`), never to jump personas.
+**Agent topology (say once):** Each persona drives their own stage and hands off via artifacts (issue → diff+note → verdict). No single command runs the whole SDLC — that would be solo-dev vibe-coding, not a multi-persona org. Subagents are used *within* a stage for context isolation (e.g. background `/review-contribution`), never to jump personas.
 
 ### 45-minute agenda
 
@@ -65,7 +65,7 @@ Do **not** claim production ROI. Propose the frame platform would run:
 |---|---|---|
 | Faster ramp | Time-to-first-safe-PR | Scaffold + refs + rules cut “framework syntax” days |
 | Less convention rework | % first PRs failing style/header/`__all__`/missing `d` tests | Rules + QA path + sync-check CI |
-| Fewer uncaught gaps | Review/CI comments on covered anti-patterns | `/strengthen-tests`, `/review`, post-edit nudges |
+| Fewer uncaught gaps | Review/CI comments on covered anti-patterns | `/strengthen-tests`, `/review-contribution`, post-edit nudges |
 | Multi-role leverage | Non-eng runs of PM/QA skills | Nine `/` skills on shared rails (six in live contribution spine) |
 | Safe autonomy | Boundary deny vs escape (ledger) | Strict/everyday hooks |
 | Cost awareness | Cursor usage + ledger stage counts | Estimated; not an invoice |
@@ -180,7 +180,7 @@ Grounded in the actual event schemas, not assumptions:
 | 5 | `/scaffold-transform` | Code + planted `__all__` gap | Req #1 — correct first contribution without reading the whole repo |
 | 6 | `/strengthen-tests` | Gap fixed; stronger tests | Req #2 — catch mistakes before human review |
 | 7 | everyday → `/prep-for-ci` | CI map; kit sync workflow; deprecation gate; `[Unreleased]` changelog + deploy readiness | Path to production; sync-check CI = ownable kit; release-train aware |
-| 8 | `/review` | Checklist verdict | Reviewer persona on the same rails |
+| 8 | `/review-contribution` | Checklist verdict | Reviewer persona on the same rails (not Cursor `/review` Bugbot) |
 
 ### Planted defect
 
@@ -375,20 +375,23 @@ Run local ruff + scoped tests, run docs/cursor-kit/scripts/check-deprecations.sh
 
 ### H. Reviewer
 
+Use **`/review-contribution`** — not Cursor’s built-in `/review` (Bugbot / Security
+chooser). After rename, Reload Window so Customize → Skills picks it up.
+
 ```text
-/review
+/review-contribution
 Review the transform diff against CONTRIBUTING and Cursor rules. Include CODEOWNERS note and planted-gap status.
 ```
 
-- **Under the hood:** Skill `review`; ledger reviewer/`review`; checklist vs `contributing-checklist.md`, rules, `CONTRIBUTING.md`, `.github/CODEOWNERS`; confirms planted gaps are fixed (post-QA).
+- **Under the hood:** Skill `review-contribution`; ledger reviewer/`review`; checklist vs `contributing-checklist.md`, rules, `CONTRIBUTING.md`, `.github/CODEOWNERS`; confirms planted gaps are fixed (post-QA).
 - **You should see:** Pass/fail table with evidence; Approve or Request changes; CODEOWNERS + planted-gap status called out.
-- **Say out loud:** “Same rails for the reviewer persona — not a separate tool stack.”
-- **Fail / thrash:** Rubber-loops Approve with no checklist; misses remaining `__all__`/deprecated API; suggests upstream PR.
+- **Say out loud:** “Same rails for the reviewer persona — not Cursor Bugbot. We renamed to avoid the product `/review` collision.”
+- **Fail / thrash:** Picking Bugbot/Security from Cursor’s `/review` chooser; rubber-stamp Approve with no checklist; misses remaining `__all__`/deprecated API; suggests upstream PR.
 
 Optional delegation beat (shows multi-role automation, not just a menu):
 
 ```text
-Delegate the review to a background subagent: launch a Task that runs the /review checklist on the current diff and reports Approve / Request changes. The subagentStart/Stop audit hook logs it to the ledger.
+Delegate the review to a background subagent: launch a Task that runs the /review-contribution checklist on the current diff and reports Approve / Request changes. The subagentStart/Stop audit hook logs it to the ledger.
 ```
 
 - **Under the hood:** `subagentStart` / `subagentStop` → `subagent_audit.py` → ledger allow/completed (kit observes; does not gate delegation in v1).
@@ -398,34 +401,29 @@ Delegate the review to a background subagent: launch a Task that runs the /revie
 
 ### I. Optional economics / trajectory beat
 
-```bash
-python3 docs/cursor-kit/scripts/ledger-report.py
-```
-
-- **Under the hood:** Reads `.cursor/usage/ledger.jsonl` written by hooks/skills across the session.
-- **You should see:** Per-persona / per-stage / decision counts (denies, warns, out-of-bounds attachments).
-- **Say out loud:** “Cursor-estimated stage metering — not a billing invoice. Value is ramp time and first-PR defect rate.”
-- **Fail / thrash:** Framing ledger lines as precise cost; empty ledger because skills never appended start/end.
-
-**Trajectory scorecard (Layer C):** after the spine, archive and score the ledger:
+Prefer the combined HTML dashboard (counts + Layer C scorecard):
 
 ```bash
 cp .cursor/usage/ledger.jsonl docs/cursor-kit/eval-runs/2026-07-17/kit-spine-$(date +%Y%m%d).jsonl
-python3 docs/cursor-kit/eval-runs/2026-07-17/scripts/score_trajectory.py \
+python3 docs/cursor-kit/scripts/ledger-dashboard.py \
   docs/cursor-kit/eval-runs/2026-07-17/kit-spine-$(date +%Y%m%d).jsonl \
   --session all
+open .cursor/usage/ledger-dashboard.html   # or the path printed by the script
 ```
 
-- **Under the hood:** Layer C scorer checks skill order, strict deny probe, scaffold-under-strict, etc. (see [`EVALUATION.md`](EVALUATION.md)).
-- **You should see:** `ship_ready_trajectory: true` (target **9/9** required).
-- **Say out loud:** “We measure whether the session followed the kit path — process evidence, not LOC.”
-- **Fail / thrash:** Score fails because deny probe or skill ledger markers were skipped during the live spine.
+CLI-only equivalents still work: `ledger-report.py` (counts) and `score_trajectory.py` (scorecard).
+
+- **Under the hood:** Reads `.cursor/usage/ledger.jsonl`; aggregates persona/stage/skill/decision counts; runs Layer C checks (skill order, strict deny, scaffold-under-strict — see [`EVALUATION.md`](EVALUATION.md)).
+- **You should see:** A small HTML page with ship-ready badge, required **9/9**, denies/warns, and check table. Target `ship_ready_trajectory: true`.
+- **Say out loud:** “Cursor-estimated stage metering — not a billing invoice. We measure whether the kit path ran — process evidence, not LOC.”
+- **Fail / thrash:** Framing ledger lines as precise cost; empty ledger because skills never appended start/end; score fails because deny probe or skill markers were skipped.
 
 ---
 
 ## After the session
 
 - Flip back: `echo everyday > .cursor/boundary-profile`
-- Archive + score trajectory: see **§I** (`score_trajectory.py`; target `9/9` required)
+- Archive + dashboard: see **§I** (`ledger-dashboard.py`; target `9/9` required)
+- Discard live scaffold transform/tests/changelog from the kit branch unless you intend to keep them; keep kit fixes (hooks, rules, skill renames, DEMO)
 - Do not push kit branch to upstream MONAI
-- If you pushed to the fork for the panel, confirm whether to leave or remove it afterward
+- If you opened a draft PR on the fork for the panel, close or leave it — confirm afterward

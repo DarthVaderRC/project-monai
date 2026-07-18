@@ -26,7 +26,7 @@ echo '{"event":"skill","decision":"start","skill":"scaffold-network","persona":"
 
 ## Intra-stage specialist dispatch (recommended for this pack)
 
-Networks carry the heaviest context. The Engineer SHOULD delegate this skill body to a depth-1 specialist subagent (isolated window) so the block's neighbor context does not bloat the main chat. The reviewer may separately run `/review` as a background subagent. Never advance to another persona's stage.
+Networks carry the heaviest context. The Engineer SHOULD delegate this skill body to a depth-1 specialist subagent (isolated window) so the block's neighbor context does not bloat the main chat. The reviewer may separately run `/review-contribution` as a background subagent. Never advance to another persona's stage.
 
 ## Steps
 

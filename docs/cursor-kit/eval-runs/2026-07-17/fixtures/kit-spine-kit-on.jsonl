@@ -8,5 +8,5 @@
 {"ts": "2026-07-17T10:20:00+00:00", "event": "skill", "profile": "strict", "decision": "start", "skill": "strengthen-tests", "persona": "QA", "stage": "test"}
 {"ts": "2026-07-17T10:25:00+00:00", "event": "sessionStart", "profile": "everyday", "decision": "ok", "profile_injected": "everyday"}
 {"ts": "2026-07-17T10:26:00+00:00", "event": "skill", "profile": "everyday", "decision": "start", "skill": "prep-for-ci", "persona": "DevOps", "stage": "ci"}
-{"ts": "2026-07-17T10:30:00+00:00", "event": "skill", "profile": "everyday", "decision": "start", "skill": "review", "persona": "reviewer", "stage": "review"}
-{"ts": "2026-07-17T10:31:00+00:00", "event": "subagentStart", "profile": "everyday", "decision": "allow", "subagent_type": "generalPurpose", "task": "run /review on the diff"}
+{"ts": "2026-07-17T10:30:00+00:00", "event": "skill", "profile": "everyday", "decision": "start", "skill": "review-contribution", "persona": "reviewer", "stage": "review"}
+{"ts": "2026-07-17T10:31:00+00:00", "event": "subagentStart", "profile": "everyday", "decision": "allow", "subagent_type": "generalPurpose", "task": "run /review-contribution on the diff"}

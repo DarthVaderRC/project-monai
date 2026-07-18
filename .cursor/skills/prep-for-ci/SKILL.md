@@ -78,4 +78,4 @@ Checklist:
 
 ## Stop when
 
-Checklist is complete. Hand off to `/review`.
+Checklist is complete. Hand off to `/review-contribution`.

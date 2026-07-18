@@ -1,18 +1,19 @@
 ---
-name: review
+name: review-contribution
 description: >-
   Reviewer workflow: checklist self-review of a transform contribution against
   Cursor rules, CONTRIBUTING.md, CODEOWNERS routing, tests, and style. Use when
-  the user runs /review.
+  the user runs /review-contribution. Named to avoid Cursor's built-in /review
+  (Bugbot / Security Review).
 disable-model-invocation: true
 ---
 
-# /review (Reviewer)
+# /review-contribution (Reviewer)
 
 ## Ledger
 
 ```bash
-echo '{"event":"skill","decision":"start","skill":"review","persona":"reviewer","stage":"review"}' \
+echo '{"event":"skill","decision":"start","skill":"review-contribution","persona":"reviewer","stage":"review"}' \
   | python3 .cursor/hooks/ledger_append.py
 ```
 

@@ -7,7 +7,7 @@ This is **not** a Custom Mode. Skills are invoked explicitly with `/`.
 ## Agent topology (how the personas work together)
 
 - **Each persona's session orchestrates only its own stage.** A persona invokes their own `/` skill(s); work moves to the next persona via an **artifact handoff** (a GitHub issue, a diff + handoff note, a verdict) — never via an automated pipeline. There is no `ship-feature` god-command.
-- **Subagents are an intra-stage tool.** Within a single stage, a persona may delegate a heavy or parallelizable sub-task to a specialist subagent (isolated context window, depth-1). Example: the reviewer can run `/review` as a background subagent. Subagents never advance the flow into another persona's stage.
+- **Subagents are an intra-stage tool.** Within a single stage, a persona may delegate a heavy or parallelizable sub-task to a specialist subagent (isolated context window, depth-1). Example: the reviewer can run `/review-contribution` as a background subagent. Subagents never advance the flow into another persona's stage.
 
 ## Skills (slash commands)
 
@@ -21,7 +21,7 @@ This is **not** a Custom Mode. Skills are invoked explicitly with `/`.
 | `/scaffold-network` | Engineer | Implement a new network block under `monai/networks/blocks/` from an issue |
 | `/strengthen-tests` | QA | Harden parameterized tests; fix planted scaffold gaps |
 | `/prep-for-ci` | DevOps | Map local `runtests.sh` / style checks to CI; DCO; optional draft PR **to fork** |
-| `/review` | Reviewer | Checklist review vs rules + `CONTRIBUTING.md` |
+| `/review-contribution` | Reviewer | Checklist review vs rules + `CONTRIBUTING.md` (not Cursor `/review` Bugbot) |
 
 ## Boundary profiles
 

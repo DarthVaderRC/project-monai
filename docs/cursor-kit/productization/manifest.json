@@ -38,7 +38,7 @@
             ".cursor/skills/scaffold-transform/SKILL.md",
             ".cursor/skills/strengthen-tests/SKILL.md",
             ".cursor/skills/prep-for-ci/SKILL.md",
-            ".cursor/skills/review/SKILL.md"
+            ".cursor/skills/review-contribution/SKILL.md"
           ],
           "split": "The orchestration shell (persona, steps, ledger append, output checklist) is core; the body prose (MONAI transform paths, runtests.sh, changelog format) is pack.",
           "extraction_note": "Core keeps the skill skeleton + placeholders; pack supplies the library-specific step bodies."
@@ -57,13 +57,15 @@
           "portable": true,
           "files": [
             ".cursor/hooks/ledger_append.py",
-            "docs/cursor-kit/scripts/ledger-report.py"
+            "docs/cursor-kit/scripts/ledger-report.py",
+            "docs/cursor-kit/scripts/ledger-dashboard.py",
+            "docs/cursor-kit/scripts/ledger-dashboard-plain.py"
           ],
           "schema": {
             "record": ["ts", "event", "profile", "decision", "..extra"],
-            "note": "extra keys (persona, stage, skill, path, reason) are open; report aggregates per-persona / per-stage / decision."
+            "note": "extra keys (persona, stage, skill, path, reason) are open; report aggregates per-persona / per-stage / decision; dashboard adds Layer C score HTML."
           },
-          "extraction_note": "Schema + report are library-agnostic; ship as-is."
+          "extraction_note": "Schema + report/dashboard are library-agnostic; ship as-is."
         },
         {
           "id": "agents-pattern",

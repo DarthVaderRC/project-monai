@@ -14,7 +14,7 @@ This answers "what impact would you expect?" with evidence.
 | **A. Process / QA rubric** (primary) | Do tool-detectable ship-blockers get planted, caught, and fixed through the persona workflow? | **No** — kit-on scaffold deliberately fails until QA |
 | **B. Convention rubric** (secondary) | Does the final artifact match MONAI house style? | **Yes** — strong kit-off agents can hit 12/12 |
 
-Lead with **Layer A** in the panel. Use **Layer B** to show the naive/junior floor (2/12 draft) and why convention checklists alone are insufficient.
+Lead with **Layer A** first. Use **Layer B** to show the naive/junior floor (2/12 draft) and why convention checklists alone are insufficient.
 
 ---
 
@@ -54,7 +54,7 @@ The convention rubric can **saturate** for strong models (see Layer B below). Ki
 2. **Floor for weak contributors.** Kit-off weak shipped deprecated `np.float`, no tests, broken public import — **not ship-ready**. The kit's QA skill and gates are the enforced backstop; without them, merge depends on reviewer luck.
 3. **Persona observability.** Ledger + explicit QA handoff vs an opaque one-shot agent commit.
 
-**Panel line:** *"The kit doesn't always beat a strong model on a static checklist — it **guarantees** the SDLC gates run and **raises the floor** for everyone else."*
+*The kit doesn't always beat a strong model on a static checklist — it **guarantees** the SDLC gates run and **raises the floor** for everyone else.*
 
 ---
 
@@ -133,9 +133,9 @@ python3 docs/cursor-kit/eval-runs/2026-07-17/scripts/score_trajectory.py \
 
 **Reference fixture:** [`fixtures/kit-spine-kit-on.jsonl`](eval-runs/2026-07-17/fixtures/kit-spine-kit-on.jsonl) — should score `ship_ready_trajectory: true`.
 
-**Panel line:** *"Layer A proves gates catch defects; Layer C proves the multi-persona workflow actually ran."*
+*Layer A proves gates catch defects; Layer C proves the multi-persona workflow actually ran.*
 
-Human dashboard (non-scoring): `python3 docs/cursor-kit/scripts/ledger-report.py`.
+Human dashboard (counts + score): `python3 docs/cursor-kit/scripts/ledger-dashboard.py`.
 
 ---
 

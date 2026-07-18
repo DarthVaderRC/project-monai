@@ -12,7 +12,7 @@ Publishing this fork's folder as a Marketplace/org plugin as-is would be wrong: 
 flowchart TD
   subgraph core [Platform core - portable, one org plugin]
     HE[Hook engine: boundary, ledger, nudges, prompt-coach, subagent audit]
-    SS[Persona skill shells: triage / plan / scaffold / tests / ci / review]
+    SS[Persona skill shells: triage / plan / scaffold / tests / ci / review-contribution]
     SC[sync-check pattern]
     LS[Ledger schema + report]
     AG[AGENTS.md pattern]
