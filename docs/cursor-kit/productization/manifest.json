@@ -1,18 +1,18 @@
 {
   "name": "cursor-onboarding-platform",
-  "version": "0.1.0-skeleton",
-  "status": "SKELETON — not published, not loaded, no runtime behavior. Documents the intended platform-core vs library-pack split so extraction is a lift-and-shift, not a rewrite.",
+  "version": "0.4.0-phase4",
+  "status": "Phase 4 \u2014 plugins are the SSOT for rules/skills/hooks/agents/refs; consumer is thin (.cursor/pack.config.json + boundary-profile + refs/ + usage/). docs/cursor-kit/ is DEMO/EVAL narrative + script wrappers.",
   "description": "Portable Cursor onboarding platform (persona SDLC rails) plus a swappable per-library content pack. This fork ships the MONAI pack in-repo for a reliable v1 walkthrough; the manifest below is the extraction contract.",
   "why_skeleton": "Publishing this folder as-is would be wrong for other libraries (the pack is MONAI-specific: intensity transforms + Phase 1 loss/metric/network packs). We keep the pack in-repo for v1 and record the split here so the walkthrough stays reliable while showing the productization path.",
   "seam": {
     "summary": "How core and pack compose in Cursor. Split by READER, because Cursor has no cross-plugin path resolution: a hook in platform-core cannot read a file inside pack-monai.",
-    "design": "Design 1 (chosen): one shared boundary engine in platform-core; packs are content + a per-consumer config instance. Scales to N libraries with the engine written once. Design 2 (rejected): each pack ships self-contained boundary hooks — more purely Cursor-native but duplicates the engine per library.",
-    "agent_facing_content": "Pack RULES and /scaffold-* skills are INJECTED by Cursor into agent context when the pack is enabled — no path resolution by us. Library specifics reach core skill shells via these injected rules, NOT a cross-plugin body splice.",
-    "refs": "refs/ is NOT a Cursor injection surface (Cursor injects rules/skills/agents/hooks/commands/mcp). Pattern: authoring SSOT in plugins/pack-monai/refs/, MATERIALIZED into the consumer's .cursor/refs/ (by /init-pack, same .env.example->.env pattern as pack.config.json). Rules cite the workspace path .cursor/refs/<file>.md; the agent opens it on demand with its file tool — no injection, no cross-plugin resolution, no context bloat. Keeps rules concise + always-on and refs deep + on-demand. Do NOT inline whole refs into rules, do NOT leave refs as consumer SSOT, and do NOT point the agent at @pack-monai/refs/... . Drift between SSOT and copy is guarded by sync-check.",
+    "design": "Design 1 (chosen): one shared boundary engine in platform-core; packs are content + a per-consumer config instance. Scales to N libraries with the engine written once. Design 2 (rejected): each pack ships self-contained boundary hooks \u2014 more purely Cursor-native but duplicates the engine per library.",
+    "agent_facing_content": "Pack RULES and /scaffold-* skills are INJECTED by Cursor into agent context when the pack is enabled \u2014 no path resolution by us. Library specifics reach core skill shells via these injected rules, NOT a cross-plugin body splice.",
+    "refs": "refs/ is NOT a Cursor injection surface (Cursor injects rules/skills/agents/hooks/commands/mcp). Pattern: authoring SSOT in plugins/pack-monai/refs/, MATERIALIZED into the consumer's .cursor/refs/ (by /init-pack, same .env.example->.env pattern as pack.config.json). Rules cite the workspace path .cursor/refs/<file>.md; the agent opens it on demand with its file tool \u2014 no injection, no cross-plugin resolution, no context bloat. Keeps rules concise + always-on and refs deep + on-demand. Do NOT inline whole refs into rules, do NOT leave refs as consumer SSOT, and do NOT point the agent at @pack-monai/refs/... . Drift between SSOT and copy is guarded by sync-check.",
     "hook_facing_config": "Allowlists / coach patterns / nudge globs / sync inventory live in the consumer's single .cursor/pack.config.json, read by hooks at $CURSOR_PROJECT_DIR/.cursor/pack.config.json (the documented, working path). The pack owns pack.config.schema.json + a filled example; the consumer commits an instance (.env.example -> .env pattern).",
     "no_plugin_pointer": "There is NO 'plugin:pack-monai/...' pointer and NO thin .cursor/pack.json. The consumer's pack.config.json carries a top-level 'pack' field for identity.",
     "pack_loading": "Cursor HAS a loader: the workspaceOpen hook can return pluginPaths. v1 uses manual enable of both plugins (core = Required, pack = Default Off); workspaceOpen auto-load (reads the 'pack' field) is a post-spike upgrade.",
-    "missing_config": "everyday: warn + safe empty defaults. strict: deny WITH a diagnostic naming the missing path — never a silent empty-allowlist lockout, never MONAI literals baked into core as a fallback.",
+    "missing_config": "everyday: warn + safe empty defaults. strict: deny WITH a diagnostic naming the missing path \u2014 never a silent empty-allowlist lockout, never MONAI literals baked into core as a fallback.",
     "model_routing": "Cursor honors model: frontmatter on agents/subagents only, not skills. Enforced only for the spec-critic agent; other stage tiers are a talk-track in v1."
   },
   "layers": {
@@ -25,18 +25,9 @@
           "kind": "hooks",
           "portable": true,
           "files": [
-            ".cursor/hooks.json",
-            ".cursor/hooks/policy.py",
-            ".cursor/hooks/session_start.py",
-            ".cursor/hooks/boundary_read.py",
-            ".cursor/hooks/boundary_shell.py",
-            ".cursor/hooks/post_edit_nudge.py",
-            ".cursor/hooks/nudge_style_test.py",
-            ".cursor/hooks/prompt_coach.py",
-            ".cursor/hooks/subagent_audit.py",
-            ".cursor/hooks/ledger_append.py"
+            "plugins/platform-core/hooks/*"
           ],
-          "pack_config": "Path allowlists (STRICT_PREFIXES / EVERYDAY_PREFIXES), deprecated-API patterns, and anti-pattern strings in policy.py / prompt_coach.py are library data, not core code. See seam.hook_facing_config: they move to the consumer's .cursor/pack.config.json, read via CURSOR_PROJECT_DIR — NOT resolved from the pack plugin.",
+          "pack_config": "Path allowlists (STRICT_PREFIXES / EVERYDAY_PREFIXES), deprecated-API patterns, and anti-pattern strings in policy.py / prompt_coach.py are library data, not core code. See seam.hook_facing_config: they move to the consumer's .cursor/pack.config.json, read via CURSOR_PROJECT_DIR \u2014 NOT resolved from the pack plugin.",
           "extraction_note": "Move scripts verbatim; replace the inlined constants with reads from $CURSOR_PROJECT_DIR/.cursor/pack.config.json. The pack owns the schema + example; the consumer owns the instance."
         },
         {
@@ -44,21 +35,18 @@
           "kind": "skills",
           "portable": true,
           "files": [
-            ".cursor/skills/triage-issues/SKILL.md",
-            ".cursor/skills/plan-feature/SKILL.md",
-            ".cursor/skills/scaffold-transform/SKILL.md",
-            ".cursor/skills/strengthen-tests/SKILL.md",
-            ".cursor/skills/prep-for-ci/SKILL.md",
-            ".cursor/skills/review-contribution/SKILL.md"
+            "plugins/platform-core/skills/{triage-issues,plan-feature,critique-spec,strengthen-tests,prep-for-ci,review-contribution,init-pack}/"
           ],
-          "split": "The orchestration shell (persona, steps, ledger append, output checklist) is core and stays LIBRARY-AGNOSTIC. MONAI specifics (transform paths, runtests.sh, changelog format) reach the agent via the pack's injected .mdc rules — NOT a body fragment spliced from the pack (Cursor has no cross-plugin path). See seam.agent_facing_content.",
+          "split": "The orchestration shell (persona, steps, ledger append, output checklist) is core and stays LIBRARY-AGNOSTIC. MONAI specifics (transform paths, runtests.sh, changelog format) reach the agent via the pack's injected .mdc rules \u2014 NOT a body fragment spliced from the pack (Cursor has no cross-plugin path). See seam.agent_facing_content.",
           "extraction_note": "Core keeps a generic shell that says 'follow the active pack's injected rules'; the pack's rules carry the specifics. Full MONAI skills (/scaffold-*) ship whole in the pack."
         },
         {
           "id": "sync-check-pattern",
           "kind": "script",
           "portable": true,
-          "files": ["docs/cursor-kit/scripts/sync-check.sh"],
+          "files": [
+            "plugins/platform-core/scripts/sync-check.sh"
+          ],
           "split": "The detect-drift-then-fail pattern is core; the checked file list + CONTRIBUTING excerpts are pack.",
           "extraction_note": "Core ships the runner; pack ships the manifest of files to guard."
         },
@@ -67,13 +55,19 @@
           "kind": "schema",
           "portable": true,
           "files": [
-            ".cursor/hooks/ledger_append.py",
-            "docs/cursor-kit/scripts/ledger-report.py",
-            "docs/cursor-kit/scripts/ledger-dashboard.py",
-            "docs/cursor-kit/scripts/ledger-dashboard-plain.py"
+            "plugins/platform-core/hooks/ledger_append.py",
+            "plugins/platform-core/scripts/ledger-report.py",
+            "plugins/platform-core/scripts/ledger-dashboard.py",
+            "plugins/platform-core/scripts/ledger-dashboard-plain.py"
           ],
           "schema": {
-            "record": ["ts", "event", "profile", "decision", "..extra"],
+            "record": [
+              "ts",
+              "event",
+              "profile",
+              "decision",
+              "..extra"
+            ],
             "note": "extra keys (persona, stage, skill, path, reason) are open; report aggregates per-persona / per-stage / decision; dashboard adds Layer C score HTML."
           },
           "extraction_note": "Schema + report/dashboard are library-agnostic; ship as-is."
@@ -82,7 +76,9 @@
           "id": "agents-pattern",
           "kind": "guide",
           "portable": true,
-          "files": ["AGENTS.md"],
+          "files": [
+            "AGENTS.md"
+          ],
           "split": "The structure (boundary explanation, persona map, when-to-use rules/refs/@Docs) is core; the MONAI specifics are pack.",
           "extraction_note": "Core ships an AGENTS.md template; pack fills library sections."
         },
@@ -90,7 +86,9 @@
           "id": "boundary-profile-mechanism",
           "kind": "config",
           "portable": true,
-          "files": [".cursor/boundary-profile"],
+          "files": [
+            ".cursor/boundary-profile"
+          ],
           "extraction_note": "strict|everyday toggle is core; the allowlist it selects comes from the consumer's .cursor/pack.config.json instance (seam.hook_facing_config)."
         }
       ]
@@ -104,30 +102,25 @@
           "id": "rules-text",
           "kind": "rules",
           "files": [
-            ".cursor/rules/00-repo-guardrails.mdc",
-            ".cursor/rules/10-transforms.mdc",
-            ".cursor/rules/20-testing.mdc",
-            ".cursor/rules/30-style.mdc",
-            ".cursor/rules/40-ci-release.mdc"
+            "plugins/pack-monai/rules/00\u201370.mdc"
           ]
         },
         {
           "id": "curated-refs",
           "kind": "docs",
           "files": [
-            "docs/cursor-kit/monai-refs/transforms-array-dict.md",
-            "docs/cursor-kit/monai-refs/testing.md",
-            "docs/cursor-kit/monai-refs/contributing-checklist.md",
-            "docs/cursor-kit/monai-refs/deprecations.md"
+            "plugins/pack-monai/refs/*.md (authoring SSOT in cursor monorepo)",
+            ".cursor/refs/*.md (materialized runtime copy in consumer)"
           ],
-          "extraction_note": "Phase 4: authoring SSOT moves to plugins/pack-monai/refs/; a materialized copy lands in the consumer's .cursor/refs/ and rules re-point from docs/cursor-kit/monai-refs/ to .cursor/refs/. See seam.refs. Read on demand, not injected."
+          "extraction_note": "Authoring SSOT: plugins/pack-monai/refs/. Runtime: consumer .cursor/refs/ via /init-pack or materialize_refs.sh. Rules cite only .cursor/refs/. Drift guarded by sync-check when CURSOR_ONBOARDING_PACK_REFS (or local/sibling pack) is available."
         },
         {
           "id": "pack-scripts",
           "kind": "scripts",
           "files": [
-            "docs/cursor-kit/scripts/check-deprecations.sh",
-            "docs/cursor-kit/scripts/check-changelog.sh"
+            "plugins/pack-monai/scripts/check-deprecations.sh",
+            "plugins/pack-monai/scripts/check-changelog.sh",
+            "plugins/pack-monai/scripts/materialize_refs.sh"
           ],
           "note": "The scanning pattern could be hoisted to core; the MONAI API/changelog specifics stay pack."
         },
@@ -153,15 +146,10 @@
           "kind": "packs",
           "portable": false,
           "files": [
-            ".cursor/rules/50-losses.mdc",
-            ".cursor/rules/60-metrics.mdc",
-            ".cursor/rules/70-networks.mdc",
-            "docs/cursor-kit/monai-refs/losses.md",
-            "docs/cursor-kit/monai-refs/metrics.md",
-            "docs/cursor-kit/monai-refs/networks.md",
-            ".cursor/skills/scaffold-loss/SKILL.md",
-            ".cursor/skills/scaffold-metric/SKILL.md",
-            ".cursor/skills/scaffold-network/SKILL.md"
+            "plugins/pack-monai/rules/{50,60,70}-*.mdc",
+            "plugins/pack-monai/refs/{losses,metrics,networks}.md",
+            "plugins/pack-monai/skills/scaffold-{loss,metric,network}/",
+            ".cursor/refs/{losses,metrics,networks}.md (materialized)"
           ],
           "extraction_note": "Loss/metric/network packs are MONAI-specific; swap per target library. The scaffold-skill shells are core-shaped but their bodies reference MONAI neighbors, so they ship in the pack for v1."
         }
@@ -171,14 +159,15 @@
   "extraction_plan_ref": "docs/cursor-kit/productization/PRODUCTIZATION.md",
   "design_spec_ref": "cursor/docs/superpowers/specs/2026-07-20-cursor-kit-plugin-monorepo-design.md (planning repo)",
   "roadmap": {
-    "note": "This manifest describes the CURRENT in-repo kit (skeleton). The design spec sequences the migration; nothing below is built until its Phase 2 seam spike passes.",
-    "phase_1_kit_branch": "Layer T (SPEC + failing tests) + spec-critic AGENT (model: HIGH) — no plugin work.",
+    "note": "Phase 4 complete on productization-plugin-monorepo: physical plugin layout + thin consumer + refs materialization.",
+    "phase_1_kit_branch": "Layer T (SPEC + failing tests) + spec-critic AGENT (model: HIGH) \u2014 no plugin work.",
     "phase_2_spike": "Prove the seam (workspaceOpen load + hooks reading .cursor/pack.config.json via CURSOR_PROJECT_DIR + strict deny-with-diagnostic + zero MONAI literals in core).",
-    "phase_3_5": "Seam -> monorepo layout + thin consumer -> workspaceOpen auto-load + Layer D/E."
+    "phase_3_5": "Seam -> monorepo layout + thin consumer -> workspaceOpen auto-load + Layer D/E.",
+    "phase_4_layout": "platform-core + pack-monai populated; consumer thin; refs SSOT in pack, materialized to .cursor/refs/; sync-check drift when pack available; CI fetch documented."
   },
   "not_in_v1": [
     "Marketplace/plugin publish (build proof via local symlink; Team Marketplace = talk track)",
-    "Standing PERSONA agents (skills stay for explicit / stage control). NOTE: the spec-critic IS a v1 agent — only the broader persona-as-agent routing is deferred.",
+    "Standing PERSONA agents (skills stay for explicit / stage control). NOTE: the spec-critic IS a v1 agent \u2014 only the broader persona-as-agent routing is deferred.",
     "workspaceOpen pack auto-load (v1 = manual enable; auto-load is a post-spike upgrade)"
   ]
 }

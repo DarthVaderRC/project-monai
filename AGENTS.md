@@ -1,6 +1,8 @@
 # MONAI Cursor onboarding kit
 
-Project-level guidance for Cursor agents working in this fork. Owned by the platform team via `.github/CODEOWNERS` (`.cursor/`, this file, `docs/cursor-kit/`).
+Project-level guidance for Cursor agents in this fork. Enable **platform-core**
+(Required) and **pack-monai** (manual) via Cursor Customize. Owned by the
+platform team via `.github/CODEOWNERS` (`.cursor/`, this file, `docs/cursor-kit/`).
 
 This is **not** a Custom Mode. Skills are invoked explicitly with `/`.
 
@@ -10,10 +12,20 @@ This is **not** a Custom Mode. Skills are invoked explicitly with `/`.
 - **Subagents are an intra-stage tool.** Within a single stage, a persona may delegate a heavy or parallelizable sub-task to a specialist subagent (isolated context window, depth-1). Example: the reviewer can run `/review-contribution` as a background subagent. Subagents never advance the flow into another persona's stage.
 - **Layer T hard gate:** `/critique-spec` must Approve before scaffold; `score_tdd_gate.py` exit 0 is required or scaffold skills refuse production edits.
 
+## Required plugins
+
+| Plugin | Role |
+|---|---|
+| `platform-core` | Hook engine, persona shells, `/init-pack`, spec-critic, sync-check runner |
+| `pack-monai` | MONAI rules `00–70`, `/scaffold-*` skills, refs SSOT |
+
+Bootstrap: `/init-pack` copies pack example → `.cursor/pack.config.json` (if missing) and materializes pack refs → `.cursor/refs/`.
+
 ## Skills (slash commands)
 
 | Skill | Persona | Purpose |
 |---|---|---|
+| `/init-pack` | DevOps | Materialize pack.config + `.cursor/refs/` from pack SSOT |
 | `/triage-issues` | PM | Rank open fork issues; recommend a catalog transform issue |
 | `/plan-feature` | PM | Create or update a **live GitHub issue** on the fork with acceptance criteria |
 | `/critique-spec` | PM | Dispatch kit-owned `spec-critic` for Layer T Approve/Reject |
@@ -39,21 +51,22 @@ echo everyday > .cursor/boundary-profile
 echo strict > .cursor/boundary-profile
 ```
 
-Hooks also honor `MONAI_CURSOR_BOUNDARY` if the profile file is absent. `sessionStart` injects the resolved profile into the session env. Allowlist details: `.cursor/hooks.json` + `.cursor/hooks/`.
+Hooks live in **platform-core** (absolute paths in `hooks.json`). Allowlists come from `.cursor/pack.config.json`.
 
 ## Docs (preferred sources)
 
-1. In-repo refs under `docs/cursor-kit/monai-refs/`:
+1. Materialized refs under **`.cursor/refs/`** (pack SSOT → `/init-pack`; do not edit as SSOT):
    - `transforms-array-dict.md` — array + `d` intensity pattern
    - `losses.md` — loss conventions + `LogCoshDiceLoss` neighbor (`DiceLoss`)
    - `metrics.md` — metric conventions + `MedianAbsoluteErrorMetric` neighbor (`MAEMetric`)
    - `networks.md` — network-block conventions + `LayerScale` neighbors
    - `testing.md` — parameterized tests / `runtests.sh`
    - `contributing-checklist.md` — style, license, DCO, fork-only PRs
+   - `deprecations.md` — deprecated API detector input
 2. Cursor `@Docs`: index **https://docs.monai.io/en/stable/** (setup steps in `docs/cursor-kit/README.md`).
 3. Canonical repo files: `CONTRIBUTING.md`, `pyproject.toml`, `setup.cfg`, `.pre-commit-config.yaml`.
 
-Do **not** scrape random web pages for MONAI conventions. Prefer refs + `@Docs` + in-repo sources.
+Do **not** scrape random web pages for MONAI conventions. Prefer `.cursor/refs/` + `@Docs` + in-repo sources. Never cite `@pack-monai/refs/…`.
 
 ## Remote policy (this fork)
 
@@ -65,5 +78,5 @@ Do **not** scrape random web pages for MONAI conventions. Prefer refs + `@Docs` 
 
 - Full process: [`CONTRIBUTING.md`](CONTRIBUTING.md) (American English, Apache header, style, tests, DCO).
 - Kit maintainability: `docs/cursor-kit/README.md`.
-- Sync check: `docs/cursor-kit/scripts/sync-check.sh` (verifies rule “Source of truth” paths still exist).
+- Sync check: `docs/cursor-kit/scripts/sync-check.sh` (existence + pack-refs drift when SSOT available).
 - Panel runbook: `docs/cursor-kit/DEMO.md`.

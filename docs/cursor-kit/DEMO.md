@@ -51,7 +51,7 @@ Platform onboards engineers onto a **convention-heavy** MONAI library; **ramp is
 | Choice | Why |
 |---|---|
 | Approach A (in-repo kit) | Reliable walkthrough; versioned with the fork |
-| `@Docs` + `monai-refs/` | Official API + owned conventions; no custom docs MCP |
+| `@Docs` + `.cursor/refs/` | Official API + owned conventions; no custom docs MCP |
 | Hooks (strict/everyday) | Honest boundary enforcement for req #3 |
 | `AGENTS.md` only | Portable working guidance without Custom Mode |
 | Cursor-estimated ledger | Stage/persona observability; not fake billing precision |
@@ -256,18 +256,18 @@ profile flips keeps the narrative clean.
 With @monai/transforms/intensity/array.py in context: which project rules apply, and what is the array vs dict (d) pattern for a new intensity transform?
 ```
 
-- **Under the hood:** `@array.py` attaches; `00-repo-guardrails.mdc` (`alwaysApply`) + `10-transforms.mdc` (globs `monai/transforms/**`); optional read of `docs/cursor-kit/monai-refs/transforms-array-dict.md`. `beforeReadFile` allows `.cursor/` + transforms paths.
+- **Under the hood:** `@array.py` attaches; `00-repo-guardrails.mdc` (`alwaysApply`) + `10-transforms.mdc` (globs `monai/transforms/**`); optional read of `.cursor/refs/transforms-array-dict.md`. `beforeReadFile` allows `.cursor/` + transforms paths.
 - **You should see:** Names those rules; summarizes array (`Transform` / `RandomizableTransform` in `intensity/array.py`) vs dict (`MapTransform` + aliases in `intensity/dictionary.py`) + three registration sites.
 - **Say out loud:** “Rules are path-scoped convention packs — the agent doesn’t need the whole repo to get the pattern right.”
-- **Fail / thrash:** Hunting `10-transforms-intensity.mdc`; fighting hooks to read `.cursor/rules`; opening `monai/networks`.
+- **Fail / thrash:** Hunting `10-transforms-intensity.mdc`; fighting hooks to read pack rules; opening `monai/networks`.
 
 ```text
-Using @Docs and @docs/cursor-kit/monai-refs/transforms-array-dict.md — how do I add a MapTransform wrapper for an intensity transform? Do not open monai/networks.
+Using @Docs and @.cursor/refs/transforms-array-dict.md — how do I add a MapTransform wrapper for an intensity transform? Do not open monai/networks.
 ```
 
 - **Under the hood:** `@Docs` + owned ref; same transform rules as above; agent should stay on allowlist without a deny probe.
 - **You should see:** Wrapper recipe from the ref (`keys`, hold array transform, `key_iterator`, `*d` / `*D` / `*Dict` aliases) — not a networks digression.
-- **Say out loud:** “Official docs for API; `monai-refs` for our non-negotiable conventions — no custom docs MCP.”
+- **Say out loud:** “Official docs for API; `.cursor/refs/` for our non-negotiable conventions — no custom docs MCP.”
 - **Fail / thrash:** Reads `monai/networks/**`; invents SoftClipIntensity; ignores the ref file that was attached. Without “*Do not open monai/networks*” agents often wander into unrelated packages “for
   context.”
 
@@ -279,7 +279,7 @@ Profile: **`everyday`** (`gh` needed).
 /triage-issues
 ```
 
-- **Under the hood:** Skill `.cursor/skills/triage-issues/SKILL.md` (`disable-model-invocation`); ledger `skill` start/end (persona PM, stage triage); `gh` against upstream (read-only) + fork; `00-repo-guardrails` fork-only remotes.
+- **Under the hood:** Skill `/triage-issues` (platform-core) (`disable-model-invocation`); ledger `skill` start/end (persona PM, stage triage); `gh` against upstream (read-only) + fork; `00-repo-guardrails` fork-only remotes.
 - **You should see:** Ranked table; recommend fork **#1 RobustScaleIntensity** (or backup #2/#3); upstream good-first issues as context only.
 - **Say out loud:** “Multi-audience PM — real backlog optics plus a seeded fork catalog”
 - **Fail / thrash:** Recommends implementing an upstream issue on this fork; creates/edits upstream; skips ledger skill markers.
@@ -343,11 +343,11 @@ Read monai/networks/nets/unet.py and summarize the UNet constructor.
 
 Stay on **`strict`**.
 
-Smoke run: open docs/cursor-kit/monai-refs/transforms-array-dict.md)
+Smoke run: open .cursor/refs/transforms-array-dict.md)
 
 ```text
 /scaffold-transform
-Implement the transform from issue #1 under monai/transforms/intensity/ (array + d). Follow monai-refs. Leave the planted dictionary __all__ gap for QA. Stay in strict allowlist.
+Implement the transform from issue #1 under monai/transforms/intensity/ (array + d). Follow .cursor/refs/. Leave the planted dictionary __all__ gap for QA. Stay in strict allowlist.
 ```
 
 - **Under the hood:** Skill `scaffold-transform`; ledger engineer/`build`; rules `10-transforms` + `20-testing` + `30-style`; ref `transforms-array-dict.md`; `beforeReadFile`/`beforeShellExecution` keep work in transforms + kit; post-edit nudges may fire on intensity edits.

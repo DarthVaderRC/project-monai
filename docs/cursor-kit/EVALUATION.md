@@ -175,8 +175,8 @@ Each pack ships a verified reference implementation (kit-on baseline = conventio
 
 | Archetype | Class | Neighbor | Pack surfaces |
 |---|---|---|---|
-| Loss | `LogCoshDiceLoss` | `DiceLoss` | `50-losses.mdc`, `monai-refs/losses.md`, `/scaffold-loss` |
-| Metric | `MedianAbsoluteErrorMetric` | `MAEMetric` | `60-metrics.mdc`, `monai-refs/metrics.md`, `/scaffold-metric` |
-| Network block | `LayerScale` | `MLPBlock` / `aspp.py` | `70-networks.mdc`, `monai-refs/networks.md`, `/scaffold-network` |
+| Loss | `LogCoshDiceLoss` | `DiceLoss` | `50-losses.mdc`, `.cursor/refs/losses.md`, `/scaffold-loss` |
+| Metric | `MedianAbsoluteErrorMetric` | `MAEMetric` | `60-metrics.mdc`, `.cursor/refs/metrics.md`, `/scaffold-metric` |
+| Network block | `LayerScale` | `MLPBlock` / `aspp.py` | `70-networks.mdc`, `.cursor/refs/networks.md`, `/scaffold-network` |
 
 Re-run **Layer A** (process scorer adapted per archetype) when you need pack-level kit-off vs kit-on numbers; intensity transform runs above cover the contribution spine.

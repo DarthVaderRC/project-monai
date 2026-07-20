@@ -73,52 +73,29 @@
   "sync_check": {
     "paths": [
       "AGENTS.md",
-      ".cursor/hooks.json",
+      ".cursor/pack.config.json",
       ".cursor/boundary-profile",
-      ".cursor/hooks/policy.py",
-      ".cursor/hooks/ledger_append.py",
-      ".cursor/hooks/session_start.py",
-      ".cursor/hooks/boundary_read.py",
-      ".cursor/hooks/boundary_shell.py",
-      ".cursor/hooks/nudge_style_test.py",
-      ".cursor/hooks/post_edit_nudge.py",
-      ".cursor/hooks/prompt_coach.py",
-      ".cursor/hooks/subagent_audit.py",
+      ".cursor/refs/transforms-array-dict.md",
+      ".cursor/refs/testing.md",
+      ".cursor/refs/contributing-checklist.md",
+      ".cursor/refs/deprecations.md",
+      ".cursor/refs/losses.md",
+      ".cursor/refs/metrics.md",
+      ".cursor/refs/networks.md",
+      ".cursor/usage",
       "docs/cursor-kit/README.md",
       "docs/cursor-kit/DEMO.md",
       "docs/cursor-kit/EVALUATION.md",
-      "docs/cursor-kit/monai-refs/transforms-array-dict.md",
-      "docs/cursor-kit/monai-refs/testing.md",
-      "docs/cursor-kit/monai-refs/contributing-checklist.md",
-      "docs/cursor-kit/monai-refs/deprecations.md",
       "docs/cursor-kit/scripts/sync-check.sh",
       "docs/cursor-kit/scripts/check-deprecations.sh",
       "docs/cursor-kit/scripts/check-changelog.sh",
       "docs/cursor-kit/scripts/ledger-report.py",
       "docs/cursor-kit/scripts/ledger-dashboard.py",
       "docs/cursor-kit/scripts/ledger-dashboard-plain.py",
+      "docs/cursor-kit/scripts/score_tdd_gate.py",
       "docs/cursor-kit/productization/manifest.json",
       "docs/cursor-kit/productization/PRODUCTIZATION.md",
-      ".cursor/agents/spec-critic.md",
-      ".cursor/skills/triage-issues/SKILL.md",
-      ".cursor/skills/plan-feature/SKILL.md",
-      ".cursor/skills/critique-spec/SKILL.md",
-      ".cursor/skills/scaffold-transform/SKILL.md",
-      "docs/cursor-kit/scripts/score_tdd_gate.py",
-      ".cursor/skills/strengthen-tests/SKILL.md",
-      ".cursor/skills/prep-for-ci/SKILL.md",
-      ".cursor/skills/review-contribution/SKILL.md",
-      ".cursor/rules/50-losses.mdc",
-      ".cursor/rules/60-metrics.mdc",
-      ".cursor/rules/70-networks.mdc",
-      "docs/cursor-kit/monai-refs/losses.md",
-      "docs/cursor-kit/monai-refs/metrics.md",
-      "docs/cursor-kit/monai-refs/networks.md",
-      ".cursor/skills/scaffold-loss/SKILL.md",
-      ".cursor/skills/scaffold-metric/SKILL.md",
-      ".cursor/skills/scaffold-network/SKILL.md",
-      ".github/workflows/cursor-kit-sync.yml",
-      ".cursor/pack.config.json"
+      ".github/workflows/cursor-kit-sync.yml"
     ]
   },
   "tdd": {
@@ -140,10 +117,22 @@
   },
   "judge": {
     "rubric": [
-      { "dimension": "correctness", "weight": 0.4 },
-      { "dimension": "api_fit", "weight": 0.3 },
-      { "dimension": "tests", "weight": 0.2 },
-      { "dimension": "docs", "weight": 0.1 }
+      {
+        "dimension": "correctness",
+        "weight": 0.4
+      },
+      {
+        "dimension": "api_fit",
+        "weight": 0.3
+      },
+      {
+        "dimension": "tests",
+        "weight": 0.2
+      },
+      {
+        "dimension": "docs",
+        "weight": 0.1
+      }
     ]
   }
 }

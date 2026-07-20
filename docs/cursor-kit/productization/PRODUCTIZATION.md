@@ -1,10 +1,10 @@
-# Productization (skeleton)
+# Productization (Phase 4 layout)
 
-**Status:** skeleton only. Nothing here is published, loaded, or changes runtime behavior. The live walkthrough runs entirely off the in-repo kit (`.cursor/`, `docs/cursor-kit/`). This document + [`manifest.json`](manifest.json) record *how* the kit would split into a portable platform and per-library packs, so extraction is a lift-and-shift rather than a rewrite.
+**Status:** Phase 4 — layout + thin consumer + refs materialization. Runtime kit content lives in the sibling `cursor` monorepo plugins (`platform-core`, `pack-monai`); this consumer keeps `.cursor/pack.config.json` + `boundary-profile` + materialized `.cursor/refs/` + `usage/`, plus DEMO/EVAL narrative under `docs/cursor-kit/`. See [`manifest.json`](manifest.json) for the seam contract.
 
-## Why a skeleton, not a plugin (yet)
+## Why plugins + thin consumer
 
-Publishing this fork's folder as a Marketplace/org plugin as-is would be wrong: the content pack is MONAI-specific (intensity transforms plus Phase 1 loss/metric/network packs). The value that generalizes is the **platform core** (persona SDLC rails), not the MONAI text. So v1 keeps the pack in-repo for a reliable walkthrough and captures the split here. This is a deliberate scope decision, not an omission.
+The content pack is MONAI-specific (intensity transforms plus Phase 1 loss/metric/network packs). The value that generalizes is the **platform core** (persona SDLC rails). Phase 4 physically moves rules/skills/hooks/agents into plugins and materializes refs into the consumer — refs stay deep and on-demand (not distilled into rules).
 
 ## Core vs pack
 
@@ -72,3 +72,14 @@ Adding a second library touches **zero** core code: new `pack-<lib>` folder + on
 - Not a LOC exercise. The KPI is ramp time and convention adherence, not lines shipped.
 
 **Source of truth:** [`manifest.json`](manifest.json), and the "Productization next" section of [`../DEMO.md`](../DEMO.md).
+
+## CI script fetch (Phase 4)
+
+GitHub Actions on the consumer has **no** Cursor plugin installer. `docs/cursor-kit/scripts/*` are **thin wrappers** that resolve:
+
+1. `CURSOR_PLATFORM_CORE` / `CURSOR_ONBOARDING_PACK` env, or
+2. sibling checkout `../cursor/plugins/{platform-core,pack-monai}`, or
+3. `~/.cursor/plugins/local/{platform-core,pack-monai}`
+
+For pure-consumer CI, **fetch** the platform monorepo (submodule, pinned checkout, or vendored copy) and set those env vars. Existence checks in sync-check still run without pack SSOT; **refs byte-drift** requires `CURSOR_ONBOARDING_PACK_REFS` (or a resolvable pack refs dir).
+
