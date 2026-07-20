@@ -1,12 +1,12 @@
-# Panel runbook — MONAI Cursor onboarding kit
+# Runbook — MONAI Cursor onboarding kit
 
 Session script for the `project-monai` workspace (`cursor-onboarding-kit` branch).
 
-**Push to origin only during the live panel** (closed assignment — keep kit local until then).
+**Push to origin is not needed** (Keep kit local until then).
 
 ---
 
-## Panel narrative (judgment — read this first)
+## Narrative (judgment — read this first)
 
 This section is what the exercise grades as *judgment about what’s worth solving*, not only a working spine. The live walkthrough proves the artifact; this proves *why*.
 
@@ -50,7 +50,7 @@ Platform onboards engineers onto a **convention-heavy** MONAI library; **ramp is
 
 | Choice | Why |
 |---|---|
-| Approach A (in-repo kit) | Reliable panel-safe walkthrough; versioned with the fork |
+| Approach A (in-repo kit) | Reliable walkthrough; versioned with the fork |
 | `@Docs` + `monai-refs/` | Official API + owned conventions; no custom docs MCP |
 | Hooks (strict/everyday) | Honest boundary enforcement for req #3 |
 | `AGENTS.md` only | Portable working guidance without Custom Mode |
@@ -90,7 +90,7 @@ Do **not** claim production ROI. Propose the frame platform would run:
 
 Ownership is not the script alone. **Versioned kit + CODEOWNERS + sync gate** so when CONTRIBUTING/paths drift, CI fails instead of silently teaching wrong norms. README tells the team how to bump rules/refs.
 
-### Productization next (talk, don’t rebuild mid-panel)
+### Productization next (talk, don’t rebuild mid-way)
 
 Today’s **content pack** is MONAI/transforms-specific (correct for the stand-in). A Marketplace plugin of “this folder as-is” would be wrong for other libs.
 
@@ -103,7 +103,7 @@ Today’s **content pack** is MONAI/transforms-specific (correct for the stand-i
 
 The split is physicalized as a **skeleton** in [`productization/`](productization/) (`manifest.json` tags every file `core` vs `pack`; `PRODUCTIZATION.md` is the extraction plan). It is not loaded and changes no runtime behavior — deleting it changes nothing about the kit. Point at it to show the productization path is designed, not just talked.
 
-**Strong panel answers (copy):**
+**Strong answers (copy):**
 
 - *“I’d productize the platform core as a plugin next; this fork keeps the MONAI pack in-repo for a reliable v1 walkthrough.”*
 - *“LOC isn’t the KPI — ramp time and convention adherence are.”*
@@ -150,7 +150,7 @@ Grounded in the actual event schemas, not assumptions:
 ## Pre-flight
 
 - [ ] Open folder: `/Users/DineshGawande/Code/project-monai` (not the planning repo)
-- [ ] Branch: `cursor-onboarding-kit` (push to fork **only when the panel starts**, if required)
+- [ ] Branch: `cursor-onboarding-kit` (push to fork **only when the demo starts**, if required)
 - [ ] `gh auth status` OK; Issues enabled on fork
 - [ ] `@Docs` indexed: https://docs.monai.io/en/stable/
 - [ ] Customize → Rules shows `00`–`70`; Skills show nine `/` workflows (live spine uses six — see table below)
@@ -426,4 +426,4 @@ CLI-only equivalents still work: `ledger-report.py` (counts) and `score_trajecto
 - Archive + dashboard: see **§I** (`ledger-dashboard.py`; target `9/9` required)
 - Discard live scaffold transform/tests/changelog from the kit branch unless you intend to keep them; keep kit fixes (hooks, rules, skill renames, DEMO)
 - Do not push kit branch to upstream MONAI
-- If you opened a draft PR on the fork for the panel, close or leave it — confirm afterward
+- If you opened a draft PR on the fork, close or leave it — confirm afterward

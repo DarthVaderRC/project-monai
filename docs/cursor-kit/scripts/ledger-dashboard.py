@@ -71,7 +71,7 @@ def _aggregate(records: list[dict]) -> dict:
     }
 
 
-def _bar_section(title: str, counter: Counter, key_header: str, delay: float) -> str:
+def _bar_section(title: str, counter: Counter, dim: str, delay: float) -> str:
     if not counter:
         return (
             f"<section class='panel' style='--d:{delay}s'>"
@@ -81,13 +81,16 @@ def _bar_section(title: str, counter: Counter, key_header: str, delay: float) ->
     rows = []
     for i, (k, v) in enumerate(counter.most_common()):
         pct = max(4, round(100 * v / peak))
+        label = str(k)
         rows.append(
-            "<div class='bar-row' "
-            f"style='--i:{i}'>"
-            f"<div class='bar-label' title='{html.escape(key_header)}'>{html.escape(str(k))}</div>"
-            f"<div class='bar-track'><div class='bar-fill' style='--w:{pct}%'></div></div>"
-            f"<div class='bar-n'>{v}</div>"
-            "</div>"
+            '<button type="button" class="bar-row" '
+            f'style="--i:{i}" data-dim="{html.escape(dim, quote=True)}" '
+            f'data-value="{html.escape(label, quote=True)}" '
+            f'title="Show events where {html.escape(dim)}={html.escape(label)}">'
+            f'<span class="bar-label">{html.escape(label)}</span>'
+            f'<span class="bar-track"><span class="bar-fill" style="--w:{pct}%"></span></span>'
+            f'<span class="bar-n">{v}</span>'
+            "</button>"
         )
     return (
         f"<section class='panel' style='--d:{delay}s'>"
@@ -111,7 +114,7 @@ def _spine(skills: list[str], expected: list[str]) -> str:
     return "<ol class='spine'>" + "".join(items) + "</ol>"
 
 
-def _render_html(*, ledger: Path, agg: dict, report: dict) -> str:
+def _render_html(*, ledger: Path, agg: dict, report: dict, records: list[dict]) -> str:
     score = report["score"]
     ship = score["ship_ready_trajectory"]
     badge = "pass" if ship else "fail"
@@ -128,6 +131,8 @@ def _render_html(*, ledger: Path, agg: dict, report: dict) -> str:
         "review-contribution",
     ]
     req_pct = round(100 * score["required_pass"] / max(1, score["required_total"]))
+    # Escape </script> so embedded JSON cannot break out of the data block.
+    ledger_json = json.dumps(records, ensure_ascii=False).replace("</", "<\\/")
 
     check_rows = []
     for i, c in enumerate(report["checks"]):
@@ -180,7 +185,7 @@ def _render_html(*, ledger: Path, agg: dict, report: dict) -> str:
     background-size: auto, auto, 28px 28px, 28px 28px;
     min-height: 100vh;
   }}
-  main {{ max-width: 980px; margin: 0 auto; padding: 2.25rem 1.25rem 3.5rem; }}
+  main {{ max-width: 1120px; margin: 0 auto; padding: 2.25rem 1.25rem 3.5rem; }}
   .mast {{
     display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem;
     align-items: end; margin-bottom: 1.5rem;
@@ -302,7 +307,15 @@ def _render_html(*, ledger: Path, agg: dict, report: dict) -> str:
   .bar-row {{
     display: grid; grid-template-columns: minmax(7rem, 12rem) 1fr 2.2rem;
     gap: 0.65rem; align-items: center;
+    width: 100%; margin: 0; padding: 0.35rem 0.45rem;
+    border: 1px solid transparent; background: transparent;
+    color: inherit; font: inherit; text-align: left; cursor: pointer;
     animation: rise 0.4s ease both; animation-delay: calc(0.03s * var(--i));
+  }}
+  .bar-row:hover {{ background: rgba(11,110,106,0.06); border-color: rgba(11,110,106,0.14); }}
+  .bar-row:focus-visible {{ outline: 2px solid var(--accent); outline-offset: 2px; }}
+  .bar-row.is-selected {{
+    background: rgba(11,110,106,0.1); border-color: rgba(11,110,106,0.28);
   }}
   .bar-label {{
     font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -311,7 +324,7 @@ def _render_html(*, ledger: Path, agg: dict, report: dict) -> str:
     height: 0.55rem; background: #e4ecef; overflow: hidden;
   }}
   .bar-fill {{
-    height: 100%; width: 0;
+    display: block; height: 100%; width: 0;
     background: linear-gradient(90deg, var(--accent), #1f8f88);
     animation: grow 0.7s ease forwards;
     animation-delay: calc(0.04s * var(--i) + 0.15s);
@@ -320,6 +333,71 @@ def _render_html(*, ledger: Path, agg: dict, report: dict) -> str:
     text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; color: var(--muted);
   }}
   .empty {{ color: var(--muted); }}
+  .detail-head {{
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.75rem;
+    align-items: center; margin-bottom: 0.85rem;
+  }}
+  .detail-head h2 {{ margin: 0; }}
+  .detail-meta {{ color: var(--muted); font-size: 0.85rem; }}
+  .detail-actions {{ display: flex; gap: 0.5rem; align-items: center; }}
+  .btn-clear {{
+    appearance: none; border: 1px solid var(--line); background: #fff;
+    color: var(--ink); font: inherit; font-size: 0.8rem; font-weight: 600;
+    padding: 0.3rem 0.65rem; cursor: pointer;
+  }}
+  .btn-clear:hover {{ border-color: var(--accent); color: var(--accent); }}
+  .btn-clear:disabled {{ opacity: 0.45; cursor: default; }}
+  .detail-table-wrap {{
+    overflow: auto;
+    max-height: min(28rem, 60vh);
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.55);
+  }}
+  .detail-table {{
+    font-size: 0.84rem;
+    width: max-content;
+    min-width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }}
+  .detail-table th, .detail-table td {{
+    padding: 0.45rem 0.65rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }}
+  .detail-table th {{
+    position: sticky; top: 0; z-index: 1;
+    background: #eef3f4; color: var(--muted);
+    font-size: 0.72rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    white-space: nowrap;
+  }}
+  .detail-table td {{
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }}
+  .detail-table .col-ts {{ white-space: nowrap; }}
+  .detail-table .col-event,
+  .detail-table .col-decision,
+  .detail-table .col-persona,
+  .detail-table .col-stage,
+  .detail-table .col-skill,
+  .detail-table .col-profile,
+  .detail-table .col-tool,
+  .detail-table .col-attachment_type {{
+    white-space: nowrap;
+  }}
+  .detail-table .col-path,
+  .detail-table .col-command,
+  .detail-table .col-reason {{
+    white-space: normal;
+    word-break: break-word;
+    min-width: 22rem;
+    max-width: 40rem;
+  }}
+  .detail-table .col-command {{ min-width: 28rem; max-width: 48rem; }}
+  #detail-empty {{ margin: 0; }}
+  #detail-table-wrap[hidden], #detail-empty[hidden] {{ display: none; }}
   @keyframes rise {{
     from {{ opacity: 0; transform: translateY(8px); }}
     to {{ opacity: 1; transform: none; }}
@@ -403,7 +481,140 @@ def _render_html(*, ledger: Path, agg: dict, report: dict) -> str:
   {_bar_section("By skill — skill start/end events (≈2 per complete run)", agg["by_skill"], "skill", 0.34)}
   {_bar_section("By event source — all hook/skill event types", agg["by_event"], "event", 0.38)}
   {_bar_section("By decision — allow/deny/warn/start/end/…", agg["by_decision"], "decision", 0.42)}
+
+  <section class="panel" id="detail-panel" style="--d:0.46s">
+    <div class="detail-head">
+      <div>
+        <h2 id="detail-title">Event detail</h2>
+        <p class="detail-meta" id="detail-meta">Click a bar row to inspect matching ledger events.</p>
+      </div>
+      <div class="detail-actions">
+        <button type="button" class="btn-clear" id="detail-clear" disabled>Clear</button>
+      </div>
+    </div>
+    <p class="empty" id="detail-empty">Click a persona, stage, skill, event, or decision bar to see its rows in a table.</p>
+    <div class="detail-table-wrap" id="detail-table-wrap" hidden>
+      <table class="detail-table">
+        <thead id="detail-thead"></thead>
+        <tbody id="detail-tbody"></tbody>
+      </table>
+    </div>
+  </section>
 </main>
+<script type="application/json" id="ledger-data">{ledger_json}</script>
+<script>
+(function () {{
+  var ALWAYS_COLS = ["ts", "event", "decision"];
+  var OPTIONAL_COLS = [
+    "persona", "stage", "skill", "profile",
+    "path", "command", "reason", "tool", "attachment_type"
+  ];
+  var dataEl = document.getElementById("ledger-data");
+  var records = [];
+  try {{
+    records = JSON.parse(dataEl.textContent || "[]");
+  }} catch (err) {{
+    records = [];
+  }}
+
+  var titleEl = document.getElementById("detail-title");
+  var metaEl = document.getElementById("detail-meta");
+  var emptyEl = document.getElementById("detail-empty");
+  var wrapEl = document.getElementById("detail-table-wrap");
+  var theadEl = document.getElementById("detail-thead");
+  var tbodyEl = document.getElementById("detail-tbody");
+  var clearBtn = document.getElementById("detail-clear");
+  var activeBtn = null;
+
+  function esc(value) {{
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }}
+
+  function cellText(rec, key) {{
+    var v = rec[key];
+    if (v == null) return "";
+    if (typeof v === "object") return JSON.stringify(v);
+    return String(v);
+  }}
+
+  function columnsFor(rows) {{
+    var cols = ALWAYS_COLS.slice();
+    OPTIONAL_COLS.forEach(function (key) {{
+      if (rows.some(function (r) {{ return r[key] != null && r[key] !== ""; }})) {{
+        cols.push(key);
+      }}
+    }});
+    return cols;
+  }}
+
+  function clearDetail() {{
+    if (activeBtn) {{
+      activeBtn.classList.remove("is-selected");
+      activeBtn = null;
+    }}
+    titleEl.textContent = "Event detail";
+    metaEl.textContent = "Click a bar row to inspect matching ledger events.";
+    emptyEl.hidden = false;
+    wrapEl.hidden = true;
+    theadEl.innerHTML = "";
+    tbodyEl.innerHTML = "";
+    clearBtn.disabled = true;
+  }}
+
+  function showDetail(dim, value, btn) {{
+    var rows = records.filter(function (rec) {{
+      if (dim === "event") return String(rec.event == null ? "?" : rec.event) === value;
+      if (dim === "decision") return String(rec.decision == null ? "?" : rec.decision) === value;
+      return String(rec[dim] == null ? "" : rec[dim]) === value;
+    }});
+    var cols = columnsFor(rows);
+    titleEl.textContent = dim + " = " + value;
+    metaEl.textContent = rows.length + (rows.length === 1 ? " matching event" : " matching events");
+    emptyEl.hidden = true;
+    wrapEl.hidden = false;
+    clearBtn.disabled = false;
+
+    theadEl.innerHTML = "<tr>" + cols.map(function (c) {{
+      return "<th class=\\"col-" + esc(c) + "\\">" + esc(c) + "</th>";
+    }}).join("") + "</tr>";
+
+    tbodyEl.innerHTML = rows.map(function (rec) {{
+      return "<tr>" + cols.map(function (c) {{
+        var text = cellText(rec, c);
+        return "<td class=\\"col-" + esc(c) + "\\" title=\\"" + esc(text) + "\\">" +
+          esc(text) + "</td>";
+      }}).join("") + "</tr>";
+    }}).join("");
+
+    document.querySelectorAll(".bar-row.is-selected").forEach(function (el) {{
+      el.classList.remove("is-selected");
+    }});
+    if (btn) {{
+      btn.classList.add("is-selected");
+      activeBtn = btn;
+    }}
+    document.getElementById("detail-panel").scrollIntoView({{ behavior: "smooth", block: "nearest" }});
+  }}
+
+  document.querySelectorAll(".bar-row").forEach(function (btn) {{
+    btn.addEventListener("click", function () {{
+      var dim = btn.getAttribute("data-dim") || "";
+      var value = btn.getAttribute("data-value") || "";
+      if (activeBtn === btn) {{
+        clearDetail();
+        return;
+      }}
+      showDetail(dim, value, btn);
+    }});
+  }});
+
+  clearBtn.addEventListener("click", clearDetail);
+}})();
+</script>
 </body>
 </html>
 """
@@ -438,7 +649,10 @@ def main() -> int:
     agg = _aggregate(scoped)
 
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(_render_html(ledger=ledger, agg=agg, report=report), encoding="utf-8")
+    out.write_text(
+        _render_html(ledger=ledger, agg=agg, report=report, records=scoped),
+        encoding="utf-8",
+    )
 
     score = report["score"]
     print(f"Wrote {out}")
