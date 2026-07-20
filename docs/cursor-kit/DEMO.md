@@ -1,8 +1,22 @@
 # Runbook — MONAI Cursor onboarding kit
 
-Session script for the `project-monai` workspace (`cursor-onboarding-kit` branch).
+Session script for the `project-monai` workspace on branch
+`productization-plugin-monorepo` (plugin-shaped thin consumer). Fallback demo
+branch if plugins are unavailable: `cursor-onboarding-kit`.
 
-**Push to origin is not needed** (Keep kit local until then).
+**Push to origin is not needed** (keep kit local until then).
+
+### Pre-flight (plugins)
+
+1. Install plugins from the sibling `cursor` monorepo (see that repo’s `README.md`):
+   ```bash
+   mkdir -p ~/.cursor/plugins/local
+   cp -R /path/to/cursor/plugins/platform-core ~/.cursor/plugins/local/platform-core
+   cp -R /path/to/cursor/plugins/pack-monai ~/.cursor/plugins/local/pack-monai
+   ```
+2. Cursor **Customize** → enable **platform-core** + **pack-monai** (User-scoped is OK).
+3. New Agent chat on `project-monai` → confirm pack rules inject (e.g. Pack spike / transform rules).
+4. If `.cursor/refs/` is empty/missing: run `/init-pack`.
 
 ---
 
@@ -38,11 +52,12 @@ Platform onboards engineers onto a **convention-heavy** MONAI library; **ramp is
 
 | Build first | Skip / defer (v1) |
 |---|---|
+| Plugins (platform-core + pack-monai) + thin consumer | Public Marketplace publish |
 | Rules + two-profile hooks + `/scaffold-transform` | Companion-repo installer |
 | QA + DevOps skills; PM triage/plan | Custom docs/boundary MCP |
-| In-repo refs + `@Docs` | Custom Mode |
+| Pack refs SSOT → `.cursor/refs/` + `@Docs` | Custom Mode |
 | sync-check + CODEOWNERS + kit CI | GPU/distributed automation |
-| | Full cost dashboard; Marketplace plugin extract |
+| Layer D judge (additive) + Layer E `model_id` | Full billing/token invoice |
 
 **Equal depth vs live sequencing:** all five requirements are designed in; the **live** path is short on purpose (presentation choice, not a depth cut).
 
@@ -90,27 +105,27 @@ Do **not** claim production ROI. Propose the frame platform would run:
 
 Ownership is not the script alone. **Versioned kit + CODEOWNERS + sync gate** so when CONTRIBUTING/paths drift, CI fails instead of silently teaching wrong norms. README tells the team how to bump rules/refs.
 
-### Productization next (talk, don’t rebuild mid-way)
+### Productization (shipped on this branch)
 
-Today’s **content pack** is MONAI/transforms-specific (correct for the stand-in). A Marketplace plugin of “this folder as-is” would be wrong for other libs.
+The **content pack** is MONAI-specific (correct for the stand-in). Shipping “this consumer folder as-is” as a Marketplace plugin would be wrong for other libs — that’s why we split.
 
-The split is **by reader** — because Cursor has no cross-plugin path resolution, a core hook can't read a file inside the pack plugin:
+The split is **by reader** — Cursor has no cross-plugin path resolution, so a core hook can't read a file inside the pack plugin:
 
 | Piece | Portable? | Contents | How it reaches the agent |
 |---|---|---|---|
-| Platform core (plugin, Required) | Yes | Hook **engine**, library-agnostic skill *shells*, spec-critic agent, sync-check *runner*, ledger schema, AGENTS pattern | Enabled org-wide |
-| Library pack (plugin, Default Off) | No | MONAI rules text, `refs/` (SSOT → materialized to consumer `.cursor/refs/`), `scaffold-*` skills, catalog transforms, planted-defect recipe, pack.config **schema + example** | Cursor **injects** rules/skills; refs read on demand from `.cursor/refs/` |
-| Consumer (workspace) | n/a | `.cursor/pack.config.json` **instance** — allowlists, coach patterns (workspace policy, like `boundary-profile`) | Hooks read it via `CURSOR_PROJECT_DIR` |
+| Platform core (plugin, Required) | Yes | Hook **engine**, library-agnostic skill *shells*, spec-critic agent, sync-check / score / Layer D runners, ledger | Enable in Customize |
+| Library pack (plugin, Default Off) | No | MONAI rules, `refs/` SSOT, `scaffold-*`, pack.config **schema + example** | Cursor **injects** rules/skills; refs read from consumer `.cursor/refs/` |
+| Consumer (this repo) | n/a | `.cursor/pack.config.json` instance + `boundary-profile` + materialized `refs/` + `usage/` | Hooks read config via `CURSOR_PROJECT_DIR` |
 
-**Next:** extract core to a private/org plugin (Required); keep packs per library (`pack-monai`, then e.g. `pack-diffuser`) as Default-Off. Adding a library touches zero core code. Pack loading is manual-enable in v1; Cursor's `workspaceOpen → pluginPaths` hook auto-loads the right pack as an upgrade. **Agents/subagents:** the spec-critic **is** built as a v1 agent (`model:` HIGH, the one enforceable model pin); broader persona-as-standing-agent delegation is deferred on purpose — skills stay for explicit `/` stage control.
+**This branch already physicalizes that split** in the sibling `cursor` monorepo (`platform-core` + `pack-monai`). Consumer narrative + seam notes live in [`productization/`](productization/).
 
-The split is physicalized as a **skeleton** in [`productization/`](productization/) (`manifest.json` has the authoritative `seam` block + tags every file `core` vs `pack`; `PRODUCTIZATION.md` is the extraction plan). It is not loaded and changes no runtime behavior — deleting it changes nothing about the kit. Point at it to show the productization path is designed, not just talked.
+v1 enablement is **manual** in Customize; `workspaceOpen → pluginPaths` is an upgrade (already in platform-core — reload Cursor to exercise). Spec-critic is the only `model:`-enforced agent pin; broader standing-agent personas stay deferred.
 
 **Strong answers (copy):**
 
-- *“I’d productize the platform core as a Required org plugin next; this fork keeps the MONAI pack in-repo for a reliable v1 walkthrough.”*
-- *“Config splits by reader: Cursor injects the pack's rules/skills, and hooks read the consumer's `pack.config.json` via `CURSOR_PROJECT_DIR` — no cross-plugin path, which Cursor doesn't support.”*
-- *“Adding a second library like DIFFUSER is a new pack folder + a marketplace entry + that repo's config instance — the engine's written once.”*
+- *“Platform-core is the portable Required plugin; pack-monai is Default-Off and swapped per library.”*
+- *“Config splits by reader: Cursor injects the pack's rules/skills; hooks read the consumer's `pack.config.json` via `CURSOR_PROJECT_DIR`.”*
+- *“Adding DIFFUSER is a new pack folder + marketplace entry + that repo's config instance — the engine is written once.”*
 - *“LOC isn’t the KPI — ramp time and convention adherence are.”*
 - *“Upstream good-first issues are context; writable work stays on the fork catalog.”*
 
@@ -198,6 +213,10 @@ verify in the agent UI on live runs). Critic ledger proof is kit-owned
 (`source=critique-spec` after SPEC-REVIEW exists), not Cursor's subagent audit payload
 (optional corroboration only). Prod-write restraint is prompt-enforced. Layer T red
 marker is a required static convention.
+
+**Optional after review (do not block the spine):** Layer D
+`python3 docs/cursor-kit/scripts/llm_judge.py --issue <n> --prompt-only` (or `--dry-run`
+template). Layer E: ledger may carry `model_id` when known — cost/routing only, not quality.
 
 ### Planted defect
 

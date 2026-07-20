@@ -118,20 +118,20 @@
   "judge": {
     "rubric": [
       {
-        "dimension": "correctness",
-        "weight": 0.4
-      },
-      {
-        "dimension": "api_fit",
+        "dimension": "acceptance_alignment",
         "weight": 0.3
       },
       {
-        "dimension": "tests",
-        "weight": 0.2
+        "dimension": "test_coverage",
+        "weight": 0.25
       },
       {
-        "dimension": "docs",
-        "weight": 0.1
+        "dimension": "scope_discipline",
+        "weight": 0.25
+      },
+      {
+        "dimension": "reviewability",
+        "weight": 0.2
       }
     ]
   }

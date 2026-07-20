@@ -1,6 +1,6 @@
-# Productization (Phase 4 layout)
+# Productization (Phase 4–5)
 
-**Status:** Phase 4 — layout + thin consumer + refs materialization. Runtime kit content lives in the sibling `cursor` monorepo plugins (`platform-core`, `pack-monai`); this consumer keeps `.cursor/pack.config.json` + `boundary-profile` + materialized `.cursor/refs/` + `usage/`, plus DEMO/EVAL narrative under `docs/cursor-kit/`. See [`manifest.json`](manifest.json) for the seam contract.
+**Status:** Phase 4 layout + thin consumer + refs materialization **shipped**. Phase 5 upgrades partially shipped: `workspaceOpen → pluginPaths`, Layer D `llm_judge` (additive), Layer E optional `model_id` on ledger. Runtime kit content lives in the sibling `cursor` monorepo plugins (`platform-core`, `pack-monai`); this consumer keeps `.cursor/pack.config.json` + `boundary-profile` + materialized `.cursor/refs/` + `usage/`, plus DEMO/EVAL narrative under `docs/cursor-kit/`. See [`manifest.json`](manifest.json) for the seam contract.
 
 ## Why plugins + thin consumer
 

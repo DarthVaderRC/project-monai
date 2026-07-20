@@ -169,6 +169,32 @@ Human dashboard (counts + score): `python3 docs/cursor-kit/scripts/ledger-dashbo
 
 ---
 
+## Layer D — LLM-as-judge (additive)
+
+**Question:** *Does a qualitative rubric on the final contribution align with SPEC / tests / scope?*
+
+**Never the sole ship gate** — secondary to Layers A / T / C.
+
+**Runner:** `python3 docs/cursor-kit/scripts/llm_judge.py --issue <n> [--diff …] [--review …]`
+
+| Mode | Behavior |
+|---|---|
+| `--dry-run` (default) | Writes `docs/cursor-kit/work/<n>/judge_scores.json` template from `judge.rubric` in `.cursor/pack.config.json` |
+| `--prompt-only` | Prints the judge prompt for an agent / `/review-contribution` to fill (no live API in CI) |
+| `--strict-fail` | Optional; exit 1 only when a filled `weighted_total` is below `--min-score` |
+
+Rubric SSOT: pack schema/example → consumer instance `judge.rubric` (dimensions + weights).
+
+---
+
+## Layer E — economics (optional sidecar)
+
+**Not quality.** Optional `model_id` on ledger skill/subagent rows when known (env `CURSOR_MODEL` or explicit payload — **never invented**). Dashboard shows a `by_model` tally only when rows exist.
+
+Use Cloud Agent usage APIs / team dashboards for tokens when available; omit Layer E rather than invent numbers.
+
+---
+
 ## Phase 1 archetype packs (loss / metric / network)
 
 Each pack ships a verified reference implementation (kit-on baseline = conventions + mypy-clean + tests pass):
