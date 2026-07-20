@@ -12,7 +12,7 @@ Onboarding kit that encodes MONAI contribution norms into Cursor **rules**, **sk
 | Hooks | [`.cursor/hooks.json`](../../.cursor/hooks.json) + [`.cursor/hooks/`](../../.cursor/hooks/) |
 | Boundary profile | [`.cursor/boundary-profile`](../../.cursor/boundary-profile) (`everyday` \| `strict`) |
 | Refs | [`monai-refs/`](monai-refs/) |
-| Panel runbook + narrative | [`DEMO.md`](DEMO.md) |
+| Runbook + narrative | [`DEMO.md`](DEMO.md) |
 | Kit-off vs kit-on evaluation | [`EVALUATION.md`](EVALUATION.md) |
 | Sync check | [`scripts/sync-check.sh`](scripts/sync-check.sh) |
 | Kit CI | [`.github/workflows/cursor-kit-sync.yml`](../../.github/workflows/cursor-kit-sync.yml) |
@@ -43,7 +43,7 @@ echo strict > .cursor/boundary-profile     # deny out-of-allowlist reads/shell
 
 Rules and skills tell agents to read specific paths (`CONTRIBUTING.md`, `monai-refs/*.md`, neighbor modules in `Source of truth:` footers). If someone renames, moves, or deletes those files, the kit would still *point* at them but agents would get broken or outdated guidance — with no obvious failure until a bad contribution lands.
 
-**Versioned kit + CODEOWNERS + sync-check CI** means the platform team owns maintainability: when paths drift, CI fails instead of silently teaching wrong norms. Panel narrative: [`DEMO.md`](DEMO.md) § “Sync-check = team owns this”.
+**Versioned kit + CODEOWNERS + sync-check CI** means the platform team owns maintainability: when paths drift, CI fails instead of silently teaching wrong norms. Key takeaway: [`DEMO.md`](DEMO.md) § “Sync-check = team owns this”.
 
 ### What it checks
 
@@ -99,7 +99,48 @@ bash docs/cursor-kit/scripts/sync-check.sh
 
 Platform ownership for kit paths is recorded in `.github/CODEOWNERS` (`.cursor/`, `AGENTS.md`, `docs/cursor-kit/`).
 
-**Panel narrative** (business judgment, value metrics, productization / agents path) lives in [`DEMO.md`](DEMO.md) — start there for the interview, not only the live spine.
+**Panel narrative** (business judgment, value metrics, productization / agents path) lives in [`DEMO.md`](DEMO.md) — start there, not only the live spine.
+
+### Core vs pack (who manages what)
+
+Today the kit ships in-repo as one tree. The intended productization split (skeleton only — see [`productization/`](productization/)) is:
+
+| Owner | Manages | Does not manage |
+|---|---|---|
+| **Platform / DX team** | **Core:** hook *engine*, persona skill *shells*, sync-check *runner*, ledger schema/report, AGENTS *template*, `strict`/`everyday` toggle | Library conventions, neighbor classes, allowlist paths, catalog examples |
+| **Library / domain team** | **Pack:** rules text, refs, examples, planted defects, archetype skill bodies, **pack config** | Hook machinery, persona stage order, ledger format |
+| **Contributors** (PM → Reviewer) | Run `/` skills; hand off via artifacts (issue, diff, verdict) | Core or pack authorship |
+
+**Core** = how the multi-persona workflow runs (portable plugin).  
+**Pack** = what “correct contribution” means for this library (swappable per repo).
+
+#### Pack-provided config (injected into core at load — *intended*)
+
+Today these still live hardcoded inside core scripts; extraction hoists them:
+
+- Path allowlists (`STRICT_*` / `EVERYDAY_*`) and deny/warn messages
+- Shell allow/deny patterns
+- Prompt-coach anti-pattern strings
+- Deprecated-API patterns
+- sync-check file inventory
+- Changelog / local-test command specifics that skills call out
+
+#### Pack content (files that swap per library)
+
+Rules (`.cursor/rules/`), curated refs (`monai-refs/`), pack scripts (`check-deprecations.sh`, `check-changelog.sh`), catalog examples + tests, planted-defect recipes, archetype packs (loss/metric/network), skill *bodies* (paths, neighbors, registration steps), and library-specific AGENTS fill-ins.
+
+#### Split inside the same artifact
+
+| Artifact | Core owns | Pack owns |
+|---|---|---|
+| Skills | Orchestration shell (persona, steps, ledger, checklist) | Step prose / paths / neighbors |
+| `policy.py` | Decision engine | Allowlist constants |
+| `prompt_coach.py` | Block/allow loop | Anti-pattern list |
+| `sync-check.sh` | Runner | Paths to check |
+| `AGENTS.md` | Skeleton | Library sections |
+| `boundary-profile` | Toggle mechanism | Which paths each mode means |
+
+**Source of truth:** [`productization/manifest.json`](productization/manifest.json) and [`productization/PRODUCTIZATION.md`](productization/PRODUCTIZATION.md).
 
 ## Usage ledger
 
