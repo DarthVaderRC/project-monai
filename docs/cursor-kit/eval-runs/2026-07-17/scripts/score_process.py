@@ -39,7 +39,7 @@ def score_process(root: Path, transform: str, stage: str = "post_scaffold") -> d
     dep_script = root / "docs/cursor-kit/scripts/check-deprecations.sh"
     if not dep_script.is_file():
         dep_script = root / "docs/cursor-kit.off/scripts/check-deprecations.sh"
-    if not (root / "docs/cursor-kit/monai-refs/deprecations.md").is_file():
+    if not (root / ".cursor/refs/deprecations.md").is_file():
         # Kit-off worktrees rename docs/cursor-kit -> .off; run gate from main checkout.
         main_root = Path(__file__).resolve().parents[5]
         main_script = main_root / "docs/cursor-kit/scripts/check-deprecations.sh"
