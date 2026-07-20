@@ -1,0 +1,15 @@
+{
+  "pack": "monai",
+  "schema_version": 1,
+  "profile_env": "MONAI_CURSOR_BOUNDARY",
+  "strict": {
+    "prefixes": [".cursor/", "docs/cursor-kit/", "monai/transforms/", "tests/transforms/"],
+    "files": ["AGENTS.md", "CONTRIBUTING.md", "pyproject.toml", "runtests.sh"]
+  },
+  "everyday": {
+    "prefixes": [".cursor/", "docs/", "monai/", "tests/", ".github/"],
+    "files": ["AGENTS.md", "CONTRIBUTING.md", "LICENSE", "README.md"]
+  },
+  "deny_msg": "Blocked by strict boundary (pack.config). Stay in allowlisted prefixes or set everyday.",
+  "warn_msg": "Warning: outside everyday allowlist (pack.config)."
+}
