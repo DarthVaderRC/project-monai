@@ -10,6 +10,17 @@ disable-model-invocation: true
 
 # /scaffold-transform (Engineer)
 
+## Hard gate (Layer T) — run before any production edit
+
+```bash
+ISSUE=<n>   # from the planned issue
+python3 docs/cursor-kit/scripts/score_tdd_gate.py --issue "$ISSUE"
+```
+
+If the command exits non-zero: **stop**. Do not edit `monai/**` or tests beyond what the gate already required. Tell the user which check failed and that they need `SPEC.md` + Layer T tests + `Verdict: Approve` from `/critique-spec`.
+
+Only after exit 0, continue with the implementation steps below (including the intentional planted QA gap).
+
 ## Ledger
 
 ```bash
