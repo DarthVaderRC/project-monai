@@ -24,6 +24,7 @@ from typing import Any
 DEMO_SPINE_SKILLS: tuple[str, ...] = (
     "triage-issues",
     "plan-feature",
+    "critique-spec",
     "scaffold-transform",
     "strengthen-tests",
     "prep-for-ci",
@@ -132,7 +133,8 @@ def score_trajectory(
 
     order_pairs = [
         ("triage-issues", "plan-feature"),
-        ("plan-feature", "scaffold-transform"),
+        ("plan-feature", "critique-spec"),
+        ("critique-spec", "scaffold-transform"),
         ("scaffold-transform", "strengthen-tests"),
         ("strengthen-tests", "prep-for-ci"),
         ("prep-for-ci", "review-contribution"),
@@ -268,6 +270,23 @@ def score_trajectory(
             passed=bool(subagent_starts),
             required=require_subagent,
             detail=subagent_starts[0].get("task", "none")[:80] if subagent_starts else "no subagentStart",
+        )
+    )
+
+    critic_starts = [
+        r
+        for r in records
+        if r.get("event") == "subagentStart"
+        and r.get("subagent_type") == "spec-critic"
+        and r.get("source") == "critique-spec"
+    ]
+    checks.append(
+        Check(
+            id="spec_critic_subagent",
+            label="kit-owned spec-critic marker (source=critique-spec)",
+            passed=bool(critic_starts),
+            required=True,
+            detail=f"{len(critic_starts)} critic marker(s)" if critic_starts else "missing",
         )
     )
 

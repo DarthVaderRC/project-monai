@@ -8,6 +8,7 @@ This is **not** a Custom Mode. Skills are invoked explicitly with `/`.
 
 - **Each persona's session orchestrates only its own stage.** A persona invokes their own `/` skill(s); work moves to the next persona via an **artifact handoff** (a GitHub issue, a diff + handoff note, a verdict) — never via an automated pipeline. There is no `ship-feature` god-command.
 - **Subagents are an intra-stage tool.** Within a single stage, a persona may delegate a heavy or parallelizable sub-task to a specialist subagent (isolated context window, depth-1). Example: the reviewer can run `/review-contribution` as a background subagent. Subagents never advance the flow into another persona's stage.
+- **Layer T hard gate:** `/critique-spec` must Approve before scaffold; `score_tdd_gate.py` exit 0 is required or scaffold skills refuse production edits.
 
 ## Skills (slash commands)
 
@@ -15,6 +16,7 @@ This is **not** a Custom Mode. Skills are invoked explicitly with `/`.
 |---|---|---|
 | `/triage-issues` | PM | Rank open fork issues; recommend a catalog transform issue |
 | `/plan-feature` | PM | Create or update a **live GitHub issue** on the fork with acceptance criteria |
+| `/critique-spec` | PM | Dispatch kit-owned `spec-critic` for Layer T Approve/Reject |
 | `/scaffold-transform` | Engineer | Implement array + `d` intensity transform from the issue |
 | `/scaffold-loss` | Engineer | Implement a new loss under `monai/losses/` from an issue |
 | `/scaffold-metric` | Engineer | Implement a new metric under `monai/metrics/` from an issue |

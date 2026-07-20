@@ -105,9 +105,12 @@ for req in \
   docs/cursor-kit/scripts/ledger-dashboard-plain.py \
   docs/cursor-kit/productization/manifest.json \
   docs/cursor-kit/productization/PRODUCTIZATION.md \
+  .cursor/agents/spec-critic.md \
   .cursor/skills/triage-issues/SKILL.md \
   .cursor/skills/plan-feature/SKILL.md \
+  .cursor/skills/critique-spec/SKILL.md \
   .cursor/skills/scaffold-transform/SKILL.md \
+  docs/cursor-kit/scripts/score_tdd_gate.py \
   .cursor/skills/strengthen-tests/SKILL.md \
   .cursor/skills/prep-for-ci/SKILL.md \
   .cursor/skills/review-contribution/SKILL.md \

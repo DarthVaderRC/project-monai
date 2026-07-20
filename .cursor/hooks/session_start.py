@@ -24,8 +24,8 @@ def main() -> int:
             f"MONAI Cursor kit active. Boundary profile: {mode} "
             f"(strict = deny reads/shell outside transforms + kit paths; "
             f"everyday = warn only). Flip via `.cursor/boundary-profile`. "
-            f"Skills: /triage-issues /plan-feature /scaffold-transform "
-            f"/scaffold-loss /scaffold-metric /scaffold-network "
+            f"Skills: /triage-issues /plan-feature /critique-spec "
+            f"/scaffold-transform /scaffold-loss /scaffold-metric /scaffold-network "
             f"/strengthen-tests /prep-for-ci /review-contribution."
         )
         emit({"env": {PROFILE_ENV: mode}, "additional_context": context})
