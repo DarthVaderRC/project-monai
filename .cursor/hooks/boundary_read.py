@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""beforeReadFile: enforce the kit path allowlist on file reads.
+"""beforeReadFile: enforce pack.config allowlists on file reads.
 
-In `strict`, denies reads outside transforms + kit paths; in `everyday`, allows
-but warns. Also audits out-of-bounds `@` attachments (observe-only — cannot strip).
+Missing pack.config in strict → deny naming `.cursor/pack.config.json`.
+In everyday, allow with a warn that names the missing path.
 """
 
 from __future__ import annotations
@@ -14,18 +14,21 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from policy import (  # noqa: E402
-    DENY_MSG,
-    WARN_MSG,
     append_ledger,
+    deny_message,
     emit,
+    load_pack_config,
+    missing_config_deny_msg,
     path_allowed,
     profile,
+    project_root,
     read_stdin_json,
     rel_path,
+    warn_message,
 )
 
 
-def audit_attachments(payload: dict, mode: str) -> None:
+def audit_attachments(payload: dict, mode: str, cfg: dict | None) -> None:
     """Log out-of-bounds context attachments (@-mentioned files / rules).
 
     Honesty note: `beforeReadFile` returns a single permission for `file_path`.
@@ -43,7 +46,7 @@ def audit_attachments(payload: dict, mode: str) -> None:
         if not att_path:
             continue
         att_rel = rel_path(att_path)
-        if not path_allowed(att_rel, mode):
+        if not path_allowed(att_rel, mode, cfg):
             append_ledger(
                 "beforeReadFile",
                 "attachment_out_of_bounds",
@@ -56,41 +59,71 @@ def main() -> int:
     try:
         payload = read_stdin_json()
         file_path = payload.get("file_path") or ""
-        mode = profile()
-        rel = rel_path(file_path) if file_path else ""
-        audit_attachments(payload, mode)
-        allowed = path_allowed(rel, mode) if rel else False
+        root = project_root()
+        cfg = load_pack_config(root)
+        mode = profile(cfg)
+        rel = rel_path(file_path, root) if file_path else ""
+
+        if cfg is None:
+            append_ledger("beforeReadFile", "pack_config_missing", path=rel or file_path)
+            if mode == "strict":
+                msg = missing_config_deny_msg(root)
+                emit(
+                    {
+                        "permission": "deny",
+                        "user_message": msg,
+                        "agent_message": msg,
+                    }
+                )
+                return 0
+            msg = warn_message(None) + f" ({missing_config_deny_msg(root)})"
+            emit(
+                {
+                    "permission": "allow",
+                    "user_message": msg,
+                    "agent_message": msg,
+                }
+            )
+            return 0
+
+        audit_attachments(payload, mode, cfg)
+        allowed = path_allowed(rel, mode, cfg) if rel else False
 
         if allowed:
             emit({"permission": "allow"})
             return 0
 
         if mode == "strict":
+            msg = deny_message(cfg, root)
             append_ledger("beforeReadFile", "deny", path=rel or file_path)
             emit(
                 {
                     "permission": "deny",
-                    "user_message": DENY_MSG,
-                    "agent_message": DENY_MSG,
+                    "user_message": msg,
+                    "agent_message": msg,
                 }
             )
             return 0
 
+        msg = warn_message(cfg)
         append_ledger("beforeReadFile", "warn", path=rel or file_path)
         emit(
             {
                 "permission": "allow",
-                "user_message": WARN_MSG,
-                "agent_message": WARN_MSG,
+                "user_message": msg,
+                "agent_message": msg,
             }
         )
         return 0
     except Exception as exc:  # noqa: BLE001
-        mode = profile()
+        root = project_root()
+        cfg = load_pack_config(root)
+        mode = profile(cfg)
         msg = f"boundary_read hook error: {exc}"
         print(msg, file=sys.stderr)
         if mode == "strict":
-            emit({"permission": "deny", "user_message": DENY_MSG, "agent_message": msg})
+            deny = deny_message(cfg, root) if cfg else missing_config_deny_msg(root)
+            emit({"permission": "deny", "user_message": deny, "agent_message": msg})
         else:
             emit({"permission": "allow"})
         return 0

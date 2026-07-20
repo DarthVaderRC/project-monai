@@ -58,9 +58,12 @@ Why robust (or asinh / tanh-squeeze) intensity prep helps medical imaging pipeli
 - Happy path + ≥1 edge (constant volume / channel-wise / dtype) with `parameterized`
 
 3. Apply with `gh issue edit <n> -R <fork> --body ...` or `gh issue comment`, or `gh issue create` if creating new.
-4. Write the local Layer T artifact (required for the hard gate):
+4. Write the local Layer T artifact (required for the hard gate).
 
-`docs/cursor-kit/work/<issue>/SPEC.md`
+Resolve paths from `.cursor/pack.config.json` → `tdd.artifact_paths` (templates use `{issue}`):
+
+- SPEC: `tdd.artifact_paths.spec` (default template: `docs/cursor-kit/work/{issue}/SPEC.md`)
+- Layer T test: `tdd.artifact_paths.test`
 
 Use these **exact** H2 headings (score_tdd_gate matches them):
 
@@ -70,15 +73,16 @@ Use these **exact** H2 headings (score_tdd_gate matches them):
 ## Touch paths
 ## Test expectations
 
-Mirror the issue body into those sections. Create the directory if needed:
-`mkdir -p docs/cursor-kit/work/<issue>`.
+Mirror the issue body into those sections. Create the SPEC parent directory if needed
+(from the resolved `spec` template).
 5. Prefer labels `good first issue` and `kit-seed` when creating catalog issues.
 
 ## Output
 
 1. Live issue URL
-2. Path to `docs/cursor-kit/work/<issue>/SPEC.md`
+2. Path to the resolved SPEC.md (`tdd.artifact_paths.spec`)
 
 ## Stop when
 
-Issue URL + SPEC.md are shown. Hand off to: **write Layer T failing tests** (red module under `tests/transforms/`), then `/critique-spec`. Do **not** hand off directly to `/scaffold-transform`.
+Issue URL + SPEC.md are shown. Hand off to: **write Layer T failing tests** (path from
+`tdd.artifact_paths.test`), then `/critique-spec`. Do **not** hand off directly to `/scaffold-transform`.

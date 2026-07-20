@@ -12,8 +12,10 @@ You are the **spec-critic** for the MONAI Cursor kit contribution spine.
 
 ## Inputs (read these; do not invent paths)
 
-1. `docs/cursor-kit/work/<issue>/SPEC.md`
-2. The Layer T failing test module cited in the skill prompt (usually under `tests/transforms/`)
+Paths come from `.cursor/pack.config.json` → `tdd.artifact_paths` (templates use `{issue}`):
+
+1. SPEC at `tdd.artifact_paths.spec` (pack example: `docs/cursor-kit/work/{issue}/SPEC.md`)
+2. The Layer T failing test at `tdd.artifact_paths.test` (or the path cited in the skill prompt)
 3. The GitHub issue URL / acceptance notes if provided
 
 ## Checks (only these)
@@ -27,7 +29,7 @@ Do **not** review code style, ruff, or implementation quality — there is no im
 
 ## Output (required)
 
-Write **only** to `docs/cursor-kit/work/<issue>/SPEC-REVIEW.md` with:
+Write **only** to the path from `tdd.artifact_paths.review` (pack example: `docs/cursor-kit/work/{issue}/SPEC-REVIEW.md`) with:
 
 1. Short bullet findings (pass/fail per check)
 2. Machine-readable verdict as the **last non-empty line** of the file (exactly one of):

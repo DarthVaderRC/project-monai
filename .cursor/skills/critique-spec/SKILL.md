@@ -20,27 +20,32 @@ echo '{"event":"skill","decision":"start","skill":"critique-spec","persona":"PM"
 
 ## Profile
 
-`everyday` (same as other PM skills). **Note:** everyday does not confine the critic to `docs/cursor-kit/work/**`; prod-write restraint is prompt-only in v1.
+`everyday` (same as other PM skills). **Note:** everyday does not confine the critic to work-dir paths from pack.config; prod-write restraint is prompt-only in v1.
 
 ## Input
 
 - Issue number (default `1` for RobustScaleIntensity demo)
-- Confirm `docs/cursor-kit/work/<issue>/SPEC.md` exists
-- Confirm Layer T test file exists (default `tests/transforms/test_robust_scale_intensity.py`) with a red marker
+- Resolve paths from `.cursor/pack.config.json` → `tdd.artifact_paths` (`{issue}` substituted)
+- Confirm SPEC (`tdd.artifact_paths.spec`) exists
+- Confirm Layer T test (`tdd.artifact_paths.test`) exists with a red marker
 
 ## Steps
 
-1. Preflight (deterministic):
+1. Preflight (deterministic) — resolve templates from pack.config (do not hardcode work roots):
 
 ```bash
 ISSUE=<n>
-test -f docs/cursor-kit/work/$ISSUE/SPEC.md || { echo "missing SPEC.md"; exit 1; }
-test -f tests/transforms/test_robust_scale_intensity.py || { echo "missing Layer T tests"; exit 1; }
+# Read tdd.artifact_paths from .cursor/pack.config.json; substitute {issue}
+# Example defaults when config matches pack example:
+SPEC="docs/cursor-kit/work/$ISSUE/SPEC.md"
+TEST="tests/transforms/test_robust_scale_intensity.py"
+test -f "$SPEC" || { echo "missing SPEC.md"; exit 1; }
+test -f "$TEST" || { echo "missing Layer T tests"; exit 1; }
 ```
 
 2. Dispatch the **spec-critic** subagent (depth-1) via the Task tool / custom agent `spec-critic`. Prompt it with the issue number, SPEC path, and test path. The agent's `model:` frontmatter supplies the HIGH tier — do not override downward. Confirm in the UI that the launched agent shows **`cursor-grok-4.5-high-fast`** (or the verified slug from Step 0).
 
-3. Wait for `docs/cursor-kit/work/<issue>/SPEC-REVIEW.md`. Confirm the file exists and the **last non-empty line** is `Verdict: Approve` or `Verdict: Request changes`.
+3. Wait for SPEC-REVIEW at `tdd.artifact_paths.review`. Confirm the file exists and the **last non-empty line** is `Verdict: Approve` or `Verdict: Request changes` (Approve token also in `spec_critic.required_verdict_token`).
 
 4. **Append the kit-owned critic marker only after SPEC-REVIEW is confirmed on disk** (required for `score_tdd_gate` + Layer C). Choice: post-write, not pre-dispatch — marker attests “critic review artifact produced this run,” not merely “skill started.” Substance proof remains the review file + Approve line; marker is the delegation/completion signal the gate can trust without Cursor’s audit payload.
 

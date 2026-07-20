@@ -3,6 +3,7 @@
 
 In `strict`, denies out-of-allowlist / dangerous commands; in `everyday`, allows
 with warnings. Audits `gh` usage to the ledger when allowed.
+Missing pack.config in strict → deny naming `.cursor/pack.config.json`.
 """
 
 from __future__ import annotations
@@ -12,16 +13,27 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from policy import append_ledger, emit, profile, read_stdin_json, shell_decision  # noqa: E402
-from policy import DENY_MSG  # noqa: E402
+from policy import (  # noqa: E402
+    append_ledger,
+    deny_message,
+    emit,
+    load_pack_config,
+    missing_config_deny_msg,
+    profile,
+    project_root,
+    read_stdin_json,
+    shell_decision,
+)
 
 
 def main() -> int:
     try:
         payload = read_stdin_json()
         command = payload.get("command") or ""
-        mode = profile()
-        permission, user_message, agent_message = shell_decision(command, mode)
+        root = project_root()
+        cfg = load_pack_config(root)
+        mode = profile(cfg)
+        permission, user_message, agent_message = shell_decision(command, mode, cfg)
         out: dict = {"permission": permission}
         if user_message:
             out["user_message"] = user_message
@@ -34,11 +46,14 @@ def main() -> int:
         emit(out)
         return 0
     except Exception as exc:  # noqa: BLE001
-        mode = profile()
+        root = project_root()
+        cfg = load_pack_config(root)
+        mode = profile(cfg)
         msg = f"boundary_shell hook error: {exc}"
         print(msg, file=sys.stderr)
         if mode == "strict":
-            emit({"permission": "deny", "user_message": DENY_MSG, "agent_message": msg})
+            deny = deny_message(cfg, root) if cfg else missing_config_deny_msg(root)
+            emit({"permission": "deny", "user_message": deny, "agent_message": msg})
         else:
             emit({"permission": "allow"})
         return 0

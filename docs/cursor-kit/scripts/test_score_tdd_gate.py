@@ -5,13 +5,33 @@ import tempfile
 import unittest
 from pathlib import Path
 
-# Import after we create the module in Step 3; tests fail until then.
 from score_tdd_gate import (  # type: ignore  # noqa: E402
     REQUIRED_SPEC_HEADINGS,
     score_tdd_gate,
     session_slice,
     verdict_of,
 )
+
+_PACK = {
+    "pack": "monai",
+    "schema_version": 1,
+    "tdd": {
+        "artifact_paths": {
+            "spec": "docs/cursor-kit/work/{issue}/SPEC.md",
+            "review": "docs/cursor-kit/work/{issue}/SPEC-REVIEW.md",
+            "test": "tests/transforms/test_robust_scale_intensity.py",
+        }
+    },
+    "spec_critic": {"required_verdict_token": "Approve"},
+}
+
+
+def _write_pack(root: Path, pack: dict | None = None) -> None:
+    cfg_dir = root / ".cursor"
+    cfg_dir.mkdir(parents=True, exist_ok=True)
+    (cfg_dir / "pack.config.json").write_text(
+        json.dumps(pack if pack is not None else _PACK), encoding="utf-8"
+    )
 
 
 class ScoreTddGateTest(unittest.TestCase):
@@ -59,9 +79,22 @@ class ScoreTddGateTest(unittest.TestCase):
         self.assertEqual(len(sliced), 2)
         self.assertEqual(sliced[0]["event"], "sessionStart")
 
+    def test_fails_without_pack_config(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            self._work(root)
+            ledger = root / ".cursor" / "usage" / "ledger.jsonl"
+            ledger.parent.mkdir(parents=True)
+            ledger.write_text("", encoding="utf-8")
+            result = score_tdd_gate(root, ledger, issue="1")
+            self.assertFalse(result["ok"])
+            ids = {c["id"] for c in result["checks"] if not c["passed"]}
+            self.assertIn("pack_config", ids)
+
     def test_fails_without_spec(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
+            _write_pack(root)
             self._work(root)
             ledger = root / ".cursor" / "usage" / "ledger.jsonl"
             ledger.parent.mkdir(parents=True)
@@ -75,6 +108,7 @@ class ScoreTddGateTest(unittest.TestCase):
         # Cursor-populated subagent_type alone is not enough.
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
+            _write_pack(root)
             work = self._work(root)
             spec = "\n".join(f"{h}\n\nbody\n" for h in REQUIRED_SPEC_HEADINGS)
             (work / "SPEC.md").write_text(spec, encoding="utf-8")
@@ -103,12 +137,7 @@ class ScoreTddGateTest(unittest.TestCase):
             ledger.write_text(
                 "\n".join(json.dumps(r) for r in rows) + "\n", encoding="utf-8"
             )
-            result = score_tdd_gate(
-                root,
-                ledger,
-                issue="1",
-                test_path="tests/transforms/test_robust_scale_intensity.py",
-            )
+            result = score_tdd_gate(root, ledger, issue="1")
             self.assertFalse(result["ok"])
             ids = {c["id"] for c in result["checks"] if not c["passed"]}
             self.assertIn("critic_subagent", ids)
@@ -116,13 +145,14 @@ class ScoreTddGateTest(unittest.TestCase):
     def test_passes_full_gate(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
+            _write_pack(root)
             work = self._work(root)
             spec = "\n".join(f"{h}\n\nbody\n" for h in REQUIRED_SPEC_HEADINGS)
             (work / "SPEC.md").write_text(spec, encoding="utf-8")
             (work / "SPEC-REVIEW.md").write_text(
                 "## Notes\n\n- aligned\n\nVerdict: Approve\n", encoding="utf-8"
             )
-            # Minimal failing-test marker file (Phase 1: existence + red stub flag)
+            # Minimal failing-test marker file (existence + red stub flag)
             tests_dir = root / "tests" / "transforms"
             tests_dir.mkdir(parents=True)
             (tests_dir / "test_robust_scale_intensity.py").write_text(
@@ -145,12 +175,7 @@ class ScoreTddGateTest(unittest.TestCase):
             ledger.write_text(
                 "\n".join(json.dumps(r) for r in rows) + "\n", encoding="utf-8"
             )
-            result = score_tdd_gate(
-                root,
-                ledger,
-                issue="1",
-                test_path="tests/transforms/test_robust_scale_intensity.py",
-            )
+            result = score_tdd_gate(root, ledger, issue="1")
             self.assertTrue(result["ok"], result)
 
 

@@ -3,13 +3,147 @@
   "schema_version": 1,
   "profile_env": "MONAI_CURSOR_BOUNDARY",
   "strict": {
-    "prefixes": [".cursor/", "docs/cursor-kit/", "monai/transforms/", "tests/transforms/"],
-    "files": ["AGENTS.md", "CONTRIBUTING.md", "pyproject.toml", "runtests.sh"]
+    "prefixes": [
+      ".cursor/",
+      "docs/cursor-kit/",
+      "monai/transforms/",
+      "tests/transforms/"
+    ],
+    "files": [
+      "AGENTS.md",
+      "CONTRIBUTING.md",
+      "pyproject.toml",
+      "setup.cfg",
+      ".pre-commit-config.yaml",
+      "runtests.sh",
+      "requirements-dev.txt",
+      "requirements.txt",
+      "tests/test_utils.py",
+      "tests/min_tests.py",
+      "tests/__init__.py",
+      "tests/lazy_transforms_utils.py"
+    ]
   },
   "everyday": {
-    "prefixes": [".cursor/", "docs/", "monai/", "tests/", ".github/"],
-    "files": ["AGENTS.md", "CONTRIBUTING.md", "LICENSE", "README.md"]
+    "prefixes": [
+      ".cursor/",
+      "docs/",
+      "monai/",
+      "tests/",
+      ".github/"
+    ],
+    "files": [
+      "AGENTS.md",
+      "CONTRIBUTING.md",
+      "pyproject.toml",
+      "setup.cfg",
+      ".pre-commit-config.yaml",
+      "runtests.sh",
+      "requirements-dev.txt",
+      "requirements.txt",
+      "tests/test_utils.py",
+      "tests/min_tests.py",
+      "tests/__init__.py",
+      "tests/lazy_transforms_utils.py",
+      "LICENSE",
+      "README.md",
+      "CODE_OF_CONDUCT.md",
+      "CITATION.cff",
+      "Dockerfile",
+      "Dockerfile.slim"
+    ]
   },
-  "deny_msg": "Blocked by strict boundary (pack.config). Stay in allowlisted prefixes or set everyday.",
-  "warn_msg": "Warning: outside everyday allowlist (pack.config)."
+  "deny_msg": "Blocked by MONAI_CURSOR_BOUNDARY=strict. Stay within transforms + kit paths (.cursor/, AGENTS.md, docs/cursor-kit/, monai/transforms/, tests/transforms/) or set MONAI_CURSOR_BOUNDARY=everyday. See AGENTS.md.",
+  "warn_msg": "Warning: path/command is outside the everyday Cursor-kit allowlist. Prefer monai/, tests/, docs/, .cursor/. See AGENTS.md.",
+  "prompt_coach": {
+    "patterns": [
+      {
+        "pattern": "soft[\\s_-]?clip",
+        "guidance": "Soft-clip intensity already exists in MONAI: use `ClipIntensityPercentiles` (with `sharpness_factor`) or the `soft_clip` util. Please rephrase around the existing API instead of adding `SoftClipIntensity`."
+      }
+    ]
+  },
+  "nudge": {
+    "globs": [
+      "monai/transforms/**/*.py",
+      "tests/transforms/**/*.py"
+    ],
+    "message": "Cursor-kit nudge: you edited a transforms/tests file. Before handing off, run `./runtests.sh --ruff` and a scoped module test (e.g. `python -m tests.transforms.test_<name>`), and `bash docs/cursor-kit/scripts/check-deprecations.sh` for deprecated APIs."
+  },
+  "sync_check": {
+    "paths": [
+      "AGENTS.md",
+      ".cursor/hooks.json",
+      ".cursor/boundary-profile",
+      ".cursor/hooks/policy.py",
+      ".cursor/hooks/ledger_append.py",
+      ".cursor/hooks/session_start.py",
+      ".cursor/hooks/boundary_read.py",
+      ".cursor/hooks/boundary_shell.py",
+      ".cursor/hooks/nudge_style_test.py",
+      ".cursor/hooks/post_edit_nudge.py",
+      ".cursor/hooks/prompt_coach.py",
+      ".cursor/hooks/subagent_audit.py",
+      "docs/cursor-kit/README.md",
+      "docs/cursor-kit/DEMO.md",
+      "docs/cursor-kit/EVALUATION.md",
+      "docs/cursor-kit/monai-refs/transforms-array-dict.md",
+      "docs/cursor-kit/monai-refs/testing.md",
+      "docs/cursor-kit/monai-refs/contributing-checklist.md",
+      "docs/cursor-kit/monai-refs/deprecations.md",
+      "docs/cursor-kit/scripts/sync-check.sh",
+      "docs/cursor-kit/scripts/check-deprecations.sh",
+      "docs/cursor-kit/scripts/check-changelog.sh",
+      "docs/cursor-kit/scripts/ledger-report.py",
+      "docs/cursor-kit/scripts/ledger-dashboard.py",
+      "docs/cursor-kit/scripts/ledger-dashboard-plain.py",
+      "docs/cursor-kit/productization/manifest.json",
+      "docs/cursor-kit/productization/PRODUCTIZATION.md",
+      ".cursor/agents/spec-critic.md",
+      ".cursor/skills/triage-issues/SKILL.md",
+      ".cursor/skills/plan-feature/SKILL.md",
+      ".cursor/skills/critique-spec/SKILL.md",
+      ".cursor/skills/scaffold-transform/SKILL.md",
+      "docs/cursor-kit/scripts/score_tdd_gate.py",
+      ".cursor/skills/strengthen-tests/SKILL.md",
+      ".cursor/skills/prep-for-ci/SKILL.md",
+      ".cursor/skills/review-contribution/SKILL.md",
+      ".cursor/rules/50-losses.mdc",
+      ".cursor/rules/60-metrics.mdc",
+      ".cursor/rules/70-networks.mdc",
+      "docs/cursor-kit/monai-refs/losses.md",
+      "docs/cursor-kit/monai-refs/metrics.md",
+      "docs/cursor-kit/monai-refs/networks.md",
+      ".cursor/skills/scaffold-loss/SKILL.md",
+      ".cursor/skills/scaffold-metric/SKILL.md",
+      ".cursor/skills/scaffold-network/SKILL.md",
+      ".github/workflows/cursor-kit-sync.yml",
+      ".cursor/pack.config.json"
+    ]
+  },
+  "tdd": {
+    "artifact_paths": {
+      "spec": "docs/cursor-kit/work/{issue}/SPEC.md",
+      "review": "docs/cursor-kit/work/{issue}/SPEC-REVIEW.md",
+      "test": "tests/transforms/test_robust_scale_intensity.py"
+    }
+  },
+  "spec_critic": {
+    "required_verdict_token": "Approve",
+    "rubric": [
+      "problem_clarity",
+      "acceptance_testability",
+      "scope_fit",
+      "touch_path_realism",
+      "risk_and_non_goals"
+    ]
+  },
+  "judge": {
+    "rubric": [
+      { "dimension": "correctness", "weight": 0.4 },
+      { "dimension": "api_fit", "weight": 0.3 },
+      { "dimension": "tests", "weight": 0.2 },
+      { "dimension": "docs", "weight": 0.1 }
+    ]
+  }
 }

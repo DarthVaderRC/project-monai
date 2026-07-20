@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Layer T gate: SPEC + failing-test path + Approved SPEC-REVIEW + critic marker.
 
-Phase 1: paths are hardcoded (no pack.config). Exit non-zero unless all required
-checks pass. Used by /scaffold-* as a hard refuse gate and by Layer C.
+Paths come from consumer `.cursor/pack.config.json` → `tdd.artifact_paths`
+when `schema_version` is present (Phase 3). Used by /scaffold-* as a hard
+refuse gate and by Layer C.
 
 Critic proof is kit-owned: /critique-spec appends a ledger row with
 subagent_type=spec-critic and source=critique-spec. Do not rely on Cursor's
@@ -12,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -24,9 +26,58 @@ REQUIRED_SPEC_HEADINGS: tuple[str, ...] = (
 )
 
 _VERDICT_LAST = frozenset({"Approve", "Request changes"})
+PACK_CONFIG_ENV = "CURSOR_ONBOARDING_PACK_CONFIG"
+PACK_CONFIG_REL = ".cursor/pack.config.json"
 
-# Phase 1 defaults for the intensity demo spine
-DEFAULT_TEST_PATH = "tests/transforms/test_robust_scale_intensity.py"
+
+def load_pack_config(root: Path) -> dict | None:
+    override = os.environ.get(PACK_CONFIG_ENV, "").strip()
+    path = Path(override).resolve() if override else (root / PACK_CONFIG_REL).resolve()
+    try:
+        if not path.is_file():
+            return None
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else None
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
+def resolve_tdd_paths(root: Path, issue: str, cfg: dict | None) -> dict[str, Path]:
+    """Resolve SPEC / REVIEW / test paths from pack.config tdd.artifact_paths.
+
+    Requires schema_version + tdd.artifact_paths (Phase 3 — no hardcoded fallback).
+    """
+    if not isinstance(cfg, dict) or cfg.get("schema_version") is None:
+        raise ValueError(
+            f"pack.config missing or lacks schema_version — need {PACK_CONFIG_REL} "
+            "(copy from pack example) with tdd.artifact_paths"
+        )
+    tdd = cfg.get("tdd")
+    if not isinstance(tdd, dict):
+        raise ValueError("pack.config missing tdd.artifact_paths")
+    arts = tdd.get("artifact_paths")
+    if not isinstance(arts, dict):
+        raise ValueError("pack.config missing tdd.artifact_paths")
+    for key in ("spec", "review", "test"):
+        if not arts.get(key):
+            raise ValueError(f"pack.config tdd.artifact_paths.{key} required")
+
+    def _fmt(template: str) -> Path:
+        return (root / str(template).format(issue=issue)).resolve()
+
+    return {
+        "spec": _fmt(str(arts["spec"])),
+        "review": _fmt(str(arts["review"])),
+        "test": _fmt(str(arts["test"])),
+    }
+
+
+def required_verdict_token(cfg: dict | None) -> str:
+    if isinstance(cfg, dict):
+        critic = cfg.get("spec_critic")
+        if isinstance(critic, dict) and critic.get("required_verdict_token"):
+            return str(critic["required_verdict_token"])
+    return "Approve"
 
 
 def verdict_of(text: str) -> str | None:
@@ -87,12 +138,34 @@ def score_tdd_gate(
     ledger_path: Path,
     *,
     issue: str,
-    test_path: str = DEFAULT_TEST_PATH,
+    test_path: str | None = None,
 ) -> dict[str, Any]:
-    work = root / "docs" / "cursor-kit" / "work" / issue
-    spec_path = work / "SPEC.md"
-    review_path = work / "SPEC-REVIEW.md"
-    test_file = root / test_path
+    cfg = load_pack_config(root)
+    try:
+        paths = resolve_tdd_paths(root, issue, cfg)
+    except ValueError as exc:
+        return {
+            "ok": False,
+            "checks": [
+                _check(
+                    "pack_config",
+                    "pack.config tdd.artifact_paths resolvable",
+                    False,
+                    str(exc),
+                )
+            ],
+            "exit_code": 1,
+            "issue": issue,
+        }
+
+    # CLI --test-path still overrides the configured default when provided explicitly.
+    if test_path:
+        paths["test"] = (root / test_path).resolve()
+
+    spec_path = paths["spec"]
+    review_path = paths["review"]
+    test_file = paths["test"]
+    approve_token = required_verdict_token(cfg)
     checks: list[dict[str, Any]] = []
 
     spec_ok = spec_path.is_file()
@@ -117,7 +190,7 @@ def score_tdd_gate(
     test_ok = test_file.is_file()
     checks.append(_check("failing_test_exists", "Layer T test module exists", test_ok, str(test_file)))
 
-    # Phase 1 red check: **static heuristic / required convention**, not pytest execution.
+    # Red check: **static heuristic / required convention**, not pytest execution.
     # Authors must include a marker token — a plain assertEqual that fails only at runtime
     # without one of these tokens will FAIL this gate. DEMO instructs the marker.
     # Tokens: "Layer T red" | raise AssertionError | self.fail( | @unittest.expectedFailure
@@ -143,11 +216,11 @@ def score_tdd_gate(
     checks.append(_check("review_exists", "SPEC-REVIEW.md exists", review_ok, str(review_path)))
 
     verdict = verdict_of(review_path.read_text(encoding="utf-8")) if review_ok else None
-    approved = verdict == "Approve"
+    approved = verdict == approve_token
     checks.append(
         _check(
             "verdict_approve",
-            "Verdict: Approve (last non-empty line)",
+            f"Verdict: {approve_token} (last non-empty line)",
             approved,
             f"verdict={verdict!r}",
         )
@@ -180,8 +253,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     p.add_argument(
         "--test-path",
-        default=DEFAULT_TEST_PATH,
-        help="Relative path to Layer T test module",
+        default=None,
+        help="Override relative path to Layer T test module (else pack.config tdd.artifact_paths.test)",
     )
     p.add_argument(
         "--ledger",
