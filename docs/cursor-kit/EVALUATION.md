@@ -112,6 +112,36 @@ Naive draft + excerpts: `eval-runs/2026-07-17/naive-draft/`.
 
 ---
 
+## Layer T — TDD / spec-critic gate (hard gate before scaffold)
+
+**Question:** *Did the session satisfy SPEC + failing tests + approved spec review before any scaffold skill ran?*
+
+**Scorer:** `python3 docs/cursor-kit/scripts/score_tdd_gate.py [--issue <n>] [--test-path <path>]`
+
+**Artifacts (per issue `n`):**
+
+| Artifact | Role |
+|---|---|
+| `docs/cursor-kit/work/<n>/SPEC.md` | Plan output from `/plan-feature` (required headings) |
+| `tests/transforms/test_*.py` (Layer T module) | Red tests with `Layer T red` marker — **required static convention**; gate checks file presence + marker text, **does not execute pytest** |
+| `docs/cursor-kit/work/<n>/SPEC-REVIEW.md` | Critic output; **completion proof = file exists + last non-empty line is `Verdict: Approve` or `Verdict: Request changes`** |
+| Ledger row | Kit-owned marker: `event=subagentStart`, `subagent_type=spec-critic`, `source=critique-spec` — emitted **after** SPEC-REVIEW exists; delegation/completion signal the scorer trusts (not Cursor's `subagent_audit` payload) |
+
+**Hard gate:** `/scaffold-*` skills run `score_tdd_gate.py` first and **refuse** if exit ≠ 0. All required checks must pass before production code edits.
+
+**Model pin:** Spec-critic is an agent with `model: cursor-grok-4.5-high-fast` — the only enforceable model routing in v1. Verify on the critic agent UI during live runs.
+
+**Prod-write restraint:** The critic must not edit `monai/**`; enforcement is **prompt-only** (agent is not `readonly` because it writes SPEC-REVIEW). Everyday boundary profile does not confine the critic to kit paths — a misbehaving critic could still touch production files.
+
+**Relationship to other layers:**
+
+| Layer | Layer T interaction |
+|---|---|
+| **A (process)** | Unchanged — planted defects (`np.float`, `__all__` gap) still come from scaffold; Layer T gates *before* scaffold, not the QA fix loop |
+| **C (trajectory)** | **Requires** kit-owned critic marker (`source=critique-spec` after SPEC-REVIEW exists). Cursor `subagent_audit` `subagentStart` rows are optional corroboration once observed live. **Dual `subagentStart` rows** (kit marker + Cursor audit) per critic dispatch are expected — Layer C filters on `source` so they do not double-count |
+
+---
+
 ## Layer C (Trajectory rubric)
 
 **Question:** *Did the session follow the contribution spine — personas, skills, boundaries — not just produce a good diff?*
@@ -127,7 +157,7 @@ python3 docs/cursor-kit/eval-runs/2026-07-17/scripts/score_trajectory.py \
   --session all --json-out docs/cursor-kit/eval-runs/2026-07-17/kit-spine-scores.json
 ```
 
-**Required checks (9):** all six kit-spine skills logged (`start`), correct order, strict read deny on out-of-bounds path, scaffold under strict.
+**Required checks (11):** all seven kit-spine skills logged (`start`), correct order (including `/critique-spec` after plan), strict read deny on out-of-bounds path, scaffold under strict, kit-owned spec-critic marker (`source=critique-spec`).
 
 **Optional checks (5):** PM under everyday, transform-edit nudge, gh deny in strict, prompt coach, subagent audit (`--require-subagent` to promote subagent to required).
 

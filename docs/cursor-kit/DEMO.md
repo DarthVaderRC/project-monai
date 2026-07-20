@@ -17,7 +17,7 @@ This section is what the exercise grades as *judgment about what’s worth solvi
 | Block | Time | Goal |
 |---|---|---|
 | Judgment | 5–8 min | Business pain, prioritize/skip, tooling choices, how we’d measure value |
-| Live spine | 20–25 min | Triage → plan → strict deny → scaffold → QA → CI → review |
+| Live spine | 20–25 min | Triage → plan → Layer T → critique → strict deny → scaffold → QA → CI → review |
 | Limitations / next | 5 min | Honesty + productization next (plugin core vs packs, agents) |
 
 **Trim talking track:** do not narrate every layer equally. Deep-dive shared rails (rules/hooks/refs) + one deny + one planted QA fix. Skills are thin orchestrators — say that once.
@@ -66,7 +66,7 @@ Do **not** claim production ROI. Propose the frame platform would run:
 | Faster ramp | Time-to-first-safe-PR | Scaffold + refs + rules cut “framework syntax” days |
 | Less convention rework | % first PRs failing style/header/`__all__`/missing `d` tests | Rules + QA path + sync-check CI |
 | Fewer uncaught gaps | Review/CI comments on covered anti-patterns | `/strengthen-tests`, `/review-contribution`, post-edit nudges |
-| Multi-role leverage | Non-eng runs of PM/QA skills | Nine `/` skills on shared rails (six in live contribution spine) |
+| Multi-role leverage | Non-eng runs of PM/QA skills | Ten `/` skills on shared rails (seven in live contribution spine) |
 | Safe autonomy | Boundary deny vs escape (ledger) | Strict/everyday hooks |
 | Cost awareness | Cursor usage + ledger stage counts | Estimated; not an invoice |
 
@@ -81,7 +81,7 @@ Do **not** claim production ROI. Propose the frame platform would run:
 | Judgment / business impact | This narrative + prioritize/skip |
 | Thinking process / options weighed | Tooling table + rejected companion-repo/MCP |
 | SDLC breadth | Spine triage → review |
-| Multi-audience | Six `/` skills; PM live issues |
+| Multi-audience | Seven `/` skills on live spine; PM live issues |
 | Runnable artifact | Live spine (not slides) |
 | Honesty / limitations | Closing block |
 | Maintainability without you | sync-check CI + README + CODEOWNERS |
@@ -158,7 +158,7 @@ Grounded in the actual event schemas, not assumptions:
 - [ ] Branch: `cursor-onboarding-kit` (push to fork **only when the demo starts**, if required)
 - [ ] `gh auth status` OK; Issues enabled on fork
 - [ ] `@Docs` indexed: https://docs.monai.io/en/stable/
-- [ ] Customize → Rules shows `00`–`70`; Skills show nine `/` workflows (live spine uses six — see table below)
+- [ ] Customize → Rules shows `00`–`70`; Skills show ten `/` workflows (live spine uses seven — see table below)
 - [ ] `echo everyday > .cursor/boundary-profile`
 - [ ] Optional: `bash docs/cursor-kit/scripts/sync-check.sh` exits 0
 - [x] Seeded issues present:
@@ -178,14 +178,26 @@ Grounded in the actual event schemas, not assumptions:
 
 | Step | Action | Artifact | Spoken line (judgment) |
 |---|---|---|---|
-| 1 | `/triage-issues` | Ranked table; recommend #1 | Multi-audience PM; A+D = real backlog optics + seeded fork catalog (`kit-seed`) |
-| 2 | `/plan-feature` on #1 | Live issue updated | Runnable PM artifact — not markdown theater |
-| 3 | `echo strict > .cursor/boundary-profile` | Boundary on | Req #3 — approved boundaries |
-| 4 | Deny probe | Hook deny | Show teeth: agent cannot quietly leave transforms |
-| 5 | `/scaffold-transform` | Code + planted `__all__` gap | Req #1 — correct first contribution without reading the whole repo |
-| 6 | `/strengthen-tests` | Gap fixed; stronger tests | Req #2 — catch mistakes before human review |
-| 7 | everyday → `/prep-for-ci` | CI map; kit sync workflow; deprecation gate; `[Unreleased]` changelog + deploy readiness | Path to production; sync-check CI = ownable kit; release-train aware |
-| 8 | `/review-contribution` | Checklist verdict | Reviewer persona on the same rails (not Cursor `/review` Bugbot) |
+| 1 | `/triage-issues` | Ranked table | Multi-audience PM; A+D = real backlog optics + seeded fork catalog (`kit-seed`) |
+| 2 | `/plan-feature` | Live issue + `docs/cursor-kit/work/<n>/SPEC.md` | Runnable PM artifact — not markdown theater |
+| 3 | Write Layer T failing tests | Red `tests/transforms/test_*.py` with `Layer T red` marker | TDD before impl — gate checks convention, not pytest |
+| 4 | `/critique-spec` | `SPEC-REVIEW.md` with `Verdict: Approve` | Hard-gated spec review; prod-write restraint is prompt-only (boundary does not stop `monai/**` if critic misbehaves) |
+| 5 | `echo strict > .cursor/boundary-profile` | Boundary on | Req #3 — approved boundaries |
+| 6 | Deny probe | Hook deny | Show teeth: agent cannot quietly leave transforms |
+| 7 | `/scaffold-transform` (runs `score_tdd_gate` first) | Code + planted gap | Req #1 — correct first contribution without reading the whole repo |
+| 8 | `/strengthen-tests` | Gap fixed | Req #2 — catch mistakes before human review |
+| 9 | everyday → `/prep-for-ci` | CI map | Path to production; sync-check CI = ownable kit; release-train aware |
+| 10 | `/review-contribution` | Verdict | Reviewer persona on the same rails (not Cursor `/review` Bugbot) |
+
+### Layer T (hard gate)
+
+Before scaffold: SPEC.md + failing tests + `/critique-spec` → `Verdict: Approve` (last line).
+`score_tdd_gate.py` must exit 0; scaffold skills refuse otherwise. Spec-critic runs as
+an agent with `model: cursor-grok-4.5-high-fast` pinned (only enforceable model routing in v1 —
+verify in the agent UI on live runs). Critic ledger proof is kit-owned
+(`source=critique-spec` after SPEC-REVIEW exists), not Cursor's subagent audit payload
+(optional corroboration only). Prod-write restraint is prompt-enforced. Layer T red
+marker is a required static convention.
 
 ### Planted defect
 
@@ -419,7 +431,7 @@ open .cursor/usage/ledger-dashboard.html   # or the path printed by the script
 CLI-only equivalents still work: `ledger-report.py` (counts) and `score_trajectory.py` (scorecard).
 
 - **Under the hood:** Reads `.cursor/usage/ledger.jsonl`; aggregates persona/stage/skill/decision counts; runs Layer C checks (skill order, strict deny, scaffold-under-strict — see [`EVALUATION.md`](EVALUATION.md)).
-- **You should see:** A small HTML page with ship-ready badge, required **9/9**, denies/warns, and check table. Target `ship_ready_trajectory: true`.
+- **You should see:** A small HTML page with ship-ready badge, required **11/11**, denies/warns, and check table. Target `ship_ready_trajectory: true`.
 - **Say out loud:** “Cursor-estimated stage metering — not a billing invoice. We measure whether the kit path ran — process evidence, not LOC.”
 - **Fail / thrash:** Framing ledger lines as precise cost; empty ledger because skills never appended start/end; score fails because deny probe or skill markers were skipped.
 
@@ -428,7 +440,7 @@ CLI-only equivalents still work: `ledger-report.py` (counts) and `score_trajecto
 ## After the session
 
 - Flip back: `echo everyday > .cursor/boundary-profile`
-- Archive + dashboard: see **§I** (`ledger-dashboard.py`; target `9/9` required)
+- Archive + dashboard: see **§I** (`ledger-dashboard.py`; target **11/11** required)
 - Discard live scaffold transform/tests/changelog from the kit branch unless you intend to keep them; keep kit fixes (hooks, rules, skill renames, DEMO)
 - Do not push kit branch to upstream MONAI
 - If you opened a draft PR on the fork, close or leave it — confirm afterward
