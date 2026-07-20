@@ -290,6 +290,27 @@ def score_trajectory(
         )
     )
 
+    cursor_critic_audit = [
+        r
+        for r in records
+        if r.get("event") == "subagentStart"
+        and r.get("source") != "critique-spec"  # exclude kit marker
+        and r.get("subagent_type") == "spec-critic"
+    ]
+    checks.append(
+        Check(
+            id="spec_critic_cursor_audit",
+            label="Cursor subagent_audit observed spec-critic (corroboration)",
+            passed=bool(cursor_critic_audit),
+            required=False,  # never the gate
+            detail=(
+                f"{len(cursor_critic_audit)} audit row(s)"
+                if cursor_critic_audit
+                else "Cursor audit did not name spec-critic (ok — kit marker is gate)"
+            ),
+        )
+    )
+
     coach_blocks = [r for r in records if r.get("event") == "beforeSubmitPrompt" and r.get("decision") == "blocked"]
     checks.append(
         Check(
