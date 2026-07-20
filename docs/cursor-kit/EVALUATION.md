@@ -161,7 +161,7 @@ python3 docs/cursor-kit/eval-runs/2026-07-17/scripts/score_trajectory.py \
 
 **Optional checks (5):** PM under everyday, transform-edit nudge, gh deny in strict, prompt coach, subagent audit (`--require-subagent` to promote subagent to required).
 
-**Reference fixture:** [`fixtures/kit-spine-kit-on.jsonl`](eval-runs/2026-07-17/fixtures/kit-spine-kit-on.jsonl) — should score `ship_ready_trajectory: true`.
+**Reference fixture:** [`fixtures/kit-spine-kit-on.jsonl`](eval-runs/2026-07-17/fixtures/kit-spine-kit-on.jsonl) — target `ship_ready_trajectory: true` after Task 7 fixture refresh (pre-Layer T fixture currently scores 9/11).
 
 *Layer A proves gates catch defects; Layer C proves the multi-persona workflow actually ran.*
 
