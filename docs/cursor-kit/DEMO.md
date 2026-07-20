@@ -94,18 +94,23 @@ Ownership is not the script alone. **Versioned kit + CODEOWNERS + sync gate** so
 
 Today’s **content pack** is MONAI/transforms-specific (correct for the stand-in). A Marketplace plugin of “this folder as-is” would be wrong for other libs.
 
-| Layer | Portable? | Contents |
-|---|---|---|
-| Platform core | Yes | Hook engine, persona skill *shells*, sync-check *pattern*, ledger schema, AGENTS pattern |
-| Library pack | No | MONAI rules text, `monai-refs/`, catalog transforms, planted-defect recipe |
+The split is **by reader** — because Cursor has no cross-plugin path resolution, a core hook can't read a file inside the pack plugin:
 
-**Next:** extract core to a private/org plugin; keep packs per library. **Agents/subagents:** same persona prompts as standing agents so the default agent can delegate QA/review — skills stay for explicit `/` stage control. Not built in v1 on purpose.
+| Piece | Portable? | Contents | How it reaches the agent |
+|---|---|---|---|
+| Platform core (plugin, Required) | Yes | Hook **engine**, library-agnostic skill *shells*, spec-critic agent, sync-check *runner*, ledger schema, AGENTS pattern | Enabled org-wide |
+| Library pack (plugin, Default Off) | No | MONAI rules text, `refs/` (SSOT → materialized to consumer `.cursor/refs/`), `scaffold-*` skills, catalog transforms, planted-defect recipe, pack.config **schema + example** | Cursor **injects** rules/skills; refs read on demand from `.cursor/refs/` |
+| Consumer (workspace) | n/a | `.cursor/pack.config.json` **instance** — allowlists, coach patterns (workspace policy, like `boundary-profile`) | Hooks read it via `CURSOR_PROJECT_DIR` |
 
-The split is physicalized as a **skeleton** in [`productization/`](productization/) (`manifest.json` tags every file `core` vs `pack`; `PRODUCTIZATION.md` is the extraction plan). It is not loaded and changes no runtime behavior — deleting it changes nothing about the kit. Point at it to show the productization path is designed, not just talked.
+**Next:** extract core to a private/org plugin (Required); keep packs per library (`pack-monai`, then e.g. `pack-diffuser`) as Default-Off. Adding a library touches zero core code. Pack loading is manual-enable in v1; Cursor's `workspaceOpen → pluginPaths` hook auto-loads the right pack as an upgrade. **Agents/subagents:** the spec-critic **is** built as a v1 agent (`model:` HIGH, the one enforceable model pin); broader persona-as-standing-agent delegation is deferred on purpose — skills stay for explicit `/` stage control.
+
+The split is physicalized as a **skeleton** in [`productization/`](productization/) (`manifest.json` has the authoritative `seam` block + tags every file `core` vs `pack`; `PRODUCTIZATION.md` is the extraction plan). It is not loaded and changes no runtime behavior — deleting it changes nothing about the kit. Point at it to show the productization path is designed, not just talked.
 
 **Strong answers (copy):**
 
-- *“I’d productize the platform core as a plugin next; this fork keeps the MONAI pack in-repo for a reliable v1 walkthrough.”*
+- *“I’d productize the platform core as a Required org plugin next; this fork keeps the MONAI pack in-repo for a reliable v1 walkthrough.”*
+- *“Config splits by reader: Cursor injects the pack's rules/skills, and hooks read the consumer's `pack.config.json` via `CURSOR_PROJECT_DIR` — no cross-plugin path, which Cursor doesn't support.”*
+- *“Adding a second library like DIFFUSER is a new pack folder + a marketplace entry + that repo's config instance — the engine's written once.”*
 - *“LOC isn’t the KPI — ramp time and convention adherence are.”*
 - *“Upstream good-first issues are context; writable work stays on the fork catalog.”*
 

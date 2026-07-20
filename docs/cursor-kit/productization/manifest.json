@@ -4,6 +4,17 @@
   "status": "SKELETON — not published, not loaded, no runtime behavior. Documents the intended platform-core vs library-pack split so extraction is a lift-and-shift, not a rewrite.",
   "description": "Portable Cursor onboarding platform (persona SDLC rails) plus a swappable per-library content pack. This fork ships the MONAI pack in-repo for a reliable v1 walkthrough; the manifest below is the extraction contract.",
   "why_skeleton": "Publishing this folder as-is would be wrong for other libraries (the pack is MONAI-specific: intensity transforms + Phase 1 loss/metric/network packs). We keep the pack in-repo for v1 and record the split here so the walkthrough stays reliable while showing the productization path.",
+  "seam": {
+    "summary": "How core and pack compose in Cursor. Split by READER, because Cursor has no cross-plugin path resolution: a hook in platform-core cannot read a file inside pack-monai.",
+    "design": "Design 1 (chosen): one shared boundary engine in platform-core; packs are content + a per-consumer config instance. Scales to N libraries with the engine written once. Design 2 (rejected): each pack ships self-contained boundary hooks — more purely Cursor-native but duplicates the engine per library.",
+    "agent_facing_content": "Pack RULES and /scaffold-* skills are INJECTED by Cursor into agent context when the pack is enabled — no path resolution by us. Library specifics reach core skill shells via these injected rules, NOT a cross-plugin body splice.",
+    "refs": "refs/ is NOT a Cursor injection surface (Cursor injects rules/skills/agents/hooks/commands/mcp). Pattern: authoring SSOT in plugins/pack-monai/refs/, MATERIALIZED into the consumer's .cursor/refs/ (by /init-pack, same .env.example->.env pattern as pack.config.json). Rules cite the workspace path .cursor/refs/<file>.md; the agent opens it on demand with its file tool — no injection, no cross-plugin resolution, no context bloat. Keeps rules concise + always-on and refs deep + on-demand. Do NOT inline whole refs into rules, do NOT leave refs as consumer SSOT, and do NOT point the agent at @pack-monai/refs/... . Drift between SSOT and copy is guarded by sync-check.",
+    "hook_facing_config": "Allowlists / coach patterns / nudge globs / sync inventory live in the consumer's single .cursor/pack.config.json, read by hooks at $CURSOR_PROJECT_DIR/.cursor/pack.config.json (the documented, working path). The pack owns pack.config.schema.json + a filled example; the consumer commits an instance (.env.example -> .env pattern).",
+    "no_plugin_pointer": "There is NO 'plugin:pack-monai/...' pointer and NO thin .cursor/pack.json. The consumer's pack.config.json carries a top-level 'pack' field for identity.",
+    "pack_loading": "Cursor HAS a loader: the workspaceOpen hook can return pluginPaths. v1 uses manual enable of both plugins (core = Required, pack = Default Off); workspaceOpen auto-load (reads the 'pack' field) is a post-spike upgrade.",
+    "missing_config": "everyday: warn + safe empty defaults. strict: deny WITH a diagnostic naming the missing path — never a silent empty-allowlist lockout, never MONAI literals baked into core as a fallback.",
+    "model_routing": "Cursor honors model: frontmatter on agents/subagents only, not skills. Enforced only for the spec-critic agent; other stage tiers are a talk-track in v1."
+  },
   "layers": {
     "core": {
       "portable": true,
@@ -25,8 +36,8 @@
             ".cursor/hooks/subagent_audit.py",
             ".cursor/hooks/ledger_append.py"
           ],
-          "pack_config": "Path allowlists (STRICT_PREFIXES / EVERYDAY_PREFIXES), deprecated-API patterns, and anti-pattern strings in policy.py / prompt_coach.py are pack-provided config, not core code.",
-          "extraction_note": "Move scripts verbatim; hoist library-specific constants into pack config injected at load."
+          "pack_config": "Path allowlists (STRICT_PREFIXES / EVERYDAY_PREFIXES), deprecated-API patterns, and anti-pattern strings in policy.py / prompt_coach.py are library data, not core code. See seam.hook_facing_config: they move to the consumer's .cursor/pack.config.json, read via CURSOR_PROJECT_DIR — NOT resolved from the pack plugin.",
+          "extraction_note": "Move scripts verbatim; replace the inlined constants with reads from $CURSOR_PROJECT_DIR/.cursor/pack.config.json. The pack owns the schema + example; the consumer owns the instance."
         },
         {
           "id": "persona-skill-shells",
@@ -40,8 +51,8 @@
             ".cursor/skills/prep-for-ci/SKILL.md",
             ".cursor/skills/review-contribution/SKILL.md"
           ],
-          "split": "The orchestration shell (persona, steps, ledger append, output checklist) is core; the body prose (MONAI transform paths, runtests.sh, changelog format) is pack.",
-          "extraction_note": "Core keeps the skill skeleton + placeholders; pack supplies the library-specific step bodies."
+          "split": "The orchestration shell (persona, steps, ledger append, output checklist) is core and stays LIBRARY-AGNOSTIC. MONAI specifics (transform paths, runtests.sh, changelog format) reach the agent via the pack's injected .mdc rules — NOT a body fragment spliced from the pack (Cursor has no cross-plugin path). See seam.agent_facing_content.",
+          "extraction_note": "Core keeps a generic shell that says 'follow the active pack's injected rules'; the pack's rules carry the specifics. Full MONAI skills (/scaffold-*) ship whole in the pack."
         },
         {
           "id": "sync-check-pattern",
@@ -80,7 +91,7 @@
           "kind": "config",
           "portable": true,
           "files": [".cursor/boundary-profile"],
-          "extraction_note": "strict|everyday toggle is core; the allowlist it selects is pack config."
+          "extraction_note": "strict|everyday toggle is core; the allowlist it selects comes from the consumer's .cursor/pack.config.json instance (seam.hook_facing_config)."
         }
       ]
     },
@@ -108,7 +119,8 @@
             "docs/cursor-kit/monai-refs/testing.md",
             "docs/cursor-kit/monai-refs/contributing-checklist.md",
             "docs/cursor-kit/monai-refs/deprecations.md"
-          ]
+          ],
+          "extraction_note": "Phase 4: authoring SSOT moves to plugins/pack-monai/refs/; a materialized copy lands in the consumer's .cursor/refs/ and rules re-point from docs/cursor-kit/monai-refs/ to .cursor/refs/. See seam.refs. Read on demand, not injected."
         },
         {
           "id": "pack-scripts",
@@ -157,9 +169,16 @@
     }
   },
   "extraction_plan_ref": "docs/cursor-kit/productization/PRODUCTIZATION.md",
+  "design_spec_ref": "cursor/docs/superpowers/specs/2026-07-20-cursor-kit-plugin-monorepo-design.md (planning repo)",
+  "roadmap": {
+    "note": "This manifest describes the CURRENT in-repo kit (skeleton). The design spec sequences the migration; nothing below is built until its Phase 2 seam spike passes.",
+    "phase_1_kit_branch": "Layer T (SPEC + failing tests) + spec-critic AGENT (model: HIGH) — no plugin work.",
+    "phase_2_spike": "Prove the seam (workspaceOpen load + hooks reading .cursor/pack.config.json via CURSOR_PROJECT_DIR + strict deny-with-diagnostic + zero MONAI literals in core).",
+    "phase_3_5": "Seam -> monorepo layout + thin consumer -> workspaceOpen auto-load + Layer D/E."
+  },
   "not_in_v1": [
-    "Marketplace/plugin publish",
-    "Standing persona agents/subagents (skills stay for explicit / stage control)",
-    "Hoisting pack config out of core scripts"
+    "Marketplace/plugin publish (build proof via local symlink; Team Marketplace = talk track)",
+    "Standing PERSONA agents (skills stay for explicit / stage control). NOTE: the spec-critic IS a v1 agent — only the broader persona-as-agent routing is deferred.",
+    "workspaceOpen pack auto-load (v1 = manual enable; auto-load is a post-spike upgrade)"
   ]
 }
