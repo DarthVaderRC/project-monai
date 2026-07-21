@@ -77,17 +77,26 @@ Adding a second library touches **zero** core code: new `pack-<lib>` folder + on
 
 ## CI script fetch (Phase 4)
 
-GitHub Actions on the consumer has **no** Cursor plugin installer. `docs/cursor-kit/scripts/*`
-**prefer** plugin SSOT when resolvable, and **embed a fallback** so pure-consumer CI still
-runs inventory / deprecation gates without plugins:
+GitHub Actions has **no** Cursor plugin installer. Consumer
+`docs/cursor-kit/scripts/*` are **thin wrappers** that resolve plugin SSOT:
 
 1. `CURSOR_PLATFORM_CORE` / `CURSOR_ONBOARDING_PACK` env, or
 2. CI checkout under `.ci/cursor-platform/plugins/…`, or
 3. sibling checkout `../cursor/plugins/{platform-core,pack-monai}`, or
-4. `~/.cursor/plugins/local/{platform-core,pack-monai}`, or
-5. consumer-embedded script body (existence checks; **refs drift skipped**)
+4. `~/.cursor/plugins/local/{platform-core,pack-monai}`
 
-Workflow [`cursor-kit-sync.yml`](../../../.github/workflows/cursor-kit-sync.yml) optionally
-checks out `DarthVaderRC/cursor-play` (needs repo secret `CURSOR_PLATFORM_READ_TOKEN` if
-that repo is private) to enable drift. Without the secret, embedded inventory still passes.
+**Missing plugins → hard fail** (no embedded fallback). Refs **byte-drift** runs when
+pack refs are resolvable.
+
+### Workflow (`cursor-kit-sync.yml`)
+
+1. Checks out this consumer.
+2. Checks out `DarthVaderRC/cursor-play` at branch **`productization-plugin-monorepo`**
+   (demo pin; tighten later to a SHA/tag) into `.ci/cursor-platform/`.
+3. Sets env vars and runs sync-check + deprecation gate.
+
+**Secret (required while `cursor-play` is private):** repository secret
+`CURSOR_PLATFORM_READ_TOKEN` on `project-monai` — a PAT (fine-grained or classic)
+with **Contents: Read** on `DarthVaderRC/cursor-play`. Without it, the plugin
+checkout step fails and CI correctly stays red.
 

@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
-# check-changelog.sh — consumer entrypoint.
-# Prefer pack-monai SSOT when available; else run embedded body (CI-safe).
-# Keep embedded body in sync with pack-monai/scripts/check-changelog.sh
+# Thin wrapper — canonical script: pack-monai/scripts/check-changelog.sh
 set -euo pipefail
-
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 export CURSOR_PROJECT_DIR="${CURSOR_PROJECT_DIR:-$ROOT}"
 
@@ -27,53 +24,18 @@ _resolve_pack() {
 }
 
 PACK="$(_resolve_pack)"
-if [[ -n "$PACK" ]]; then
-  exec bash "$PACK/scripts/check-changelog.sh" "$@"
-fi
+if [[ -z "$PACK" ]]; then
+  cat >&2 <<'EOF'
+ERROR: pack-monai not found.
 
-echo "check-changelog: pack-monai unavailable — running consumer-embedded copy" >&2
+Set CURSOR_ONBOARDING_PACK, or place plugins at one of:
+  .ci/cursor-platform/plugins/pack-monai
+  ../cursor/plugins/pack-monai
+  ~/.cursor/plugins/local/pack-monai
 
-# --- embedded fallback ---
-cd "$ROOT"
-
-CHANGELOG="CHANGELOG.md"
-if [[ ! -f "$CHANGELOG" ]]; then
-  echo "ERROR: missing $CHANGELOG"
-  exit 1
-fi
-if [[ "$#" -eq 0 ]]; then
-  echo "usage: check-changelog.sh <SymbolName> [SymbolName ...]"
-  exit 1
-fi
-
-unreleased="$(awk '
-  /^## \[Unreleased\]/ {inblk=1; next}
-  /^## \[/ && inblk {inblk=0}
-  inblk {print}
-' "$CHANGELOG")"
-
-if [[ -z "$unreleased" ]]; then
-  echo "ERROR: no '## [Unreleased]' section with content in $CHANGELOG"
-  exit 1
-fi
-
-missing=0
-for name in "$@"; do
-  if grep -qF "$name" <<< "$unreleased"; then
-    echo "OK   $name documented under [Unreleased]"
-  else
-    echo "MISS $name not found under [Unreleased]"
-    missing=$((missing + 1))
-  fi
-done
-
-if [[ "$missing" -gt 0 ]]; then
-  cat <<EOF
-check-changelog: $missing symbol(s) undocumented.
-Add a bullet under '## [Unreleased]' -> '### Added' in $CHANGELOG, e.g.:
-  * \`RobustScaleIntensity\` / \`RobustScaleIntensityd\`: robust median/IQR intensity scaling.
+CI: ensure the cursor-play checkout step succeeded.
+See docs/cursor-kit/productization/PRODUCTIZATION.md
 EOF
   exit 1
 fi
-echo "check-changelog: all documented."
-exit 0
+exec bash "$PACK/scripts/check-changelog.sh" "$@"

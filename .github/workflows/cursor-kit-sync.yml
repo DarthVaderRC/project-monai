@@ -2,6 +2,9 @@ name: cursor-kit-sync
 
 # Keep the Cursor onboarding kit honest: fail if Source-of-truth paths drift
 # or if intensity transforms reintroduce deprecated APIs.
+#
+# Requires read access to DarthVaderRC/cursor-play (private): set repository
+# secret CURSOR_PLATFORM_READ_TOKEN (PAT with contents:read). See PRODUCTIZATION.md.
 on:
   push:
     paths:
@@ -39,19 +42,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Optional: fetch plugin SSOT for refs drift + prefer-plugin script path.
-      # cursor-play is private — set repo secret CURSOR_PLATFORM_READ_TOKEN (PAT
-      # with contents:read on DarthVaderRC/cursor-play). Without it, consumer
-      # scripts still run embedded inventory (drift skipped).
+      # Branch pin for demo (productization-plugin-monorepo). Tighten later to SHA/tag.
       - name: Checkout platform plugins
-        id: platform
-        continue-on-error: true
         uses: actions/checkout@v4
         with:
           repository: DarthVaderRC/cursor-play
           ref: productization-plugin-monorepo
           path: .ci/cursor-platform
-          token: ${{ secrets.CURSOR_PLATFORM_READ_TOKEN || github.token }}
+          token: ${{ secrets.CURSOR_PLATFORM_READ_TOKEN }}
+
+      - name: Verify plugin tree
+        run: |
+          test -f .ci/cursor-platform/plugins/platform-core/scripts/sync-check.sh
+          test -f .ci/cursor-platform/plugins/pack-monai/scripts/check-deprecations.sh
+          test -d .ci/cursor-platform/plugins/pack-monai/refs
 
       - name: Run cursor-kit sync-check
         env:
