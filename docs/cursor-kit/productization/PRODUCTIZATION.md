@@ -2,6 +2,8 @@
 
 **Status:** Phase 4 layout + thin consumer + refs materialization **shipped**. Phase 5 upgrades partially shipped: `workspaceOpen → pluginPaths`, Layer D `llm_judge` (additive), Layer E optional `model_id` on ledger. Runtime kit content lives in the sibling `cursor` monorepo plugins (`platform-core`, `pack-monai`); this consumer keeps `.cursor/pack.config.json` + `boundary-profile` + materialized `.cursor/refs/` + `usage/`, plus DEMO/EVAL narrative under `docs/cursor-kit/`. See [`manifest.json`](manifest.json) for the seam contract.
 
+**Follow-on (proposed):** thin SDLC orchestrator — [ADR-0001](../../../../cursor/docs/superpowers/specs/2026-07-21-thin-orchestrator-adr.md) in the `cursor` monorepo (opt-in dispatcher over existing gates; not in v1 demo scope).
+
 ## Why plugins + thin consumer
 
 The content pack is MONAI-specific (intensity transforms plus Phase 1 loss/metric/network packs). The value that generalizes is the **platform core** (persona SDLC rails). Phase 4 physically moves rules/skills/hooks/agents into plugins and materializes refs into the consumer — refs stay deep and on-demand (not distilled into rules).
