@@ -77,11 +77,17 @@ Adding a second library touches **zero** core code: new `pack-<lib>` folder + on
 
 ## CI script fetch (Phase 4)
 
-GitHub Actions on the consumer has **no** Cursor plugin installer. `docs/cursor-kit/scripts/*` are **thin wrappers** that resolve:
+GitHub Actions on the consumer has **no** Cursor plugin installer. `docs/cursor-kit/scripts/*`
+**prefer** plugin SSOT when resolvable, and **embed a fallback** so pure-consumer CI still
+runs inventory / deprecation gates without plugins:
 
 1. `CURSOR_PLATFORM_CORE` / `CURSOR_ONBOARDING_PACK` env, or
-2. sibling checkout `../cursor/plugins/{platform-core,pack-monai}`, or
-3. `~/.cursor/plugins/local/{platform-core,pack-monai}`
+2. CI checkout under `.ci/cursor-platform/plugins/…`, or
+3. sibling checkout `../cursor/plugins/{platform-core,pack-monai}`, or
+4. `~/.cursor/plugins/local/{platform-core,pack-monai}`, or
+5. consumer-embedded script body (existence checks; **refs drift skipped**)
 
-For pure-consumer CI, **fetch** the platform monorepo (submodule, pinned checkout, or vendored copy) and set those env vars. Existence checks in sync-check still run without pack SSOT; **refs byte-drift** requires `CURSOR_ONBOARDING_PACK_REFS` (or a resolvable pack refs dir).
+Workflow [`cursor-kit-sync.yml`](../../../.github/workflows/cursor-kit-sync.yml) optionally
+checks out `DarthVaderRC/cursor-play` (needs repo secret `CURSOR_PLATFORM_READ_TOKEN` if
+that repo is private) to enable drift. Without the secret, embedded inventory still passes.
 

@@ -38,9 +38,33 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      # Optional: fetch plugin SSOT for refs drift + prefer-plugin script path.
+      # cursor-play is private — set repo secret CURSOR_PLATFORM_READ_TOKEN (PAT
+      # with contents:read on DarthVaderRC/cursor-play). Without it, consumer
+      # scripts still run embedded inventory (drift skipped).
+      - name: Checkout platform plugins
+        id: platform
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: DarthVaderRC/cursor-play
+          ref: productization-plugin-monorepo
+          path: .ci/cursor-platform
+          token: ${{ secrets.CURSOR_PLATFORM_READ_TOKEN || github.token }}
+
       - name: Run cursor-kit sync-check
+        env:
+          CURSOR_PROJECT_DIR: ${{ github.workspace }}
+          CURSOR_PLATFORM_CORE: ${{ github.workspace }}/.ci/cursor-platform/plugins/platform-core
+          CURSOR_ONBOARDING_PACK: ${{ github.workspace }}/.ci/cursor-platform/plugins/pack-monai
+          CURSOR_ONBOARDING_PACK_REFS: ${{ github.workspace }}/.ci/cursor-platform/plugins/pack-monai/refs
         run: bash docs/cursor-kit/scripts/sync-check.sh
+
       - name: Deprecated-API gate (kit packs + their tests)
+        env:
+          CURSOR_PROJECT_DIR: ${{ github.workspace }}
+          CURSOR_ONBOARDING_PACK: ${{ github.workspace }}/.ci/cursor-platform/plugins/pack-monai
         run: |
           bash docs/cursor-kit/scripts/check-deprecations.sh \
             $(git ls-files \
