@@ -464,6 +464,9 @@ Optional delegation beat (shows multi-role automation, not just a menu):
 
 ```text
 Delegate the review to a background subagent: launch a Task that runs the /review-contribution checklist on the current diff and reports Approve / Request changes. The subagentStart/Stop audit hook logs it to the ledger.
+
+/review-contribution Review issue #1 transform diff (post-QA) using a background subagent with model composer-2.5-fast. Return pass/fail table + Approve or Request changes. Do not implement fixes.
+
 ```
 
 - **Under the hood:** `subagentStart` / `subagentStop` → `subagent_audit.py` → ledger allow/completed (kit observes; does not gate delegation in v1).
