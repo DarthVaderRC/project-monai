@@ -52,6 +52,7 @@ from monai.transforms.intensity.array import (
     RandScaleIntensityFixedMean,
     RandShiftIntensity,
     RandStdShiftIntensity,
+    RobustScaleIntensity,
     SavitzkyGolaySmooth,
     ScaleIntensity,
     ScaleIntensityRange,
@@ -76,6 +77,7 @@ __all__ = [
     "RandStdShiftIntensityd",
     "RandBiasFieldd",
     "NormalizeIntensityd",
+    "RobustScaleIntensityd",
     "ThresholdIntensityd",
     "ScaleIntensityRanged",
     "ClipIntensityPercentilesd",
@@ -120,6 +122,8 @@ __all__ = [
     "RandBiasFieldDict",
     "NormalizeIntensityD",
     "NormalizeIntensityDict",
+    "RobustScaleIntensityD",
+    "RobustScaleIntensityDict",
     "ThresholdIntensityD",
     "ThresholdIntensityDict",
     "ScaleIntensityRangeD",
@@ -828,6 +832,42 @@ class NormalizeIntensityd(MapTransform):
         d = dict(data)
         for key in self.key_iterator(d):
             d[key] = self.normalizer(d[key])
+        return d
+
+
+class RobustScaleIntensityd(MapTransform):
+    """
+    Dictionary-based wrapper of :py:class:`monai.transforms.RobustScaleIntensity`.
+
+    Args:
+        keys: keys of the corresponding items to be transformed.
+            See also: :py:class:`monai.transforms.compose.MapTransform`
+        lower: lower percentile for the scale range. defaults to 25.0 (first quartile).
+        upper: upper percentile for the scale range. defaults to 75.0 (third quartile).
+        channel_wise: if True, calculate on each channel separately. Please ensure
+            that the first dimension represents the channel of the image if True.
+        dtype: output data type, if None, same as input image. defaults to float32.
+        allow_missing_keys: don't raise exception if key is missing.
+    """
+
+    backend = RobustScaleIntensity.backend
+
+    def __init__(
+        self,
+        keys: KeysCollection,
+        lower: float = 25.0,
+        upper: float = 75.0,
+        channel_wise: bool = False,
+        dtype: DtypeLike = np.float32,
+        allow_missing_keys: bool = False,
+    ) -> None:
+        super().__init__(keys, allow_missing_keys)
+        self.scaler = RobustScaleIntensity(lower=lower, upper=upper, channel_wise=channel_wise, dtype=dtype)
+
+    def __call__(self, data: Mapping[Hashable, NdarrayOrTensor]) -> dict[Hashable, NdarrayOrTensor]:
+        d = dict(data)
+        for key in self.key_iterator(d):
+            d[key] = self.scaler(d[key])
         return d
 
 
@@ -1974,6 +2014,7 @@ ScaleIntensityD = ScaleIntensityDict = ScaleIntensityd
 RandScaleIntensityD = RandScaleIntensityDict = RandScaleIntensityd
 RandScaleIntensityFixedMeanD = RandScaleIntensityFixedMeanDict = RandScaleIntensityFixedMeand
 NormalizeIntensityD = NormalizeIntensityDict = NormalizeIntensityd
+RobustScaleIntensityD = RobustScaleIntensityDict = RobustScaleIntensityd
 ThresholdIntensityD = ThresholdIntensityDict = ThresholdIntensityd
 ScaleIntensityRangeD = ScaleIntensityRangeDict = ScaleIntensityRanged
 ClipIntensityPercentilesD = ClipIntensityPercentilesDict = ClipIntensityPercentilesd

@@ -53,6 +53,7 @@ __all__ = [
     "ScaleIntensityFixedMean",
     "RandScaleIntensityFixedMean",
     "NormalizeIntensity",
+    "RobustScaleIntensity",
     "ThresholdIntensity",
     "ScaleIntensityRange",
     "ClipIntensityPercentiles",
@@ -944,6 +945,68 @@ class NormalizeIntensity(Transform):
 
         out = convert_to_dst_type(img_t, img_t, dtype=dtype)[0]
         return out
+
+
+class RobustScaleIntensity(Transform):
+    """
+    Scale input intensity using the median and an inter-percentile range (default IQR).
+
+    Computes ``(img - median) / (percentile(upper) - percentile(lower))``. This is more
+    robust to outliers than mean/std normalization (see :py:class:`NormalizeIntensity`).
+    When the inter-percentile range is zero (e.g. a constant volume), the divisor is
+    treated as 1 so the output stays finite (median-subtracted zeros for constants).
+
+    Args:
+        lower: lower percentile for the scale range. defaults to 25.0 (first quartile).
+        upper: upper percentile for the scale range. defaults to 75.0 (third quartile).
+        channel_wise: if True, calculate on each channel separately. Please ensure
+            that the first dimension represents the channel of the image if True.
+        dtype: output data type, if None, same as input image. defaults to float32.
+    """
+
+    backend = [TransformBackends.TORCH, TransformBackends.NUMPY]
+
+    def __init__(
+        self,
+        lower: float = 25.0,
+        upper: float = 75.0,
+        channel_wise: bool = False,
+        dtype: DtypeLike = np.float32,
+    ) -> None:
+        if lower < 0.0 or lower > 100.0:
+            raise ValueError("Percentiles must be in the range [0, 100]")
+        if upper < 0.0 or upper > 100.0:
+            raise ValueError("Percentiles must be in the range [0, 100]")
+        if upper < lower:
+            raise ValueError("upper must be greater than or equal to lower")
+        self.lower = lower
+        self.upper = upper
+        self.channel_wise = channel_wise
+        self.dtype = dtype
+
+    def _scale(self, img: NdarrayOrTensor) -> NdarrayOrTensor:
+        img, *_ = convert_data_type(img, dtype=torch.float32)
+        median = percentile(img, 50.0)
+        scale = percentile(img, self.upper) - percentile(img, self.lower)  # type: ignore[operator]
+        if isinstance(scale, (torch.Tensor, np.ndarray)):
+            scale = where(scale == 0, 1.0, scale)
+        elif scale == 0:
+            scale = 1.0
+        return (img - median) / scale
+
+    def __call__(self, img: NdarrayOrTensor) -> NdarrayOrTensor:
+        """
+        Apply the transform to `img`, assuming `img` is a channel-first array if `self.channel_wise` is True.
+        """
+        img = convert_to_tensor(img, track_meta=get_track_meta())
+        img_t = convert_to_tensor(img, track_meta=False)
+        if self.channel_wise:
+            out = [self._scale(d) for d in img_t]
+            ret: NdarrayOrTensor = torch.stack(out)  # type: ignore[arg-type]
+        else:
+            ret = self._scale(img_t)
+        ret = convert_to_dst_type(ret, dst=img, dtype=self.dtype or img_t.dtype)[0]
+        return ret
 
 
 class ThresholdIntensity(Transform):
