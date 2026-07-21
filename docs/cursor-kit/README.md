@@ -18,6 +18,7 @@ for **losses**, **metrics**, and **network blocks**.
 | Rules / scaffold skills | **pack-monai** plugin (injected when enabled) |
 | Hooks / persona shells / spec-critic | **platform-core** plugin |
 | Runbook + narrative | [`DEMO.md`](DEMO.md) |
+| Architecture diagrams | [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | Kit-off vs kit-on evaluation | [`EVALUATION.md`](EVALUATION.md) |
 | Sync check | [`scripts/sync-check.sh`](scripts/sync-check.sh) (wrapper → platform-core) |
 | Layer A/B/C scorers | [`scripts/score_process.py`](scripts/score_process.py), [`score_rubric.py`](scripts/score_rubric.py), [`score_trajectory.py`](scripts/score_trajectory.py) (C → platform-core) |

@@ -73,7 +73,7 @@ Adding a second library touches **zero** core code: new `pack-<lib>` folder + on
 - No new runtime behavior: removing this folder changes nothing about the kit.
 - Not a LOC exercise. The KPI is ramp time and convention adherence, not lines shipped.
 
-**Source of truth:** [`manifest.json`](manifest.json), and the "Productization next" section of [`../DEMO.md`](../DEMO.md).
+**Source of truth:** [`manifest.json`](manifest.json), panel diagrams in [`../ARCHITECTURE.md`](../ARCHITECTURE.md), and the "Productization next" section of [`../DEMO.md`](../DEMO.md).
 
 ## CI script fetch (Phase 4)
 

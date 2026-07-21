@@ -117,7 +117,7 @@ The split is **by reader** — Cursor has no cross-plugin path resolution, so a 
 | Library pack (plugin, Default Off) | No | MONAI rules, `refs/` SSOT, `scaffold-*`, pack.config **schema + example** | Cursor **injects** rules/skills; refs read from consumer `.cursor/refs/` |
 | Consumer (this repo) | n/a | `.cursor/pack.config.json` instance + `boundary-profile` + materialized `refs/` + `usage/` | Hooks read config via `CURSOR_PROJECT_DIR` |
 
-**This branch already physicalizes that split** in the sibling `cursor` monorepo (`platform-core` + `pack-monai`). Consumer narrative + seam notes live in [`productization/`](productization/).
+**This branch already physicalizes that split** in the sibling `cursor` monorepo (`platform-core` + `pack-monai`). Consumer narrative + seam notes live in [`productization/`](productization/). Panel diagrams: [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 v1 enablement is **manual** in Customize; `workspaceOpen → pluginPaths` is an upgrade (already in platform-core — reload Cursor to exercise). Spec-critic is the only `model:`-enforced agent pin; broader standing-agent personas stay deferred.
 
