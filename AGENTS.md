@@ -79,4 +79,6 @@ Do **not** scrape random web pages for MONAI conventions. Prefer `.cursor/refs/`
 - Full process: [`CONTRIBUTING.md`](CONTRIBUTING.md) (American English, Apache header, style, tests, DCO).
 - Kit maintainability: `docs/cursor-kit/README.md`.
 - Sync check: `docs/cursor-kit/scripts/sync-check.sh` (existence + pack-refs drift when SSOT available).
+- Layer A/B/C scorers: `docs/cursor-kit/scripts/score_{process,rubric,trajectory}.py` (C wraps platform-core).
 - Panel runbook: `docs/cursor-kit/DEMO.md`.
+- Eval fixtures (no scorers): `docs/cursor-kit/eval-runs/`.

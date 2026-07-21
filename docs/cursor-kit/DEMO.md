@@ -4,7 +4,7 @@ Session script for the `project-monai` workspace on branch
 `productization-plugin-monorepo` (plugin-shaped thin consumer). Fallback demo
 branch if plugins are unavailable: `cursor-onboarding-kit`.
 
-**Push to origin is not needed** (keep kit local until then).
+Branch is already on origin for this track; do **not** push demo scaffold churn or open PRs against upstream MONAI.
 
 ### Pre-flight (plugins)
 
@@ -81,7 +81,7 @@ Do **not** claim production ROI. Propose the frame platform would run:
 | Faster ramp | Time-to-first-safe-PR | Scaffold + refs + rules cut “framework syntax” days |
 | Less convention rework | % first PRs failing style/header/`__all__`/missing `d` tests | Rules + QA path + sync-check CI |
 | Fewer uncaught gaps | Review/CI comments on covered anti-patterns | `/strengthen-tests`, `/review-contribution`, post-edit nudges |
-| Multi-role leverage | Non-eng runs of PM/QA skills | Ten `/` skills on shared rails (seven in live contribution spine) |
+| Multi-role leverage | Non-eng runs of PM/QA skills | Eleven `/` skills on shared rails (seven in live contribution spine) |
 | Safe autonomy | Boundary deny vs escape (ledger) | Strict/everyday hooks |
 | Cost awareness | Cursor usage + ledger stage counts | Estimated; not an invoice |
 
@@ -169,11 +169,11 @@ Grounded in the actual event schemas, not assumptions:
 
 ## Pre-flight
 
-- [ ] Open folder: `/Users/DineshGawande/Code/project-monai` (not the planning repo)
-- [ ] Branch: `cursor-onboarding-kit` (push to fork **only when the demo starts**, if required)
+- [ ] Open folder: `/Users/DineshGawande/Code/project-monai` (not the planning / `cursor` monorepo)
+- [ ] Branch: `productization-plugin-monorepo` (fallback if plugins unavailable: `cursor-onboarding-kit`)
 - [ ] `gh auth status` OK; Issues enabled on fork
 - [ ] `@Docs` indexed: https://docs.monai.io/en/stable/
-- [ ] Customize → Rules shows `00`–`70`; Skills show ten `/` workflows (live spine uses seven — see table below)
+- [ ] Customize → Rules shows `00`–`70`; Skills show **eleven** `/` workflows (`init-pack` + seven spine + three non-transform scaffolds); live spine uses seven — see table below
 - [ ] `echo everyday > .cursor/boundary-profile`
 - [ ] Optional: `bash docs/cursor-kit/scripts/sync-check.sh` exits 0
 - [x] Seeded issues present:
@@ -228,9 +228,11 @@ If primary is blocked, triage → AsinhIntensity (#2), then TanhSqueezeIntensity
 
 ### Golden fallback (if live scaffold drifts)
 
-A vetted `RobustScaleIntensity` (array + `d` + 20 passing tests) lives on branch
+A vetted `RobustScaleIntensity` (array + `d` + parameterized tests; post-QA —
+`np.float32` and `*d` already in `__all__`) lives on branch
 `golden/robust-scale-intensity` (never merged into the kit branch, so the live
-scaffold is genuine). Recover instantly without leaving the kit branch:
+scaffold is genuine). Cut before the plugin split; `monai/**` paths are unchanged,
+so it still applies on this branch. Recover instantly without leaving the kit branch:
 
 ```bash
 git checkout golden/robust-scale-intensity -- \
@@ -325,13 +327,47 @@ the agent “recover” via MCP/browser).
 
 ```text
 /plan-feature
-Use fork issue #1 (RobustScaleIntensity) from triage. Confirm/update acceptance criteria, non-goals, touch paths under monai/transforms/intensity/, and test expectations on the live GitHub issue. Fork only — no upstream edits.
+Use fork issue #1 (RobustScaleIntensity) from triage. Confirm/update acceptance criteria, non-goals, touch paths under monai/transforms/intensity/, and test expectations on the live GitHub issue. Also write docs/cursor-kit/work/1/SPEC.md with the five required H2 sections (mirror the issue). Fork only — no upstream edits. Do not scaffold yet — hand off to Layer T failing tests, then /critique-spec.
 ```
 
-- **Under the hood:** Skill `plan-feature`; ledger PM/`plan`; `gh issue view|edit` on **fork only**; refs/rules for transforms touch paths. Shell hook must actually run (see fail-closed note above).
-- **You should see:** Live GitHub issue #1 updated (acceptance criteria, non-goals, paths, tests) — not a local markdown plan-only artifact.
-- **Say out loud:** “Runnable PM artifact — the issue is the handoff from triaging.”
-- **Fail / thrash:** Edits upstream; chat-only plan; MCP/browser issue edit because Shell wedged; expands scope outside `monai/transforms/intensity/`.
+- **Under the hood:** Skill `plan-feature`; ledger PM/`plan`; `gh issue view|edit` on **fork only**; writes `docs/cursor-kit/work/<n>/SPEC.md` from `tdd.artifact_paths`; refs/rules for transforms touch paths. Shell hook must actually run (see fail-closed note above).
+- **You should see:** Live GitHub issue #1 updated **and** local `SPEC.md` with required headings — not a chat-only plan.
+- **Say out loud:** “Runnable PM artifact — issue + SPEC are the handoff into Layer T.”
+- **Fail / thrash:** Edits upstream; chat-only plan; skips SPEC.md; MCP/browser issue edit because Shell wedged; expands scope outside `monai/transforms/intensity/`; jumps straight to `/scaffold-transform`.
+
+### C2. Layer T — failing tests (still everyday)
+
+Stay on **`everyday`** until the deny beat. Do **not** implement the transform.
+
+```text
+Write Layer T failing tests for issue #1 (RobustScaleIntensity) at tests/transforms/test_robust_scale_intensity.py and test_robust_scale_intensityd.py. Cover SPEC expectations (happy-path median/IQR, constant-volume / channel-wise / dtype edges, dict key targeting + non-target key preservation). Mark modules with the convention string "Layer T red". Do not edit monai/** — tests must fail because the transform is not implemented yet.
+```
+
+- **Under the hood:** Agent writes red tests only; gate later checks **file + `Layer T red` marker** (does not run pytest). Paths match `tdd.artifact_paths` in `.cursor/pack.config.json`.
+- **You should see:** Two test modules with `Layer T red`; no `monai/**` changes; cases fail if executed (ImportError / missing symbol is fine).
+- **Say out loud:** “TDD before impl — the gate checks the convention, not a green suite.”
+- **Fail / thrash:** Implements the transform early; omits the `Layer T red` marker; puts tests outside `tests/transforms/`.
+
+### C3. Layer T — `/critique-spec` (hard gate)
+
+```text
+/critique-spec
+Review SPEC.md + Layer T failing tests for issue #1. Dispatch spec-critic; write SPEC-REVIEW.md with Verdict: Approve or Request changes on the last line. Do not edit monai/**.
+```
+
+- **Under the hood:** Skill `critique-spec` → `spec-critic` agent (`model: cursor-grok-4.5-high-fast`); writes `docs/cursor-kit/work/1/SPEC-REVIEW.md`; appends kit-owned ledger marker `source=critique-spec` **after** review exists. Prod-write restraint is prompt-only.
+- **You should see:** `Verdict: Approve`; `python3 docs/cursor-kit/scripts/score_tdd_gate.py --issue 1` exits 0; critic model pin visible in the agent UI.
+- **Say out loud:** “Hard-gated spec review — scaffold refuses without Approve.”
+- **Fail / thrash:** Missing ledger marker; verdict not on last line; critic edits `monai/**`; scaffold attempted before Approve.
+
+Optional refuse beat (show the gate teeth) — after Approve, briefly prove refuse, then restore:
+
+```bash
+mv docs/cursor-kit/work/1/SPEC-REVIEW.md /tmp/SPEC-REVIEW.md.bak
+# In Agent: /scaffold-transform for issue #1 — expect refuse (score_tdd_gate exit 1)
+mv /tmp/SPEC-REVIEW.md.bak docs/cursor-kit/work/1/SPEC-REVIEW.md
+python3 docs/cursor-kit/scripts/score_tdd_gate.py --issue 1   # expect OK
+```
 
 ### D. Boundary deny moment
 Why Boundary? Reduces accidental out-of-bounds context and keep the default agent on the contribution path. They help ramp and convention discipline; they do not stop a determined engineer. `Strict` is the contribution boundary; `everyday` is the org boundary. Same rails, different permission sets per stage.
@@ -362,17 +398,17 @@ Read monai/networks/nets/unet.py and summarize the UNet constructor.
 
 Stay on **`strict`**.
 
-Smoke run: open .cursor/refs/transforms-array-dict.md)
+Smoke: attach or open `.cursor/refs/transforms-array-dict.md` (confirm refs materialized; else `/init-pack`).
 
 ```text
 /scaffold-transform
-Implement the transform from issue #1 under monai/transforms/intensity/ (array + d). Follow .cursor/refs/. Leave the planted dictionary __all__ gap for QA. Stay in strict allowlist.
+Implement the transform from issue #1 under monai/transforms/intensity/ (array + d). Follow .cursor/refs/. Layer T gate must already be green (score_tdd_gate --issue 1). Leave the planted dictionary __all__ gap and np.float dtype default for QA. Stay in strict allowlist.
 ```
 
-- **Under the hood:** Skill `scaffold-transform`; ledger engineer/`build`; rules `10-transforms` + `20-testing` + `30-style`; ref `transforms-array-dict.md`; `beforeReadFile`/`beforeShellExecution` keep work in transforms + kit; post-edit nudges may fire on intensity edits.
-- **You should see:** Array + `d` classes; stub tests; **planted** (1) `np.float` dtype default (2) `*d` missing from `dictionary.py` `__all__`; handoff note cites both. No full CI.
-- **Say out loud:** “Correct first contribution without reading the whole library - defects are intentional training signals for QA.”
-- **Fail / thrash:** Fixes the planted gaps itself; drifts into networks/losses; `gh` under strict (denied); silent skip of array or `d`.
+- **Under the hood:** Skill `scaffold-transform` runs `score_tdd_gate.py` first and **refuses** if non-zero; ledger engineer/`build`; rules `10-transforms` + `20-testing` + `30-style`; ref `transforms-array-dict.md`; `beforeReadFile`/`beforeShellExecution` keep work in transforms + kit; post-edit nudges may fire on intensity edits.
+- **You should see:** Array + `d` classes wired to existing Layer T tests; **planted** (1) `np.float` dtype default (2) `*d` missing from `dictionary.py` `__all__`; handoff note cites both. No full CI.
+- **Say out loud:** “Correct first contribution without reading the whole library — defects are intentional training signals for QA.”
+- **Fail / thrash:** Fixes the planted gaps itself; drifts into networks/losses; `gh` under strict (denied); silent skip of array or `d`; proceeds despite gate fail.
 
 ### F. QA — strengthen
 
@@ -447,7 +483,7 @@ python3 docs/cursor-kit/scripts/ledger-dashboard.py \
 open .cursor/usage/ledger-dashboard.html   # or the path printed by the script
 ```
 
-CLI-only equivalents still work: `ledger-report.py` (counts) and `score_trajectory.py` (scorecard).
+CLI-only equivalents still work: `docs/cursor-kit/scripts/ledger-report.py` (counts) and `docs/cursor-kit/scripts/score_trajectory.py` (scorecard).
 
 - **Under the hood:** Reads `.cursor/usage/ledger.jsonl`; aggregates persona/stage/skill/decision counts; runs Layer C checks (skill order, strict deny, scaffold-under-strict — see [`EVALUATION.md`](EVALUATION.md)).
 - **You should see:** A small HTML page with ship-ready badge, required **11/11**, denies/warns, and check table. Target `ship_ready_trajectory: true`.

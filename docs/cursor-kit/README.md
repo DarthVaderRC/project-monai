@@ -20,7 +20,9 @@ for **losses**, **metrics**, and **network blocks**.
 | Runbook + narrative | [`DEMO.md`](DEMO.md) |
 | Kit-off vs kit-on evaluation | [`EVALUATION.md`](EVALUATION.md) |
 | Sync check | [`scripts/sync-check.sh`](scripts/sync-check.sh) (wrapper → platform-core) |
+| Layer A/B/C scorers | [`scripts/score_process.py`](scripts/score_process.py), [`score_rubric.py`](scripts/score_rubric.py), [`score_trajectory.py`](scripts/score_trajectory.py) (C → platform-core) |
 | Layer D judge | [`scripts/llm_judge.py`](scripts/llm_judge.py) (wrapper → platform-core; additive) |
+| Eval fixtures (dated) | [`eval-runs/`](eval-runs/) — ledgers/JSON only; scorers live under `scripts/` |
 | Kit CI | [`.github/workflows/cursor-kit-sync.yml`](../../.github/workflows/cursor-kit-sync.yml) |
 | Productization | [`productization/`](productization/) |
 

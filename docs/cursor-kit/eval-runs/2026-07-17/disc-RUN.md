@@ -13,7 +13,7 @@ Transform chosen because it is **not** in model memory (unlike RobustScaleIntens
 | Kit-off strong | `.worktrees/eval-disc-kit-off-strong` | `8aa39ed0` | Task sentence only; kit disabled; model may read neighbors |
 | Kit-off weak | `.worktrees/eval-disc-kit-off-weak` | `3f28f414` | Task sentence only; constrained to not read neighbors/tests |
 
-Scorer: `scripts/score_process.py --transform AsinhIntensity`
+Scorer: `python3 docs/cursor-kit/scripts/score_process.py --transform AsinhIntensity`
 
 ## Process scorecard (post-scaffold unless noted)
 

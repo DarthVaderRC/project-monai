@@ -3,7 +3,7 @@
 Important: **this is not a production ROI measurement.** It is a repeatable, runnable comparison that shows *what the kit changes about a first contribution*.
 This answers "what impact would you expect?" with evidence.
 
-**Artifacts:** [`eval-runs/2026-07-17/`](eval-runs/2026-07-17/) (scorers, JSON scores, reports, excerpts).
+**Artifacts:** [`eval-runs/2026-07-17/`](eval-runs/2026-07-17/) (fixtures, JSON scores, reports, excerpts). Live scorers: [`scripts/`](scripts/).
 
 ---
 
@@ -24,7 +24,7 @@ Lead with **Layer A** first. Use **Layer B** to show the naive/junior floor (2/1
 
 **Why AsinhIntensity:** not already in the repo; less memorized than RobustScaleIntensity; listed as a scaffold backup in `/scaffold-transform`.
 
-**Scorer:** `python3 docs/cursor-kit/eval-runs/2026-07-17/scripts/score_process.py <repo-root> --transform AsinhIntensity --stage post_scaffold|post_qa`
+**Scorer:** `python3 docs/cursor-kit/scripts/score_process.py <repo-root> --transform AsinhIntensity --stage post_scaffold|post_qa`
 
 ### Protocol
 
@@ -62,7 +62,7 @@ The convention rubric can **saturate** for strong models (see Layer B below). Ki
 
 Same task (historical run used RobustScaleIntensity): *"Add an intensity transform `RobustScaleIntensity` (array + dict) to MONAI."*
 
-**Scorer:** `python3 docs/cursor-kit/eval-runs/2026-07-17/scripts/score_rubric.py <repo-root>`
+**Scorer:** `python3 docs/cursor-kit/scripts/score_rubric.py <repo-root>`
 
 | Convention | Checked by |
 |---|---|
@@ -146,13 +146,13 @@ Naive draft + excerpts: `eval-runs/2026-07-17/naive-draft/`.
 
 **Question:** *Did the session follow the contribution spine — personas, skills, boundaries — not just produce a good diff?*
 
-**Scorer:** `python3 docs/cursor-kit/eval-runs/2026-07-17/scripts/score_trajectory.py [ledger.jsonl]`
+**Scorer:** `python3 docs/cursor-kit/scripts/score_trajectory.py [ledger.jsonl]`
 
 Defaults to the latest `sessionStart` slice of `.cursor/usage/ledger.jsonl`. Archive a rehearsal copy:
 
 ```bash
 cp .cursor/usage/ledger.jsonl docs/cursor-kit/eval-runs/2026-07-17/kit-spine-$(date +%Y%m%d).jsonl
-python3 docs/cursor-kit/eval-runs/2026-07-17/scripts/score_trajectory.py \
+python3 docs/cursor-kit/scripts/score_trajectory.py \
   docs/cursor-kit/eval-runs/2026-07-17/kit-spine-$(date +%Y%m%d).jsonl \
   --session all --json-out docs/cursor-kit/eval-runs/2026-07-17/kit-spine-scores.json
 ```
