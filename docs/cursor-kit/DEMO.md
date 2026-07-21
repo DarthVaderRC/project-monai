@@ -1,4 +1,4 @@
-# Runbook — MONAI Cursor onboarding kit
+# Runbook - MONAI Cursor onboarding kit
 
 Session script for the `project-monai` workspace on branch
 `productization-plugin-monorepo` (plugin-shaped thin consumer). Fallback demo
@@ -20,21 +20,12 @@ Branch is already on origin for this track; do **not** push demo scaffold churn 
 
 ---
 
-## Narrative (judgment — read this first)
+## Narrative (judgment - read this first)
+The live walkthrough proves the artifact; this section proves *why*.
 
-This section is what the exercise grades as *judgment about what’s worth solving*, not only a working spine. The live walkthrough proves the artifact; this proves *why*.
+> **Agent topology:** Each persona drives their own stage and hands off via artifacts (issue → diff+note → verdict). No single command runs the whole SDLC - that would be solo-dev vibe-coding, not a multi-persona org. Subagents are used *within* a stage for context isolation (e.g. background `/review-contribution`), never to jump personas.
 
-**Agent topology (say once):** Each persona drives their own stage and hands off via artifacts (issue → diff+note → verdict). No single command runs the whole SDLC — that would be solo-dev vibe-coding, not a multi-persona org. Subagents are used *within* a stage for context isolation (e.g. background `/review-contribution`), never to jump personas.
-
-### 45-minute agenda
-
-| Block | Time | Goal |
-|---|---|---|
-| Judgment | 5–8 min | Business pain, prioritize/skip, tooling choices, how we’d measure value |
-| Live spine | 20–25 min | Triage → plan → Layer T → critique → strict deny → scaffold → QA → CI → review |
-| Limitations / next | 5 min | Honesty + productization next (plugin core vs packs, agents) |
-
-**Trim talking track:** do not narrate every layer equally. Deep-dive shared rails (rules/hooks/refs) + one deny + one planted QA fix. Skills are thin orchestrators — say that once.
+**Trim talking track:** Deep-dive shared rails (rules/hooks/refs) + one deny + one planted QA fix. Skills are thin orchestrators - say that once.
 
 ### Business problem
 
@@ -48,33 +39,30 @@ Platform onboards engineers onto a **convention-heavy** MONAI library; **ramp is
 - CPU-runnable transform tests → live walkthrough fits 45 minutes.
 - Clinical PM stories + dense tests + real CI → multi-persona without faking SDLC.
 
-### Prioritize / skip
+### Prioritize
 
-| Build first | Skip / defer (v1) |
+| Phase V1 | Deferred (V2) |
 |---|---|
 | Plugins (platform-core + pack-monai) + thin consumer | Public Marketplace publish |
-| Rules + two-profile hooks + `/scaffold-transform` | Companion-repo installer |
+| Layer T: SPEC + red tests + `/critique-spec` hard gate | Thin orchestrator / auto handoff to ready PR |
+| Rules + two-profile hooks + gated `/scaffold-*` | Companion-repo installer |
 | QA + DevOps skills; PM triage/plan | Custom docs/boundary MCP |
 | Pack refs SSOT → `.cursor/refs/` + `@Docs` | Custom Mode |
-| sync-check + CODEOWNERS + kit CI | GPU/distributed automation |
+| sync-check + CODEOWNERS + kit CI (plugin checkout) | GPU/distributed automation |
 | Layer D judge (additive) + Layer E `model_id` | Full billing/token invoice |
 
-**Equal depth vs live sequencing:** all five requirements are designed in; the **live** path is short on purpose (presentation choice, not a depth cut).
-
-### Tooling choices (defend live)
+### Tooling choices
 
 | Choice | Why |
 |---|---|
-| Approach A (in-repo kit) | Reliable walkthrough; versioned with the fork |
+| Plugins + thin consumer (fork) | Reliable walkthrough; consumer versioned with the fork; SSOT in sibling `cursor` monorepo |
 | `@Docs` + `.cursor/refs/` | Official API + owned conventions; no custom docs MCP |
 | Hooks (strict/everyday) | Honest boundary enforcement for req #3 |
 | `AGENTS.md` only | Portable working guidance without Custom Mode |
 | Cursor-estimated ledger | Stage/persona observability; not fake billing precision |
 | Live fork issues (A) + upstream scan (D) | Runnable PM artifact + authentic backlog optics |
 
-### How we measure value (honest: not measured yet)
-
-Do **not** claim production ROI. Propose the frame platform would run:
+### How we measure value
 
 | Outcome | Proxy metric | Kit lever |
 |---|---|---|
@@ -85,11 +73,19 @@ Do **not** claim production ROI. Propose the frame platform would run:
 | Safe autonomy | Boundary deny vs escape (ledger) | Strict/everyday hooks |
 | Cost awareness | Cursor usage + ledger stage counts | Estimated; not an invoice |
 
-**Spoken value line:** *“New engineers waste days on framework syntax and silent convention misses. We automate boilerplate safely so they focus on medical/business logic; hooks and QA cut missed tests and out-of-bounds context. Platform measures ramp time and first-PR defect rate — not LOC.”*
+> *“New engineers waste days on framework syntax and silent convention misses. We automate boilerplate safely so they focus on medical/business logic; hooks and QA cut missed tests and out-of-bounds context. Platform measures ramp time and first-PR defect rate - not lines of code.”*
 
-**Evidence, not a slide:** [`EVALUATION.md`](EVALUATION.md) has two layers. **Lead with Layer A (process):** AsinhIntensity run — kit-on scaffold fails ship-ready (planted `np.float` + `__all__` gap), gates catch both, `/strengthen-tests` → ship-ready; kit-off weak stays broken; kit-off strong skips QA entirely. **Layer B (conventions):** naive draft **2/12**; strong models saturate at 12/12 — so say the kit **guarantees gates + raises the floor**, not “beats GPT on a checklist.”
+**Evidence:** [`EVALUATION.md`](EVALUATION.md) (live scorers in `docs/cursor-kit/scripts/`).
 
-### Exercise “looking for” → where you show it
+| Layer | Panel line |
+|---|---|
+| **A - process** (primary) | AsinhIntensity 2026-07-17: kit-on scaffold fails ship-ready (planted `np.float` + `__all__` gap) → gates catch both → `/strengthen-tests` ship-ready; kit-off weak stays broken; kit-off strong can ship *without* QA |
+| **B - conventions** | Naive draft **2/12**; strong models can hit **12/12** - kit **guarantees gates + raises the floor**, not “beats GPT on a checklist” |
+| **T - hard gate** | SPEC + `Layer T red` tests + `/critique-spec` (`Verdict: Approve`) before any `/scaffold-*` |
+| **C - trajectory** | 11 required ledger checks (skill order, strict deny, scaffold-under-strict, kit-owned `source=critique-spec`); pre-Layer-T fixture still **9/11** |
+| **D / E** | Additive only - LLM judge / `model_id` economics; **not** ship gates |
+
+### Assessment criteria
 
 | Criterion | Where in the session |
 |---|---|
@@ -101,15 +97,17 @@ Do **not** claim production ROI. Propose the frame platform would run:
 | Honesty / limitations | Closing block |
 | Maintainability without you | sync-check CI + README + CODEOWNERS |
 
-### Sync-check = “team owns this” (detection half)
+### Sync-check = “team owns this”
 
-Ownership is not the script alone. **Versioned kit + CODEOWNERS + sync gate** so when CONTRIBUTING/paths drift, CI fails instead of silently teaching wrong norms. README tells the team how to bump rules/refs.
+Consumer `docs/cursor-kit/scripts/sync-check.sh` is a **thin wrapper** pointing to **platform-core** SSOT. Kit CI checks out `cursor-play` plugins (needs `CURSOR_PLATFORM_READ_TOKEN`), verifies the tree, then runs sync-check + the deprecation gate - so inventory / path drift fails the build instead of silently teaching wrong norms. When pack refs resolve, consumer `.cursor/refs/` is checked for **byte-drift** against pack SSOT. **CODEOWNERS** + README say who bumps what: edit refs in the pack, re-run `/init-pack`; do not treat consumer `.cursor/refs/` as SSOT. Details: [`productization/PRODUCTIZATION.md`](productization/PRODUCTIZATION.md).
 
-### Productization (shipped on this branch)
+### Productization
 
-The **content pack** is MONAI-specific (correct for the stand-in). Shipping “this consumer folder as-is” as a Marketplace plugin would be wrong for other libs — that’s why we split.
+The **content pack** is MONAI-specific. Shipping “this consumer folder as-is” as a Marketplace plugin would be wrong for other libs - that’s why we split.
 
-The split is **by reader** — Cursor has no cross-plugin path resolution, so a core hook can't read a file inside the pack plugin:
+**Status:** Phase 4 (plugins + thin consumer + refs materialization) and Phase 5 pieces (`workspaceOpen → pluginPaths`, Layer D judge, Layer E `model_id`) are **shipped** in the sibling `cursor-play` monorepo. Panel enablement is still **manual** in Customize (User-scoped OK); auto-load via `workspaceOpen` works after reload when plugins are installed. Spec-critic is the only `model:`-enforced agent pin; standing persona agents and the thin orchestrator stay deferred for phase 2.
+
+The plugin split is **by reader** - Cursor has no cross-plugin path resolution, so a core hook can't read a file inside the pack plugin:
 
 | Piece | Portable? | Contents | How it reaches the agent |
 |---|---|---|---|
@@ -117,33 +115,33 @@ The split is **by reader** — Cursor has no cross-plugin path resolution, so a 
 | Library pack (plugin, Default Off) | No | MONAI rules, `refs/` SSOT, `scaffold-*`, pack.config **schema + example** | Cursor **injects** rules/skills; refs read from consumer `.cursor/refs/` |
 | Consumer (this repo) | n/a | `.cursor/pack.config.json` instance + `boundary-profile` + materialized `refs/` + `usage/` | Hooks read config via `CURSOR_PROJECT_DIR` |
 
-**This branch already physicalizes that split** in the sibling `cursor` monorepo (`platform-core` + `pack-monai`). Consumer narrative + seam notes live in [`productization/`](productization/). Panel diagrams: [`ARCHITECTURE.md`](ARCHITECTURE.md).
+Seam notes: [`productization/`](productization/). Architecture diagrams: [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
-v1 enablement is **manual** in Customize; `workspaceOpen → pluginPaths` is an upgrade (already in platform-core — reload Cursor to exercise). Spec-critic is the only `model:`-enforced agent pin; broader standing-agent personas stay deferred.
-
-**Strong answers (copy):**
+**Strong responses:**
 
 - *“Platform-core is the portable Required plugin; pack-monai is Default-Off and swapped per library.”*
 - *“Config splits by reader: Cursor injects the pack's rules/skills; hooks read the consumer's `pack.config.json` via `CURSOR_PROJECT_DIR`.”*
-- *“Adding DIFFUSER is a new pack folder + marketplace entry + that repo's config instance — the engine is written once.”*
-- *“LOC isn’t the KPI — ramp time and convention adherence are.”*
-- *“Upstream good-first issues are context; writable work stays on the fork catalog.”*
+- *“Refs SSOT lives in the pack; the consumer holds a materialized copy agents can `@` - `/init-pack` refreshes it.”*
+- *“CI has no plugin installer - it checks out cursor-play and hard-fails if platform-core/pack-monai are missing.”*
+- *“Adding DIFFUSER is a new pack folder + marketplace entry + that repo's config instance - the engine is written once.”*
+- *“Upstream good-first issues are context only; writable work stays on the fork catalog.”*
 
-### Limitations (say out loud)
+### Limitations
 
 - Hooks ≠ OS sandbox; determined users can still escape outside Cursor.
+   - *We use boundaries to keep the default agent on the contribution path and to measure escapes - security and merge safety still sit in CI and humans.*
 - Medical/scientific correctness needs human review.
-- Rule drift possible — mitigated by sync-check CI, not eliminated.
+- Rule drift possible - mitigated by sync-check CI, not eliminated.
 - Ledger is Cursor-estimated stage metering, not billing.
 - CPU transform scope only in the live path.
 
-### Hook-coverage honesty (verified against Cursor's hooks contract)
+### Hook-coverage (verified against Cursor's hooks contract)
 
 Grounded in the actual event schemas, not assumptions:
 
 - `beforeReadFile` gates the Read tool and returns one `permission` for the
   primary `file_path`. It also *sees* prompt `attachments` (`@`-mentioned files /
-  rules) — we log out-of-bounds ones to the ledger, but a hook **cannot strip
+  rules) - we log out-of-bounds ones to the ledger, but a hook **cannot strip
   already-attached context**. So strict-mode denial governs agent reads, not
   context you hand it directly.
 - `beforeReadFile` output honors `permission` + `user_message` only (no
@@ -168,12 +166,13 @@ Grounded in the actual event schemas, not assumptions:
 ---
 
 ## Pre-flight
-
+- [ ] Agent CLI start: agent `--plugin-dir ~/.cursor/plugins/local/platform-core \`
+ `--plugin-dir ~/.cursor/plugins/local/pack-monai`
 - [ ] Open folder: `/Users/DineshGawande/Code/project-monai` (not the planning / `cursor` monorepo)
 - [ ] Branch: `productization-plugin-monorepo` (fallback if plugins unavailable: `cursor-onboarding-kit`)
 - [ ] `gh auth status` OK; Issues enabled on fork
 - [ ] `@Docs` indexed: https://docs.monai.io/en/stable/
-- [ ] Customize → Rules shows `00`–`70`; Skills show **eleven** `/` workflows (`init-pack` + seven spine + three non-transform scaffolds); live spine uses seven — see table below
+- [ ] Customize → Rules shows `00`–`70`; Skills show **eleven** `/` workflows (`init-pack` + seven spine + three non-transform scaffolds); live spine uses seven - see table below
 - [ ] `echo everyday > .cursor/boundary-profile`
 - [ ] Optional: `bash docs/cursor-kit/scripts/sync-check.sh` exits 0
 - [x] Seeded issues present:
@@ -185,7 +184,7 @@ Grounded in the actual event schemas, not assumptions:
 | TanhSqueezeIntensity (backup) | **3** | https://github.com/DarthVaderRC/project-monai/issues/3 |
 | Decoy (networks) | **4** | https://github.com/DarthVaderRC/project-monai/issues/4 |
 
-**Triage narrative (A+D):** `/triage-issues` may **read-only** scan upstream `Project-MONAI/MONAI` `good first issue`s for context, then **recommend only** a fork catalog issue (#1–#3). Never create/edit upstream.
+**Triage caveat (A+D):** `/triage-issues` may **read-only** scan upstream `Project-MONAI/MONAI` `good first issue`s for context, then **recommend only** a fork catalog issue (#1–#3). Never create/edit upstream.
 
 ---
 
@@ -194,13 +193,13 @@ Grounded in the actual event schemas, not assumptions:
 | Step | Action | Artifact | Spoken line (judgment) |
 |---|---|---|---|
 | 1 | `/triage-issues` | Ranked table | Multi-audience PM; A+D = real backlog optics + seeded fork catalog (`kit-seed`) |
-| 2 | `/plan-feature` | Live issue + `docs/cursor-kit/work/<n>/SPEC.md` | Runnable PM artifact — not markdown theater |
-| 3 | Write Layer T failing tests | Red `tests/transforms/test_*.py` with `Layer T red` marker | TDD before impl — gate checks convention, not pytest |
+| 2 | `/plan-feature` | Live issue + `docs/cursor-kit/work/<n>/SPEC.md` | Runnable PM artifact - not markdown theater |
+| 3 | Write Layer T failing tests | Red `tests/transforms/test_*.py` with `Layer T red` marker | TDD before impl - gate checks convention, not pytest |
 | 4 | `/critique-spec` | `SPEC-REVIEW.md` with `Verdict: Approve` | Hard-gated spec review; prod-write restraint is prompt-only (boundary does not stop `monai/**` if critic misbehaves) |
-| 5 | `echo strict > .cursor/boundary-profile` | Boundary on | Req #3 — approved boundaries |
+| 5 | `echo strict > .cursor/boundary-profile` | Boundary on | Req #3 - approved boundaries |
 | 6 | Deny probe | Hook deny | Show teeth: agent cannot quietly leave transforms |
-| 7 | `/scaffold-transform` (runs `score_tdd_gate` first) | Code + planted gap | Req #1 — correct first contribution without reading the whole repo |
-| 8 | `/strengthen-tests` | Gap fixed | Req #2 — catch mistakes before human review |
+| 7 | `/scaffold-transform` (runs `score_tdd_gate` first) | Code + planted gap | Req #1 - correct first contribution without reading the whole repo |
+| 8 | `/strengthen-tests` | Gap fixed | Req #2 - catch mistakes before human review |
 | 9 | everyday → `/prep-for-ci` | CI map | Path to production; sync-check CI = ownable kit; release-train aware |
 | 10 | `/review-contribution` | Verdict | Reviewer persona on the same rails (not Cursor `/review` Bugbot) |
 
@@ -208,15 +207,15 @@ Grounded in the actual event schemas, not assumptions:
 
 Before scaffold: SPEC.md + failing tests + `/critique-spec` → `Verdict: Approve` (last line).
 `score_tdd_gate.py` must exit 0; scaffold skills refuse otherwise. Spec-critic runs as
-an agent with `model: cursor-grok-4.5-high-fast` pinned (only enforceable model routing in v1 —
+an agent with `model: cursor-grok-4.5-high-fast` pinned (only enforceable model routing in v1 - 
 verify in the agent UI on live runs). Critic ledger proof is kit-owned
 (`source=critique-spec` after SPEC-REVIEW exists), not Cursor's subagent audit payload
 (optional corroboration only). Prod-write restraint is prompt-enforced. Layer T red
 marker is a required static convention.
 
-**Optional after review (do not block the spine):** Layer D
+**Optional after review :** Layer D
 `python3 docs/cursor-kit/scripts/llm_judge.py --issue <n> --prompt-only` (or `--dry-run`
-template). Layer E: ledger may carry `model_id` when known — cost/routing only, not quality.
+template). Layer E: ledger may carry `model_id` when known - cost/routing only, not quality.
 
 ### Planted defect
 
@@ -228,7 +227,7 @@ If primary is blocked, triage → AsinhIntensity (#2), then TanhSqueezeIntensity
 
 ### Golden fallback (if live scaffold drifts)
 
-A vetted `RobustScaleIntensity` (array + `d` + parameterized tests; post-QA —
+A vetted `RobustScaleIntensity` (array + `d` + parameterized tests; post-QA - 
 `np.float32` and `*d` already in `__all__`) lives on branch
 `golden/robust-scale-intensity` (never merged into the kit branch, so the live
 scaffold is genuine). Cut before the plugin split; `monai/**` paths are unchanged,
@@ -246,8 +245,7 @@ python3 -m tests.transforms.test_robust_scale_intensity
 python3 -m tests.transforms.test_robust_scale_intensityd
 ```
 
-Frame it honestly to the panel: "the scaffold is generated live; this is a
-tested safety net so a model hiccup doesn't derail the walkthrough."
+> Note: "the scaffold is generated live; this is a tested safety net so a model hiccup doesn't derail the walkthrough."
 
 ### Profile switch
 
@@ -264,9 +262,9 @@ Read/deny hooks honor the file immediately. Prefer a fresh Agent chat after flip
 
 Use these in **Agent chat** with the `project-monai` workspace.
 
-Each prompt has a short talk track: **Under the hood** (what should fire),
-**You should see** (good outcome), **Say out loud** (judgment line),
-**Fail / thrash** (kit or model misfire — stop and recover).
+Each prompt has description that says what happens: **Under the hood** (what should fire),
+**You should see** (good outcome), **Talk track** (judgment line),
+**Fail / thrash** (kit or model misfire - stop and recover).
 
 Prefer **`everyday`** unless a beat says otherwise. Fresh Agent chat after
 profile flips keeps the narrative clean.
@@ -279,20 +277,20 @@ With @monai/transforms/intensity/array.py in context: which project rules apply,
 
 - **Under the hood:** `@array.py` attaches; `00-repo-guardrails.mdc` (`alwaysApply`) + `10-transforms.mdc` (globs `monai/transforms/**`); optional read of `.cursor/refs/transforms-array-dict.md`. `beforeReadFile` allows `.cursor/` + transforms paths.
 - **You should see:** Names those rules; summarizes array (`Transform` / `RandomizableTransform` in `intensity/array.py`) vs dict (`MapTransform` + aliases in `intensity/dictionary.py`) + three registration sites.
-- **Say out loud:** “Rules are path-scoped convention packs — the agent doesn’t need the whole repo to get the pattern right.”
+- **Talk track:** “Rules are path-scoped convention packs - the agent doesn’t need the whole repo to get the pattern right.”
 - **Fail / thrash:** Hunting `10-transforms-intensity.mdc`; fighting hooks to read pack rules; opening `monai/networks`.
 
 ```text
-Using @Docs and @.cursor/refs/transforms-array-dict.md — how do I add a MapTransform wrapper for an intensity transform? Do not open monai/networks.
+Using @Docs and @.cursor/refs/transforms-array-dict.md - how do I add a MapTransform wrapper for an intensity transform? Do not open monai/networks.
 ```
 
 - **Under the hood:** `@Docs` + owned ref; same transform rules as above; agent should stay on allowlist without a deny probe.
-- **You should see:** Wrapper recipe from the ref (`keys`, hold array transform, `key_iterator`, `*d` / `*D` / `*Dict` aliases) — not a networks digression.
-- **Say out loud:** “Official docs for API; `.cursor/refs/` for our non-negotiable conventions — no custom docs MCP.”
+- **You should see:** Wrapper recipe from the ref (`keys`, hold array transform, `key_iterator`, `*d` / `*D` / `*Dict` aliases) - not a networks digression.
+- **Talk track:** “Official docs for API; `.cursor/refs/` for our non-negotiable conventions - no custom docs MCP.”
 - **Fail / thrash:** Reads `monai/networks/**`; invents SoftClipIntensity; ignores the ref file that was attached. Without “*Do not open monai/networks*” agents often wander into unrelated packages “for
   context.”
 
-### B. PM — triage
+### B. PM - triage
 
 Profile: **`everyday`** (`gh` needed).
 
@@ -302,22 +300,22 @@ Profile: **`everyday`** (`gh` needed).
 
 - **Under the hood:** Skill `/triage-issues` (platform-core) (`disable-model-invocation`); ledger `skill` start/end (persona PM, stage triage); `gh` against upstream (read-only) + fork; `00-repo-guardrails` fork-only remotes.
 - **You should see:** Ranked table; recommend fork **#1 RobustScaleIntensity** (or backup #2/#3); upstream good-first issues as context only.
-- **Say out loud:** “Multi-audience PM — real backlog optics plus a seeded fork catalog”
+- **Talk track:** “Multi-audience PM - real backlog optics plus a seeded fork catalog”
 - **Fail / thrash:** Recommends implementing an upstream issue on this fork; creates/edits upstream; skips ledger skill markers.
 - **NOTE**: The scaffolder is deliberately narrow so the platform pattern is demonstrably reliable; generalizing families is a product roadmap item, not 
-  a missing demo checkbox. I didn’t under-build the scaffolder — I scoped the first pack.
+  a missing demo checkbox. I didn’t under-build the scaffolder - I scoped the first pack.
 - **KPI is time-to-first-safe-merge**, not “one skill that scaffolds all of MONAI.” Intensity transforms are the densest, CPU-testable convention surface for a 45-minute spine.
 
 ```text
-First briefly scan upstream Project-MONAI/MONAI good first issues (read-only) for context. Then rank open issues on this fork and recommend RobustScaleIntensity (#1) unless blocked. Do not recommend implementing an upstream issue on this fork.
+Scan upstream Project-MONAI/MONAI good first issues (read-only) for context. Then rank open issues on this fork and recommend an issue unless blocked. Do not recommend implementing an upstream issue on this fork.
 ```
 
-- **Under the hood:** Same as `/triage-issues` without relying on slash dispatch — still `everyday` + `gh`.
+- **Under the hood:** Same as `/triage-issues` without relying on slash dispatch - still `everyday` + `gh`.
 - **You should see:** Explicit upstream-then-fork narrative ending on #1.
-- **Say out loud:** “Writable work stays on the fork; upstream is a mirror for prioritization optics.”
+- **Talk track:** “Writable work stays on the fork; upstream is a mirror for prioritization optics.”
 - **Fail / thrash:** Treats decoy networks issue #4 as the build target; opens PRs/issues on upstream.
 
-### C. PM — plan
+### C. PM - plan
 
 Profile: **`everyday`**. If this chat’s first Shell call just failed closed, **Reload
 Window**, warm up with `echo ok && gh auth status`, then paste below (do not let
@@ -327,28 +325,39 @@ the agent “recover” via MCP/browser).
 
 ```text
 /plan-feature
-Use fork issue #1 (RobustScaleIntensity) from triage. Confirm/update acceptance criteria, non-goals, touch paths under monai/transforms/intensity/, and test expectations on the live GitHub issue. Also write docs/cursor-kit/work/1/SPEC.md with the five required H2 sections (mirror the issue). Fork only — no upstream edits. Do not scaffold yet — hand off to Layer T failing tests, then /critique-spec.
+Use fork issue #1 (RobustScaleIntensity) from triage. Confirm/update acceptance criteria, non-goals, touch paths under monai/transforms/intensity/, and test expectations on the live GitHub issue. Also write docs/cursor-kit/work/1/SPEC.md with the five required H2 sections (mirror the issue). Fork only - no upstream edits. Do not scaffold yet - hand off to Layer T failing tests, then /critique-spec.
+OR
+/plan-feature Issue #1 (RobustScaleIntensity). Update the fork issue + write SPEC.md. Fork only. Do not scaffold — hand off to Layer T failing tests, then /critique-spec.
 ```
 
 - **Under the hood:** Skill `plan-feature`; ledger PM/`plan`; `gh issue view|edit` on **fork only**; writes `docs/cursor-kit/work/<n>/SPEC.md` from `tdd.artifact_paths`; refs/rules for transforms touch paths. Shell hook must actually run (see fail-closed note above).
-- **You should see:** Live GitHub issue #1 updated **and** local `SPEC.md` with required headings — not a chat-only plan.
-- **Say out loud:** “Runnable PM artifact — issue + SPEC are the handoff into Layer T.”
+- **You should see:** Live GitHub issue #1 updated **and** local `SPEC.md` with required headings - not a chat-only plan.
+- **Talk track:** “Runnable PM artifact - issue + SPEC are the handoff into Layer T.”
 - **Fail / thrash:** Edits upstream; chat-only plan; skips SPEC.md; MCP/browser issue edit because Shell wedged; expands scope outside `monai/transforms/intensity/`; jumps straight to `/scaffold-transform`.
 
-### C2. Layer T — failing tests (still everyday)
+### C2. Layer T - failing tests (still everyday)
 
 Stay on **`everyday`** until the deny beat. Do **not** implement the transform.
-
+```
+Write Layer T failing tests for issue #1 from SPEC.md at tests/transforms/test_robust_scale_intensity.py and test_robust_scale_intensityd.py. Include the marker "Layer T red". Do not edit monai/**.
+```
+OR 
 ```text
-Write Layer T failing tests for issue #1 (RobustScaleIntensity) at tests/transforms/test_robust_scale_intensity.py and test_robust_scale_intensityd.py. Cover SPEC expectations (happy-path median/IQR, constant-volume / channel-wise / dtype edges, dict key targeting + non-target key preservation). Mark modules with the convention string "Layer T red". Do not edit monai/** — tests must fail because the transform is not implemented yet.
+Write Layer T failing tests for issue #1 (RobustScaleIntensity) at tests/transforms/test_robust_scale_intensity.py and test_robust_scale_intensityd.py. Cover SPEC expectations (happy-path median/IQR, constant-volume / channel-wise / dtype edges, dict key targeting + non-target key preservation). Mark modules with the convention string "Layer T red". Do not edit monai/** - tests must fail because the transform is not implemented yet.
 ```
 
 - **Under the hood:** Agent writes red tests only; gate later checks **file + `Layer T red` marker** (does not run pytest). Paths match `tdd.artifact_paths` in `.cursor/pack.config.json`.
 - **You should see:** Two test modules with `Layer T red`; no `monai/**` changes; cases fail if executed (ImportError / missing symbol is fine).
-- **Say out loud:** “TDD before impl — the gate checks the convention, not a green suite.”
+- **Talk track:** “TDD before impl - the gate checks the convention, not a green suite.”
 - **Fail / thrash:** Implements the transform early; omits the `Layer T red` marker; puts tests outside `tests/transforms/`.
 
-### C3. Layer T — `/critique-spec` (hard gate)
+### C3. Layer T - `/critique-spec` (hard gate)
+
+```
+/critique-spec
+Review SPEC + Layer T tests for issue #1. Do not edit monai/**.
+```
+OR
 
 ```text
 /critique-spec
@@ -357,14 +366,14 @@ Review SPEC.md + Layer T failing tests for issue #1. Dispatch spec-critic; write
 
 - **Under the hood:** Skill `critique-spec` → `spec-critic` agent (`model: cursor-grok-4.5-high-fast`); writes `docs/cursor-kit/work/1/SPEC-REVIEW.md`; appends kit-owned ledger marker `source=critique-spec` **after** review exists. Prod-write restraint is prompt-only.
 - **You should see:** `Verdict: Approve`; `python3 docs/cursor-kit/scripts/score_tdd_gate.py --issue 1` exits 0; critic model pin visible in the agent UI.
-- **Say out loud:** “Hard-gated spec review — scaffold refuses without Approve.”
+- **Talk track:** “Hard-gated spec review - scaffold refuses without Approve.”
 - **Fail / thrash:** Missing ledger marker; verdict not on last line; critic edits `monai/**`; scaffold attempted before Approve.
 
-Optional refuse beat (show the gate teeth) — after Approve, briefly prove refuse, then restore:
+Optional refuse beat (show the gate teeth) - after Approve, briefly prove refuse, then restore:
 
 ```bash
 mv docs/cursor-kit/work/1/SPEC-REVIEW.md /tmp/SPEC-REVIEW.md.bak
-# In Agent: /scaffold-transform for issue #1 — expect refuse (score_tdd_gate exit 1)
+# In Agent: /scaffold-transform for issue #1 - expect refuse (score_tdd_gate exit 1)
 mv /tmp/SPEC-REVIEW.md.bak docs/cursor-kit/work/1/SPEC-REVIEW.md
 python3 docs/cursor-kit/scripts/score_tdd_gate.py --issue 1   # expect OK
 ```
@@ -379,8 +388,8 @@ echo strict > .cursor/boundary-profile
 ```
 
 - **Under the hood:** Hooks re-read `.cursor/boundary-profile` immediately (`policy.profile`); prefer a **fresh Agent chat** so `sessionStart` injects `MONAI_CURSOR_BOUNDARY=strict`.
-- **You should see:** No agent output yet — profile flip only.
-- **Say out loud:** “Strict = approved contribution boundary, not a toy sandbox.”
+- **You should see:** No agent output yet - profile flip only.
+- **Talk track:** “Strict = approved contribution boundary, not a toy sandbox.”
 - **Fail / thrash:** Profile file still `everyday`; continuing in an old chat that never picked up strict.
 
 Then:
@@ -389,17 +398,21 @@ Then:
 Read monai/networks/nets/unet.py and summarize the UNet constructor.
 ```
 
-- **Under the hood:** `beforeReadFile` → `boundary_read.py` → **deny** (networks outside strict allowlist); ledger `decision: deny`; user sees deny message pointing at transforms + kit paths. Hook cannot strip `@` attachments already in the prompt — this beat uses an agent **Read**, not an attachment.
+- **Under the hood:** `beforeReadFile` → `boundary_read.py` → **deny** (networks outside strict allowlist); ledger `decision: deny`; user sees deny message pointing at transforms + kit paths. Hook cannot strip `@` attachments already in the prompt - this beat uses an agent **Read**, not an attachment.
 - **You should see:** Blocked read; no UNet constructor summary from file contents.
-- **Say out loud:** “The agent cannot quietly leave transforms during the engineer stage.”
+- **Talk track:** “The agent cannot quietly leave transforms during the engineer stage.”
 - **Fail / thrash:** Read succeeds; agent summarizes from training memory as if the read worked; Shell/`cat` bypass succeeds without you calling out hooks ≠ OS sandbox.
 
-### E. Engineer — scaffold
+### E. Engineer - scaffold
 
 Stay on **`strict`**.
 
 Smoke: attach or open `.cursor/refs/transforms-array-dict.md` (confirm refs materialized; else `/init-pack`).
 
+```
+/scaffold-transform Issue #1 — array + d under monai/transforms/intensity/. Leave planted gaps for QA. Stay in strict allowlist.
+```
+OR
 ```text
 /scaffold-transform
 Implement the transform from issue #1 under monai/transforms/intensity/ (array + d). Follow .cursor/refs/. Layer T gate must already be green (score_tdd_gate --issue 1). Leave the planted dictionary __all__ gap and np.float dtype default for QA. Stay in strict allowlist.
@@ -407,24 +420,26 @@ Implement the transform from issue #1 under monai/transforms/intensity/ (array +
 
 - **Under the hood:** Skill `scaffold-transform` runs `score_tdd_gate.py` first and **refuses** if non-zero; ledger engineer/`build`; rules `10-transforms` + `20-testing` + `30-style`; ref `transforms-array-dict.md`; `beforeReadFile`/`beforeShellExecution` keep work in transforms + kit; post-edit nudges may fire on intensity edits.
 - **You should see:** Array + `d` classes wired to existing Layer T tests; **planted** (1) `np.float` dtype default (2) `*d` missing from `dictionary.py` `__all__`; handoff note cites both. No full CI.
-- **Say out loud:** “Correct first contribution without reading the whole library — defects are intentional training signals for QA.”
+- **Talk track:** “Correct first contribution without reading the whole library - defects are intentional training signals for QA.”
 - **Fail / thrash:** Fixes the planted gaps itself; drifts into networks/losses; `gh` under strict (denied); silent skip of array or `d`; proceeds despite gate fail.
 
-### F. QA — strengthen
+### F. QA - strengthen
 
 Still **`strict`** unless a check needs `gh` (it shouldn’t).
 
 ```text
+/strengthen-tests
+OR
 /strengthen-tests
 Fix the planted __all__ gap and harden parameterized tests for the new transform (array + d).
 ```
 
 - **Under the hood:** Skill `strengthen-tests`; ledger QA/`test`; rule `20-testing.mdc`; runs `check-deprecations.sh` first; fixes `np.float` → `np.float32` and `dictionary.py` `__all__`; hardens parameterized array + `d` tests; prefer `python3 -m tests.transforms...` (strict shell allowlist).
 - **You should see:** Deprecation script clean; `from monai.transforms import <Name>d` works; stronger tests; planted gaps gone.
-- **Say out loud:** “Catch mistakes before human review — tooling signal, not a checklist recited from memory.”
+- **Talk track:** “Catch mistakes before human review - tooling signal, not a checklist recited from memory.”
 - **Fail / thrash:** Leaves `np.float` or `__all__` gap; only edits tests without fixing registration; uses non-allowlisted unittest invocation that strict denies mid-demo.
 
-### G. DevOps — CI
+### G. DevOps - CI
 
 ```bash
 echo everyday > .cursor/boundary-profile
@@ -432,22 +447,25 @@ echo everyday > .cursor/boundary-profile
 
 - **Under the hood:** Flip before `gh` / broader shell; fresh chat optional but cleaner.
 - **You should see:** Profile back to warn-only.
-- **Say out loud:** “Everyday for integration commands; strict was for the contribution boundary.”
+- **Talk track:** “Everyday for integration commands; strict was for the contribution boundary.”
 - **Fail / thrash:** Running `/prep-for-ci` while still strict and wondering why `gh` is denied.
 
 ```text
+/prep-for-ci
+Local checks + CI map, then open a draft PR on the fork only.
+OR
 /prep-for-ci
 Run local ruff + scoped tests, run docs/cursor-kit/scripts/check-deprecations.sh and check-changelog.sh, confirm DCO and a [Unreleased] changelog entry, map to CI workflows including docs/cursor-kit sync-check. Do not open a PR against upstream; draft to the fork only if I ask.
 ```
 
 - **Under the hood:** Skill `prep-for-ci`; ledger DevOps/`ci`; maps local commands → `.github/workflows/` + `cursor-kit-sync.yml`; changelog/DCO/release-train narrative; fork-only remotes.
 - **You should see:** Local check results; CI map including sync-check + deprecation gate; `[Unreleased]` note; no upstream PR.
-- **Say out loud:** “Path to production — sync-check means the team owns the kit when norms drift.”
+- **Talk track:** “Path to production - sync-check means the team owns the kit when norms drift.”
 - **Fail / thrash:** Opens PR against `Project-MONAI/MONAI`; skips changelog/deprecation gates; claims deploy = manual NGC push.
 
 ### H. Reviewer
 
-Use **`/review-contribution`** — not Cursor’s built-in `/review` (Bugbot / Security
+Use **`/review-contribution`** - not Cursor’s built-in `/review` (Bugbot / Security
 chooser). After rename, Reload Window so Customize → Skills picks it up.
 
 ```text
@@ -457,7 +475,7 @@ Review the transform diff against CONTRIBUTING and Cursor rules. Include CODEOWN
 
 - **Under the hood:** Skill `review-contribution`; ledger reviewer/`review`; checklist vs `contributing-checklist.md`, rules, `CONTRIBUTING.md`, `.github/CODEOWNERS`; confirms planted gaps are fixed (post-QA).
 - **You should see:** Pass/fail table with evidence; Approve or Request changes; CODEOWNERS + planted-gap status called out.
-- **Say out loud:** “Same rails for the reviewer persona — not Cursor Bugbot. We renamed to avoid the product `/review` collision.”
+- **Talk track:** “Same rails for the reviewer persona - not Cursor Bugbot. We renamed to avoid the product `/review` collision.”
 - **Fail / thrash:** Picking Bugbot/Security from Cursor’s `/review` chooser; rubber-stamp Approve with no checklist; misses remaining `__all__`/deprecated API; suggests upstream PR.
 
 Optional delegation beat (shows multi-role automation, not just a menu):
@@ -471,7 +489,7 @@ Delegate the review to a background subagent: launch a Task that runs the /revie
 
 - **Under the hood:** `subagentStart` / `subagentStop` → `subagent_audit.py` → ledger allow/completed (kit observes; does not gate delegation in v1).
 - **You should see:** Subagent verdict; ledger rows for start/stop with subagent type + tool counts.
-- **Say out loud:** “Subagents isolate work inside a stage — they don’t jump personas across the SDLC.”
+- **Talk track:** “Subagents isolate work inside a stage - they don’t jump personas across the SDLC.”
 - **Fail / thrash:** No ledger audit rows; subagent used to skip to a different persona’s stage.
 
 ### I. Optional economics / trajectory beat
@@ -488,9 +506,9 @@ open .cursor/usage/ledger-dashboard.html   # or the path printed by the script
 
 CLI-only equivalents still work: `docs/cursor-kit/scripts/ledger-report.py` (counts) and `docs/cursor-kit/scripts/score_trajectory.py` (scorecard).
 
-- **Under the hood:** Reads `.cursor/usage/ledger.jsonl`; aggregates persona/stage/skill/decision counts; runs Layer C checks (skill order, strict deny, scaffold-under-strict — see [`EVALUATION.md`](EVALUATION.md)).
+- **Under the hood:** Reads `.cursor/usage/ledger.jsonl`; aggregates persona/stage/skill/decision counts; runs Layer C checks (skill order, strict deny, scaffold-under-strict - see [`EVALUATION.md`](EVALUATION.md)).
 - **You should see:** A small HTML page with ship-ready badge, required **11/11**, denies/warns, and check table. Target `ship_ready_trajectory: true`.
-- **Say out loud:** “Cursor-estimated stage metering — not a billing invoice. We measure whether the kit path ran — process evidence, not LOC.”
+- **Talk track:** “Cursor-estimated stage metering - not a billing invoice. We measure whether the kit path ran - process evidence, not LOC.”
 - **Fail / thrash:** Framing ledger lines as precise cost; empty ledger because skills never appended start/end; score fails because deny probe or skill markers were skipped.
 
 ---
@@ -501,4 +519,4 @@ CLI-only equivalents still work: `docs/cursor-kit/scripts/ledger-report.py` (cou
 - Archive + dashboard: see **§I** (`ledger-dashboard.py`; target **11/11** required)
 - Discard live scaffold transform/tests/changelog from the kit branch unless you intend to keep them; keep kit fixes (hooks, rules, skill renames, DEMO)
 - Do not push kit branch to upstream MONAI
-- If you opened a draft PR on the fork, close or leave it — confirm afterward
+- If you opened a draft PR on the fork, close or leave it - confirm afterward
